@@ -7,6 +7,7 @@ import math
 import os
 import re
 import sys
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Tuple
@@ -22,6 +23,8 @@ except ImportError as exc:  # pragma: no cover - import guard
 REPO_ROOT = Path(__file__).resolve().parents[2]
 KG_DIR = REPO_ROOT / "planning-mds" / "knowledge-graph"
 FEATURES_DIR = REPO_ROOT / "planning-mds" / "features"
+DEFAULT_TELEMETRY_PATH = REPO_ROOT / ".kg-state" / "telemetry.jsonl"
+_DEFAULT_RUN_ID: str | None = None
 WILDCARD_RE = re.compile(r"[*?\[]")
 FEATURE_ID_RE = re.compile(r"^feature:F\d{4}$")
 STORY_ID_RE = re.compile(r"^story:F\d{4}-S\d{4}$")
@@ -508,6 +511,13 @@ def estimate_tokens(value: Any) -> int:
     return max(1, math.ceil(len(serialized) / 4))
 
 
+def _default_run_id() -> str:
+    global _DEFAULT_RUN_ID
+    if _DEFAULT_RUN_ID is None:
+        _DEFAULT_RUN_ID = str(uuid.uuid4())
+    return _DEFAULT_RUN_ID
+
+
 def emit_telemetry(
     telemetry_file: Path | None,
     run_id: str | None,
@@ -516,11 +526,16 @@ def emit_telemetry(
 ) -> None:
     """Append a single JSONL telemetry event.
 
-    The payload is enriched with the shared action context from environment
-    variables when present. If telemetry_file is None, this is a no-op.
+    When `telemetry_file` is None, the event is written to the repo-default
+    path `{REPO_ROOT}/.kg-state/telemetry.jsonl`. When `run_id` is None, a
+    per-process uuid4 is generated and reused so all events from one script
+    invocation share a correlation ID.
     """
-    if telemetry_file is None:
-        return
+    used_default_path = telemetry_file is None
+    if used_default_path:
+        telemetry_file = DEFAULT_TELEMETRY_PATH
+    if run_id is None:
+        run_id = _default_run_id()
 
     payload = {
         "ts": now_iso(),
@@ -530,11 +545,18 @@ def emit_telemetry(
         "payload": event,
     }
 
-    telemetry_file.parent.mkdir(parents=True, exist_ok=True)
-    with telemetry_file.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(payload, ensure_ascii=False))
-        handle.write("\n")
-        handle.flush()
+    try:
+        telemetry_file.parent.mkdir(parents=True, exist_ok=True)
+        with telemetry_file.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(payload, ensure_ascii=False))
+            handle.write("\n")
+            handle.flush()
+    except OSError:
+        # Telemetry must never crash a caller. Errors on the default path are
+        # silently dropped (e.g., read-only checkout); errors on an explicit
+        # path bubble up so the caller sees the misconfiguration.
+        if not used_default_path:
+            raise
 
 
 def main_exception(message: str) -> None:
