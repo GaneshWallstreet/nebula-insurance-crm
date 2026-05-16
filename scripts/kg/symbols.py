@@ -75,10 +75,17 @@ class SymbolRecord:
     container: str | None = None
     callers: list[str] = field(default_factory=list)
     callees: list[str] = field(default_factory=list)
-    # Unresolved called-names harvested by the extractor; resolved into
+    # Calls harvested by the extractor. Each entry is either a bare string
+    # (unresolved syntactic name — Python AST and TS extractors) or a dict
+    # ``{name, container}`` from the Roslyn-based C# extractor where
+    # ``container`` is the resolved declaring type. Resolved into
     # callers/callees by the orchestrator. Persisted in the cache but stripped
     # from the on-disk symbol-index.yaml.
-    raw_calls: list[str] = field(default_factory=list)
+    raw_calls: list[Any] = field(default_factory=list)
+    # Interface members and base methods this symbol satisfies. Used to grow
+    # polymorphic-dispatch edges so reaching ``IFoo.Bar`` also reaches every
+    # ``Foo.Bar`` impl. Format: list of ``{name, container}``.
+    implements: list[dict[str, Any]] = field(default_factory=list)
 
     def to_cache_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -86,6 +93,7 @@ class SymbolRecord:
     def to_index_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d.pop("raw_calls", None)
+        d.pop("implements", None)
         if d.get("container") is None:
             d.pop("container", None)
         return d
@@ -302,7 +310,12 @@ class SubprocessExtractor(BaseExtractor):
             if not name:
                 continue
             container = item.get("container") or None
-            referenced = [str(r) for r in (item.get("calls") or [])]
+            raw_calls = list(item.get("calls") or [])
+            implements = [
+                dict(impl)
+                for impl in (item.get("implements") or [])
+                if isinstance(impl, dict) and impl.get("name") and impl.get("container")
+            ]
             records.append(SymbolRecord(
                 id=symbol_id(node_id, container, name, file_rel=rel_file),
                 node=node_id,
@@ -314,7 +327,8 @@ class SubprocessExtractor(BaseExtractor):
                 visibility=item.get("visibility", "public"),
                 language=self.language,
                 container=container,
-                raw_calls=referenced,
+                raw_calls=raw_calls,
+                implements=implements,
             ))
         return records
 
@@ -503,22 +517,71 @@ def run_extractor(
 
 
 def resolve_call_edges(records: list[SymbolRecord]) -> None:
-    """Resolve each record's `raw_calls` into callers/callees, scoped to its
-    canonical node. Over-linking is acceptable for a retrieval aid; raw
-    artifacts remain authoritative."""
+    """Resolve each record's ``raw_calls`` into callers/callees edges.
+
+    Two-tier resolution:
+
+    1. **Qualified lookup** — when the extractor returns ``{name, container}``
+       (Roslyn-resolved C# invocations), match globally on
+       ``(container, name)``. This crosses canonical-node boundaries so an
+       endpoint on ``entity:order`` correctly reaches a service method on
+       ``entity:customer``.
+    2. **Same-node name fallback** — when the extractor only gave a bare
+       name (Python AST, TS extractor, or an unresolved Roslyn invocation),
+       fall back to matching on ``(node, name)``. Same behavior as before.
+
+    Interface dispatch is grown via each record's ``implements`` array: for
+    every interface member or base method an impl satisfies, add a synthetic
+    edge from the interface member to the impl. A caller of the interface
+    member then reaches every implementation through normal callee traversal.
+
+    Over-linking is acceptable for a retrieval aid; raw artifacts remain
+    authoritative per ``solution-ontology.yaml.authority.precedence``.
+    """
     by_node_name: dict[tuple[str, str], list[SymbolRecord]] = {}
+    by_qualified: dict[tuple[str, str], list[SymbolRecord]] = {}
     for rec in records:
         by_node_name.setdefault((rec.node, rec.name), []).append(rec)
+        if rec.container:
+            by_qualified.setdefault((rec.container, rec.name), []).append(rec)
+
+    def add_edge(caller: SymbolRecord, callee: SymbolRecord) -> None:
+        if callee.id == caller.id:
+            return
+        if callee.id not in caller.callees:
+            caller.callees.append(callee.id)
+        if caller.id not in callee.callers:
+            callee.callers.append(caller.id)
 
     for caller in records:
-        for name in caller.raw_calls:
-            for callee in by_node_name.get((caller.node, name), []):
-                if callee.id == caller.id:
+        for call in caller.raw_calls:
+            if isinstance(call, dict):
+                name = call.get("name")
+                container = call.get("container")
+                if not name:
                     continue
-                if callee.id not in caller.callees:
-                    caller.callees.append(callee.id)
-                if caller.id not in callee.callers:
-                    callee.callers.append(caller.id)
+                if container:
+                    for callee in by_qualified.get((container, name), []):
+                        add_edge(caller, callee)
+                else:
+                    for callee in by_node_name.get((caller.node, name), []):
+                        add_edge(caller, callee)
+            else:
+                name = str(call)
+                if not name:
+                    continue
+                for callee in by_node_name.get((caller.node, name), []):
+                    add_edge(caller, callee)
+
+    # Polymorphic dispatch: every interface member reaches its implementations.
+    for impl in records:
+        for iface_ref in impl.implements:
+            iface_name = iface_ref.get("name") if isinstance(iface_ref, dict) else None
+            iface_container = iface_ref.get("container") if isinstance(iface_ref, dict) else None
+            if not (iface_name and iface_container):
+                continue
+            for iface_member in by_qualified.get((iface_container, iface_name), []):
+                add_edge(iface_member, impl)
 
     for rec in records:
         rec.callers.sort()

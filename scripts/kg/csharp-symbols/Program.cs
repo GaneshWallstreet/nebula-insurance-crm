@@ -1,8 +1,20 @@
 // Symbol-layer extractor for C#. Invoked by scripts/kg/symbols.py.
-// Reads a JSON array of repo-relative file paths from stdin, parses each
-// with Roslyn (Microsoft.CodeAnalysis.CSharp), and writes a JSON array of
-// symbol records to stdout. One record per type declaration plus per
-// method, property, and constructor.
+// Reads a JSON array of repo-relative file paths from stdin, parses them
+// with Roslyn into a single CSharpCompilation, and emits a JSON array of
+// symbol records to stdout. Each method/property/constructor record carries:
+//
+//   calls       — resolved {name, container} for invocations whose target
+//                 symbol the semantic model can determine. Falls back to
+//                 {name, container: null} when the target is external
+//                 (framework/EF/etc.) or otherwise unresolved.
+//   implements  — {name, container} for every interface member this method
+//                 satisfies. Lets symbols.py grow polymorphic-dispatch groups
+//                 so reaching an interface member reaches its implementations.
+//
+// The compilation is built without metadata references — we only care about
+// resolving calls between application source symbols. Framework calls are
+// expected to be unresolved (container: null) and are ignored by the
+// reachability walk.
 
 using System;
 using System.Collections.Generic;
@@ -17,6 +29,11 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace CSharpSymbols;
 
+public sealed record CallRef(
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("container")] string? Container
+);
+
 public sealed record SymbolItem(
     [property: JsonPropertyName("file")] string File,
     [property: JsonPropertyName("name")] string Name,
@@ -25,7 +42,8 @@ public sealed record SymbolItem(
     [property: JsonPropertyName("line")] int Line,
     [property: JsonPropertyName("signature")] string Signature,
     [property: JsonPropertyName("visibility")] string Visibility,
-    [property: JsonPropertyName("calls")] string[] Calls
+    [property: JsonPropertyName("calls")] CallRef[] Calls,
+    [property: JsonPropertyName("implements")] CallRef[] Implements
 );
 
 public static class Program
@@ -60,8 +78,7 @@ public static class Program
             return 1;
         }
 
-        var items = new List<SymbolItem>(capacity: files.Length * 8);
-
+        var trees = new List<(string Rel, SyntaxTree Tree)>(files.Length);
         foreach (var rel in files)
         {
             string source;
@@ -72,21 +89,36 @@ public static class Program
                 continue;
             }
 
-            CompilationUnitSyntax root;
             try
             {
                 var tree = CSharpSyntaxTree.ParseText(SourceText.From(source), path: rel);
-                root = (CompilationUnitSyntax)tree.GetRoot();
+                trees.Add((rel, tree));
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"parse failed {rel}: {ex.Message}");
-                continue;
             }
+        }
+
+        // Single compilation across every input file so SemanticModel can
+        // resolve cross-file references. No metadata refs needed — we only
+        // care about resolving calls between application source symbols.
+        var compilation = CSharpCompilation.Create(
+            "NebulaKgSymbols",
+            syntaxTrees: trees.Select(t => t.Tree),
+            references: null,
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+        var items = new List<SymbolItem>(capacity: trees.Count * 8);
+
+        foreach (var (rel, tree) in trees)
+        {
+            var root = (CompilationUnitSyntax)tree.GetRoot();
+            var model = compilation.GetSemanticModel(tree);
 
             foreach (var member in EnumerateTopLevelMembers(root))
             {
-                EmitMember(rel, container: null, member, items);
+                EmitMember(rel, container: null, member, items, model);
             }
         }
 
@@ -110,12 +142,13 @@ public static class Program
     }
 
     private static void EmitMember(
-        string rel, string? container, MemberDeclarationSyntax member, List<SymbolItem> items)
+        string rel, string? container, MemberDeclarationSyntax member,
+        List<SymbolItem> items, SemanticModel model)
     {
         switch (member)
         {
             case TypeDeclarationSyntax type:
-                EmitType(rel, container, type, items);
+                EmitType(rel, container, type, items, model);
                 break;
             case EnumDeclarationSyntax e:
                 items.Add(new SymbolItem(
@@ -126,7 +159,8 @@ public static class Program
                     Line: LineOf(e),
                     Signature: Signature(e),
                     Visibility: VisibilityOf(e.Modifiers),
-                    Calls: Array.Empty<string>()));
+                    Calls: Array.Empty<CallRef>(),
+                    Implements: Array.Empty<CallRef>()));
                 break;
             case DelegateDeclarationSyntax d:
                 items.Add(new SymbolItem(
@@ -137,13 +171,15 @@ public static class Program
                     Line: LineOf(d),
                     Signature: Signature(d),
                     Visibility: VisibilityOf(d.Modifiers),
-                    Calls: Array.Empty<string>()));
+                    Calls: Array.Empty<CallRef>(),
+                    Implements: Array.Empty<CallRef>()));
                 break;
         }
     }
 
     private static void EmitType(
-        string rel, string? container, TypeDeclarationSyntax type, List<SymbolItem> items)
+        string rel, string? container, TypeDeclarationSyntax type,
+        List<SymbolItem> items, SemanticModel model)
     {
         var name = type.Identifier.ValueText;
         var kind = type switch
@@ -162,14 +198,15 @@ public static class Program
             Line: LineOf(type),
             Signature: Signature(type),
             Visibility: VisibilityOf(type.Modifiers),
-            Calls: Array.Empty<string>()));
+            Calls: Array.Empty<CallRef>(),
+            Implements: Array.Empty<CallRef>()));
 
         foreach (var member in type.Members)
         {
             switch (member)
             {
                 case TypeDeclarationSyntax nested:
-                    EmitType(rel, name, nested, items);
+                    EmitType(rel, name, nested, items, model);
                     break;
                 case EnumDeclarationSyntax e:
                     items.Add(new SymbolItem(
@@ -180,7 +217,8 @@ public static class Program
                         Line: LineOf(e),
                         Signature: Signature(e),
                         Visibility: VisibilityOf(e.Modifiers),
-                        Calls: Array.Empty<string>()));
+                        Calls: Array.Empty<CallRef>(),
+                        Implements: Array.Empty<CallRef>()));
                     break;
                 case MethodDeclarationSyntax m:
                     items.Add(new SymbolItem(
@@ -191,7 +229,8 @@ public static class Program
                         Line: LineOf(m),
                         Signature: Signature(m),
                         Visibility: VisibilityOf(m.Modifiers),
-                        Calls: Calls(m)));
+                        Calls: ResolvedCalls(m, model),
+                        Implements: ImplementsOf(m, model)));
                     break;
                 case PropertyDeclarationSyntax p:
                     items.Add(new SymbolItem(
@@ -202,7 +241,8 @@ public static class Program
                         Line: LineOf(p),
                         Signature: Signature(p),
                         Visibility: VisibilityOf(p.Modifiers),
-                        Calls: Calls(p)));
+                        Calls: ResolvedCalls(p, model),
+                        Implements: Array.Empty<CallRef>()));
                     break;
                 case ConstructorDeclarationSyntax ctor:
                     // Emit constructor with synthetic name ".ctor" so its symbol
@@ -215,7 +255,8 @@ public static class Program
                         Line: LineOf(ctor),
                         Signature: Signature(ctor),
                         Visibility: VisibilityOf(ctor.Modifiers),
-                        Calls: Calls(ctor)));
+                        Calls: ResolvedCalls(ctor, model),
+                        Implements: Array.Empty<CallRef>()));
                     break;
             }
         }
@@ -271,27 +312,96 @@ public static class Program
         return text.Substring(0, cut).Trim();
     }
 
-    private static string[] Calls(SyntaxNode node)
+    private static CallRef[] ResolvedCalls(SyntaxNode body, SemanticModel model)
     {
-        var result = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var inv in node.DescendantNodes().OfType<InvocationExpressionSyntax>())
+        // De-duplicate on (name, container) so we don't emit the same edge twice
+        // when the same method is invoked from multiple call sites in the body.
+        var seen = new HashSet<(string Name, string? Container)>();
+        var result = new List<CallRef>();
+
+        foreach (var inv in body.DescendantNodes().OfType<InvocationExpressionSyntax>())
         {
-            switch (inv.Expression)
+            var info = model.GetSymbolInfo(inv);
+            var symbol = info.Symbol as IMethodSymbol
+                ?? info.CandidateSymbols.OfType<IMethodSymbol>().FirstOrDefault();
+
+            string name;
+            string? container;
+            if (symbol is not null)
             {
-                case IdentifierNameSyntax id:
-                    result.Add(id.Identifier.ValueText);
-                    break;
-                case MemberAccessExpressionSyntax ma:
-                    result.Add(ma.Name.Identifier.ValueText);
-                    break;
-                case GenericNameSyntax gn:
-                    result.Add(gn.Identifier.ValueText);
-                    break;
-                case MemberBindingExpressionSyntax mb:
-                    result.Add(mb.Name.Identifier.ValueText);
-                    break;
+                // Reduced symbol drops extension-method receiver substitution so
+                // we report the actual method name a reader would grep for.
+                var reduced = symbol.ReducedFrom ?? symbol;
+                name = reduced.Name;
+                container = reduced.ContainingType?.Name;
+            }
+            else
+            {
+                name = ExtractCallName(inv) ?? "";
+                container = null;
+                if (string.IsNullOrEmpty(name)) continue;
+            }
+
+            if (seen.Add((name, container)))
+            {
+                result.Add(new CallRef(name, container));
             }
         }
+
         return result.ToArray();
+    }
+
+    private static string? ExtractCallName(InvocationExpressionSyntax inv) => inv.Expression switch
+    {
+        IdentifierNameSyntax id => id.Identifier.ValueText,
+        MemberAccessExpressionSyntax ma => ma.Name.Identifier.ValueText,
+        GenericNameSyntax gn => gn.Identifier.ValueText,
+        MemberBindingExpressionSyntax mb => mb.Name.Identifier.ValueText,
+        _ => null,
+    };
+
+    private static CallRef[] ImplementsOf(MethodDeclarationSyntax method, SemanticModel model)
+    {
+        if (model.GetDeclaredSymbol(method) is not IMethodSymbol symbol)
+            return Array.Empty<CallRef>();
+
+        var refs = new List<CallRef>();
+
+        // Explicit interface implementations (e.g., void IFoo.Bar() { ... }).
+        foreach (var explicitImpl in symbol.ExplicitInterfaceImplementations)
+        {
+            if (explicitImpl.ContainingType is { } t)
+                refs.Add(new CallRef(explicitImpl.Name, t.Name));
+        }
+
+        // Implicit interface implementations. For each interface the containing
+        // type implements, check whether this method is the implementing member.
+        var containingType = symbol.ContainingType;
+        if (containingType is not null)
+        {
+            foreach (var iface in containingType.AllInterfaces)
+            {
+                foreach (var ifaceMember in iface.GetMembers().OfType<IMethodSymbol>())
+                {
+                    if (ifaceMember.Name != symbol.Name) continue;
+                    var impl = containingType.FindImplementationForInterfaceMember(ifaceMember);
+                    if (SymbolEqualityComparer.Default.Equals(impl, symbol))
+                    {
+                        refs.Add(new CallRef(ifaceMember.Name, iface.Name));
+                    }
+                }
+            }
+        }
+
+        // Overridden virtual/abstract base method — same dispatch concern.
+        if (symbol.OverriddenMethod is { ContainingType: { } baseType } overridden)
+        {
+            refs.Add(new CallRef(overridden.Name, baseType.Name));
+        }
+
+        return refs
+            .GroupBy(r => (r.Name, r.Container))
+            .Select(g => g.First())
+            .ToArray();
     }
 }
