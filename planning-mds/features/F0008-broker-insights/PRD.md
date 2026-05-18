@@ -37,29 +37,36 @@ applies_to: product-manager
 - Quote, bind, retention, and production metrics
 - Pipeline and activity summaries by broker
 - Time-window comparisons and benchmark views
+- Broker insight report pack and read models that consume F0023 reporting/search substrate and F0017 hierarchy/producer dimensions
 
 **Out of Scope:**
 - Full predictive analytics
 - Commission accounting
 - Carrier appetite modeling
+- Replacement of F0023's general reporting substrate or F0017's hierarchy/ownership model
 
 ## Success Criteria
 
 - Managers can review broker performance without manual spreadsheet assembly.
 - Insight views support quarterly reviews and relationship prioritization.
 - Metrics are consistent with operational source data.
+- Broker insights can segment and roll up by hierarchy, producer ownership, and territory once F0017 is available.
 
 ## Risks & Assumptions
 
 - **Risk:** Insights are built before underlying workflow data is trustworthy.
-- **Assumption:** Submission, renewal, and policy data will exist before this feature is finalized.
+- **Assumption:** Submission, renewal, policy, hierarchy, producer ownership, and reporting substrate data will exist before this feature is finalized.
 - **Mitigation:** Keep F0008 sequenced after operational workflow foundations.
 
 ## Dependencies
 
 - F0006 Submission Intake Workflow
 - F0007 Renewal Pipeline
+- F0017 Broker/MGA Hierarchy, Producer Ownership & Territory Management
+- F0019 Submission Quoting, Proposal & Approval Workflow
 - F0023 Global Search, Saved Views & Operational Reporting
+
+F0008 should remain a separate broker insight/report-pack feature, but it should land after F0023 provides the reporting substrate and F0017 provides hierarchy, producer ownership, and territory dimensions. F0019 quote/bind outcomes are needed for reliable quote-to-bind metrics.
 
 ## Architecture & Solution Design
 
@@ -68,6 +75,7 @@ applies_to: product-manager
 - Introduce broker insight read models rather than new core transactional aggregates, because this feature is primarily analytical and cross-cutting.
 - Add scorecard, trend, and benchmark composition services that assemble broker performance signals from submissions, renewals, policies, and activity history.
 - Separate metric computation from dashboard rendering so the insight logic can later support reporting exports and territory rollups.
+- Reuse F0023 search/reporting and F0017 hierarchy dimensions rather than creating a parallel analytics foundation.
 - Treat benchmark logic as configurable business rules, not hard-coded UI formulas.
 
 ### Data & Workflow Design
@@ -104,3 +112,4 @@ applies_to: product-manager
 ## Related User Stories
 
 - To be defined during refinement
+- Refinement should confirm F0023 and F0017 are complete enough for broker scorecards before F0008 enters implementation.

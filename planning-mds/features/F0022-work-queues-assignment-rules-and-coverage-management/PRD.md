@@ -37,17 +37,25 @@ applies_to: product-manager
 - Assignment and routing rules
 - Reassignment and workload balancing
 - Backup coverage and out-of-office continuity
+- Minimal manager/admin controls required to create, edit, and operate queues, rules, memberships, coverage, and rebalancing
 
 **Out of Scope:**
+- Centralized configuration governance, publish/rollback flows, and cross-module admin console consolidation owned by F0032
 - Full workforce management
 - Predictive staffing
 - Advanced AI routing
+
+**Boundary Guardrail with F0032:**
+- F0022 owns the durable queue/routing foundation: queue records, assignment rules, memberships, coverage rules, rule evaluation, queue worklists, reassignment, and minimal manager controls.
+- F0032 later centralizes governed configuration over queue/rule settings and other operational domains; it must not be a prerequisite for queues to function.
+- F0022 should avoid throwaway seed-only configuration or UI patterns that would force F0032 to rebuild the queue/rule model.
 
 ## Success Criteria
 
 - Managers can see and control how work is routed and covered.
 - Queue aging and backlog become operationally visible.
 - Teams can maintain continuity during absence or overload.
+- The queue/routing feature is usable with its local controls before F0032 centralizes configuration governance.
 
 ## Risks & Assumptions
 
@@ -68,6 +76,7 @@ applies_to: product-manager
 - Introduce a queue management module with explicit queue definitions, assignment-rule evaluation, rebalance actions, and coverage configuration services.
 - Add a routing engine that determines queue placement and assignee outcomes from deterministic business rules instead of implicit manager judgment alone.
 - Provide workload and backlog projections that surface queue aging, pending work, rebalance pressure, and coverage exceptions.
+- Ship durable queue/rule objects and service boundaries that F0032 can later govern without replacing the foundation.
 - Keep advanced AI routing out of the first architecture so the operating model remains transparent and debuggable.
 
 ### Data & Workflow Design
@@ -82,7 +91,7 @@ applies_to: product-manager
 - Expose queue administration, queue worklist, reassignment, rebalance, and coverage-management endpoints with consistent resource semantics.
 - Consume events or state changes from submissions, renewals, and tasks to trigger routing decisions rather than hard-coding module-specific entry points everywhere.
 - Keep routing execution behind an application-service boundary so the same rules can be invoked synchronously for user actions or asynchronously for background rebalancing.
-- Allow F0032 to become the administrative control surface for queue rules later without requiring this feature to redesign its execution model.
+- Allow F0032 to become the governed administrative control surface for queue rules later without requiring this feature to redesign its execution model or data contracts.
 
 ### Security & Operational Considerations
 
@@ -104,3 +113,4 @@ applies_to: product-manager
 ## Related User Stories
 
 - To be defined during refinement
+- Early stories must include minimal manager/admin controls for queue setup and operation so F0022 is usable before F0032.

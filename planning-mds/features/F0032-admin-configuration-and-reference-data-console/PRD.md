@@ -37,17 +37,25 @@ applies_to: product-manager
 - Queue and rule configuration
 - Template and workflow settings
 - Operational configuration governance
+- Centralized governance over module-owned configuration domains after those modules establish usable foundations
 
 **Out of Scope:**
+- First implementation of queue/routing domain objects, rule evaluation, queue worklists, reassignment, or minimal queue manager controls owned by F0022
 - Unbounded low-level system administration
 - Identity-provider administration
 - Full infrastructure management
+
+**Boundary Guardrail with F0022:**
+- F0022 must land first with durable queue/rule records, routing behavior, and minimal manager controls.
+- F0032 incorporates that foundation into a governed admin console with validation, publish, rollback, audit, and cross-module configuration patterns.
+- F0032 should not require F0022 to refactor its core queue/routing model; it should govern the existing contracts.
 
 ## Success Criteria
 
 - Administrators can manage key configurable data through Nebula.
 - Engineering dependency for routine operational changes is reduced.
 - Configuration changes remain governed and auditable.
+- F0022 queue/rule configuration can be brought under governance without replacing the already-usable queue/routing foundation.
 
 ## Risks & Assumptions
 
@@ -60,6 +68,8 @@ applies_to: product-manager
 - F0022 Work Queues, Assignment Rules & Coverage Management
 - F0023 Global Search, Saved Views & Operational Reporting
 
+F0032 depends on F0022 for the queue/routing foundation. F0032 centralizes governance over that foundation; it is not required for the initial F0022 queue capability to function.
+
 ## Architecture & Solution Design
 
 ### Solution Components
@@ -67,6 +77,7 @@ applies_to: product-manager
 - Introduce an admin configuration layer for reference data, queue rules, workflow settings, templates, and other governed operational configuration.
 - Add configuration-management services that distinguish runtime-governed business settings from deploy-time infrastructure settings.
 - Provide validation and publish flows so configuration changes can be checked before they affect live routing, search, or template behavior.
+- Wrap existing module-owned configuration contracts, especially F0022 queue/rule contracts, rather than redefining each module's operational model.
 - Keep identity-provider administration and deep infrastructure controls outside the scope of the product admin console.
 
 ### Data & Workflow Design
@@ -103,3 +114,4 @@ applies_to: product-manager
 ## Related User Stories
 
 - To be defined during refinement
+- Refinement should include stories for governing F0022 queue/rule configuration after F0022 exists, not for creating the first queue/routing implementation.

@@ -36,6 +36,7 @@ applies_to: product-manager
 - Submission progression from triage to quote and bind decision
 - Approval checkpoints and approval visibility
 - Proposal or quote package status handling
+- Submission-bound quote/proposal packet record, status, and workflow evidence needed for approval and bind decisions
 - Final decision states and auditable workflow transitions
 - Submission archive/deactivate behavior for downstream-decided records that should leave active operational queues while preserving audit history
 
@@ -43,6 +44,7 @@ applies_to: product-manager
 - Carrier system rating integration
 - Billing and issuance accounting
 - External broker self-service quoting
+- Reusable outbound template engine, COI generation, and generic ACORD document generation outside the submission-bound quote/proposal packet
 - Physical purge or audit-destructive deletion of submission records
 
 **Boundary Guardrail with F0006:**
@@ -51,6 +53,11 @@ applies_to: product-manager
 - No F0006 closeout, tracker update, or UX polish should be interpreted as permission to expose downstream transitions early.
 - The first refined F0019 implementation story must explicitly cover enabling downstream transitions, related authorization changes, UI exposure, and regression coverage proving the boundary moved deliberately rather than by drift.
 - If F0006 descopes the unimplemented submission soft-delete requirement, F0019 becomes the owning feature for the replacement contract. That replacement must be refined as archive/deactivate behavior for appropriate downstream submission states, not as an unrestricted CRUD delete route.
+
+**Boundary Guardrail with F0027:**
+- F0019 owns the submission-bound quote/proposal packet as workflow evidence: packet status, approval readiness, document completeness, and bind handoff.
+- F0027 owns reusable outbound document generation: COI, generic ACORD output, reusable proposal templates, merge-field governance, rendering, and broader generated-document audit.
+- F0019 must not wait for the full F0027 template engine to move submissions through quote and bind, but its packet artifacts should remain compatible with later F0027 rendering and storage patterns.
 
 ## Success Criteria
 
@@ -76,6 +83,7 @@ applies_to: product-manager
 
 F0019 depends on F0006 preserving the intake boundary until F0019 work is ready. As of F0006 closeout, downstream submission transitions should still return `409 invalid_transition`, and F0019 must deliberately replace that behavior when it ships.
 If F0006 removes the unimplemented submission soft-delete claim during closeout, F0019 must also become the explicit owner of any future submission archive/deactivate contract.
+F0027 is a future capability enhancer for reusable outbound generation, not a prerequisite for F0019's submission-bound quote/proposal packet workflow.
 
 ## Architecture & Solution Design
 
@@ -84,6 +92,7 @@ If F0006 removes the unimplemented submission soft-delete claim during closeout,
 - Extend the submission domain with dedicated quoting, proposal, approval, and decision-handling services rather than treating everything as generic status changes.
 - Add an approval component that supports underwriting checkpoints, decision ownership, and future maker-checker or authority-limit logic.
 - Introduce proposal or quote-package composition services that assemble documents, pricing context, and approval status into a coherent outbound working set.
+- Keep the quote/proposal packet model intentionally submission-scoped so it can later delegate reusable rendering and template management to F0027 without a workflow rewrite.
 - Keep final policy issuance and billing creation as downstream handoff points rather than embedding them directly into this workflow module.
 
 ### Data & Workflow Design
@@ -127,3 +136,4 @@ If F0006 removes the unimplemented submission soft-delete claim during closeout,
 - To be defined during refinement.
 - The first story must explicitly own activation of downstream transitions from `ReadyForUWReview`, with traceability back to F0006's boundary contract.
 - One early story must explicitly define submission archive/deactivate semantics, including allowed states, API behavior, list visibility, and audit retention, with traceability back to F0006's descoped soft-delete claim.
+- One early story must define the submission-bound quote/proposal packet lifecycle and explicitly state what remains deferred to F0027 reusable outbound document generation.

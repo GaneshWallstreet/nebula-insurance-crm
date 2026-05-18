@@ -37,8 +37,10 @@ applies_to: product-manager
 - ACORD and proposal template output
 - Structured data merge into outbound artifacts
 - Auditability of generated documents
+- Reusable template, merge-field, rendering, and generated-artifact patterns that can serve policies, accounts, submissions, and other source records
 
 **Out of Scope:**
+- Submission quote/proposal workflow state, approval readiness, packet status, and bind-decision evidence owned by F0019
 - Full submission intake parsing
 - OCR and extraction
 - E-signature orchestration
@@ -59,6 +61,9 @@ applies_to: product-manager
 
 - F0018 Policy Lifecycle & Policy 360
 - F0020 Document Management & ACORD Intake
+- F0019 Submission Quoting, Proposal & Approval Workflow for submission-bound quote/proposal packet context when reusable proposal rendering is applied to submissions
+
+F0027 should extend the submission-bound artifacts created by F0019 when reusable proposal rendering is needed; it should not become a prerequisite for F0019's quote-to-bind workflow.
 
 ## Architecture & Solution Design
 
@@ -67,6 +72,7 @@ applies_to: product-manager
 - Introduce a document-generation service that combines templates, CRM data assembly, and render orchestration into a dedicated outbound artifact pipeline.
 - Add a template-management model for COI, ACORD, proposal, and other outbound form definitions, while keeping inbound parsing outside this feature.
 - Provide generated-document audit and storage linkage so outbound artifacts become first-class records connected to policies, accounts, or submissions.
+- Treat F0019 quote/proposal packets as one possible source context for rendering, not as workflow state owned by this feature.
 - Keep e-signature, complex workflow routing, and external delivery orchestration outside the initial scope boundary.
 
 ### Data & Workflow Design
@@ -103,3 +109,4 @@ applies_to: product-manager
 ## Related User Stories
 
 - To be defined during refinement
+- Refinement should keep COI, generic ACORD, reusable proposal templates, and rendering concerns in F0027 while leaving submission packet status and approval workflow in F0019.

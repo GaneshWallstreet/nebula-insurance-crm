@@ -1,6 +1,6 @@
 # Feature Roadmap (Now / Next / Later)
 
-**Last Reviewed:** 2026-05-07
+**Last Reviewed:** 2026-05-17
 
 This document is the working prioritization view for feature sequencing.
 
@@ -20,34 +20,36 @@ This document is the working prioritization view for feature sequencing.
 
 | Feature | Phase | Why Now |
 |---------|-------|---------|
-| _None currently sequenced_ | - | F0034 moved to Completed on 2026-05-07 after implementation closeout. |
+| [F0035 — Session Continuity & Token Refresh](./F0035-session-continuity-and-token-refresh/README.md) | Release Enablement / Platform Operations | Current OIDC token-expiry behavior can interrupt active users and should be planned before more high-API-count CRM workflows are added. |
+| [F0019 — Submission Quoting, Proposal & Approval Workflow](./F0019-submission-quoting-proposal-and-approval/README.md) | CRM Release MVP | Completes the core submission journey now that intake, policy, document, and product-schema foundations are archived and available; owns submission-bound quote/proposal packet workflow, not the broader outbound template engine. |
 
-**Implementation Readiness Note:** F0034 completed on 2026-05-07 and now unblocks F0019/F0022 product-specific quote, coverage, and reporting work without adding fixed product fields.
+**Implementation Readiness Note:** F0034 completed on 2026-05-07 and now unblocks F0019/F0022 product-specific quote, coverage, and reporting work without adding fixed product fields. F0035 is sequenced first as a reliability and trust fix for the authenticated application shell, with F0019 now pulled into `Now` because it is the missing core workflow between completed intake, policy, document, and product-schema capabilities.
+
+**Boundary Notes:** F0019 owns the submission-bound quote/proposal packet needed to move a submission through approval and bind. F0027 later owns reusable COI, ACORD, proposal-template, and outbound document generation capability.
 
 ## Next
 
 | Feature | Phase | Why Next |
 |---------|-------|----------|
-| [F0019 — Submission Quoting, Proposal & Approval Workflow](./F0019-submission-quoting-proposal-and-approval/README.md) | CRM Release MVP | Completes intake-to-quote-to-bind operations after F0020 provides document foundations and F0034 provides the product-attribute foundation needed for quote/proposal data. |
+| [F0031 — Data Import, Deduplication & Go-Live Migration](./F0031-data-import-deduplication-and-go-live-migration/README.md) | Release Enablement | Required for production rollout and should start early enough to validate migration paths against the completed broker/account foundations while later workflow modules continue maturing. |
 | [F0021 — Communication Hub & Activity Capture](./F0021-communication-hub-and-activity-capture/README.md) | CRM Release MVP | Creates the communication system of record for broker interactions, underwriting follow-up, and audit history. |
-| [F0022 — Work Queues, Assignment Rules & Coverage Management](./F0022-work-queues-assignment-rules-and-coverage-management/README.md) | CRM Release MVP | Adds operational routing, backup coverage, and workload balancing beyond personal task lists. |
+| [F0022 — Work Queues, Assignment Rules & Coverage Management](./F0022-work-queues-assignment-rules-and-coverage-management/README.md) | CRM Release MVP | Adds operational routing, backup coverage, and workload balancing beyond personal task lists; must ship durable queue/rule records plus minimal manager controls without waiting for F0032. |
 | [F0023 — Global Search, Saved Views & Operational Reporting](./F0023-global-search-saved-views-and-operational-reporting/README.md) | CRM Release MVP | Provides cross-object findability, operational visibility, and daily management reporting required for adoption. |
-| [F0031 — Data Import, Deduplication & Go-Live Migration](./F0031-data-import-deduplication-and-go-live-migration/README.md) | Release Enablement | Required for production rollout even though it is not the most visible product module. |
+| [F0027 — COI, ACORD & Outbound Document Generation](./F0027-coi-acord-and-outbound-document-generation/README.md) | CRM Release MVP+ | Policy and document foundations are already complete, making outbound insurance document generation a natural near-term parity layer after the core quote workflow is underway. |
+| [F0032 — Admin Configuration & Reference Data Console](./F0032-admin-configuration-and-reference-data-console/README.md) | Platform Operations | Lands after F0022/F0023 to centralize governance, validation, publish, rollback, and audit over module-owned configuration rather than becoming a prerequisite for queues. |
 
 ## Later
 
 | Feature | Phase | Why Later |
 |---------|-------|-----------|
-| [F0008 — Broker Insights](./F0008-broker-insights/README.md) | CRM Release MVP+ | Higher-value after submissions, policies, renewals, and operational reporting are live and trustworthy. |
-| [F0017 — Broker/MGA Hierarchy, Producer Ownership & Territory Management](./F0017-broker-mga-hierarchy-and-producer-ownership/README.md) | CRM Release MVP+ | Important for more advanced distribution models, producer governance, and territorial accountability. |
+| [F0017 — Broker/MGA Hierarchy, Producer Ownership & Territory Management](./F0017-broker-mga-hierarchy-and-producer-ownership/README.md) | CRM Release MVP+ | Important for more advanced distribution models, producer governance, territorial accountability, and later broker insight rollups. |
+| [F0008 — Broker Insights](./F0008-broker-insights/README.md) | CRM Release MVP+ | Higher-value after F0023 reporting substrate and F0017 hierarchy/producer dimensions are live; uses F0019 quote/bind outcomes for production metrics. |
+| [F0028 — Carrier & Market Relationship Management](./F0028-carrier-and-market-relationship-management/README.md) | CRM Release MVP+ | Supports appetite, appointments, market access, and carrier relationship strategy before carrier-aware economics and production analysis deepen. |
 | [F0024 — Claims & Service Case Tracking](./F0024-claims-and-service-case-tracking/README.md) | CRM Release MVP+ | Extends Nebula into post-bind servicing and improves account and policy context. |
 | [F0025 — Commission, Producer Splits & Revenue Tracking](./F0025-commission-producer-splits-and-revenue-tracking/README.md) | Brokerage Platform Expansion | Moves Nebula from CRM into brokerage economics and compensation operations. |
 | [F0026 — Billing, Invoicing & Reconciliation](./F0026-billing-invoicing-and-reconciliation/README.md) | Brokerage Platform Expansion | Pushes the product deeper into agency management and finance operations. |
-| [F0027 — COI, ACORD & Outbound Document Generation](./F0027-coi-acord-and-outbound-document-generation/README.md) | CRM Release MVP+ | Strong insurance-specific parity feature once policy and document foundations exist. |
-| [F0028 — Carrier & Market Relationship Management](./F0028-carrier-and-market-relationship-management/README.md) | CRM Release MVP+ | Supports appetite, appointments, market access, and carrier relationship strategy. |
-| [F0029 — External Broker Collaboration Portal](./F0029-external-broker-collaboration-portal/README.md) | Brokerage Platform Expansion | External collaboration remains intentionally post-MVP until internal workflows are mature. |
 | [F0030 — Integration Hub & Data Exchange](./F0030-integration-hub-and-data-exchange/README.md) | Brokerage Platform Expansion | Needed for scalable connectivity across email, carriers, accounting, and document systems. |
-| [F0032 — Admin Configuration & Reference Data Console](./F0032-admin-configuration-and-reference-data-console/README.md) | Platform Operations | Needed once queues, templates, rules, and reference data become more configurable. |
+| [F0029 — External Broker Collaboration Portal](./F0029-external-broker-collaboration-portal/README.md) | Brokerage Platform Expansion | External collaboration remains intentionally post-MVP until internal workflows, integration boundaries, and broker-safe visibility controls are mature. |
 
 ## Abandoned
 
@@ -81,6 +83,9 @@ This document is the working prioritization view for feature sequencing.
 ## Notes
 
 - This roadmap is the authoritative Now/Next/Later view.
+- Boundary guardrails: F0019 owns submission-bound quote/proposal workflow while F0027 owns reusable outbound generation; F0022 owns usable queue/routing foundations while F0032 later governs shared configuration; F0008 remains separate but must land after F0023 and F0017.
+- Reviewed 2026-05-17 after roadmap sequencing review against completed feature foundations; F0019 moved into `Now`, F0031 moved earlier in `Next`, F0027/F0032 moved into `Next`, and `Later` reordered around dependency readiness.
+- Reviewed 2026-05-17 after auth/session review identified disruptive active-session expiry behavior; F0035 added as a Now item.
 - Reviewed 2026-05-07 against `REGISTRY.md`, current planned feature PRDs, archived feature dependencies, and F0034 closeout evidence. F0034 is completed and F0019 remains the next CRM Release MVP feature.
 - The proposed Commercial P&C CRM release MVP spans the `Now` and `Next` buckets together; `Later` captures MVP+ and platform-expansion scope.
 - `REGISTRY.md` remains the authoritative feature inventory and ID tracker.

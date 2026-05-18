@@ -1,6 +1,6 @@
 # Feature Registry
 
-**Next Available Feature Number:** F0035
+**Next Available Feature Number:** F0036
 
 **Planning Views:**
 - Roadmap sequencing (`Now / Next / Later`): `planning-mds/features/ROADMAP.md`
@@ -38,6 +38,7 @@
 | F0030 | Integration Hub & Data Exchange | Planned | Brokerage Platform Expansion | `F0030-integration-hub-and-data-exchange/` |
 | F0031 | Data Import, Deduplication & Go-Live Migration | Planned | Release Enablement | `F0031-data-import-deduplication-and-go-live-migration/` |
 | F0032 | Admin Configuration & Reference Data Console | Planned | Platform Operations | `F0032-admin-configuration-and-reference-data-console/` |
+| F0035 | Session Continuity & Token Refresh | Planned | Release Enablement / Platform Operations | `F0035-session-continuity-and-token-refresh/` |
 
 ## Archived Features
 
