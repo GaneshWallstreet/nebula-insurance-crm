@@ -395,6 +395,7 @@ def _summarize_symbol_brief(symbol: dict[str, Any]) -> dict[str, Any]:
     """Compact symbol view for sibling/edge lists in lookup output."""
     return {
         "id": symbol["id"],
+        "node": symbol.get("node"),
         "name": symbol.get("name"),
         "kind": symbol.get("kind"),
         "container": symbol.get("container"),
@@ -459,6 +460,120 @@ def lookup_by_symbol(
     return payload
 
 
+def lookup_callers_only(symbol_id: str, bundle: dict[str, Any]) -> dict[str, Any] | None:
+    """Narrow projection: return just the callers id list for symbol_id.
+
+    Cheaper than --symbol (no neighborhood, no siblings, no decisions). Use
+    when the agent only needs the caller set for impact analysis. Returns
+    None when the id is unresolvable so the caller can exit non-zero with a
+    clear stderr message — empty payloads are reserved for symbols that
+    legitimately have zero callers.
+    """
+    symbol = get_symbol_by_id(symbol_id, bundle)
+    if symbol is None:
+        return None
+    return {
+        "query": {"kind": "callers-only", "symbol_id": symbol_id},
+        "node": symbol.get("node"),
+        "callers": list(symbol.get("callers", []) or []),
+        "source_precedence": bundle["ontology"]["authority"]["precedence"],
+    }
+
+
+def lookup_callees_only(symbol_id: str, bundle: dict[str, Any]) -> dict[str, Any] | None:
+    """Narrow projection: return just the callees id list for symbol_id."""
+    symbol = get_symbol_by_id(symbol_id, bundle)
+    if symbol is None:
+        return None
+    return {
+        "query": {"kind": "callees-only", "symbol_id": symbol_id},
+        "node": symbol.get("node"),
+        "callees": list(symbol.get("callees", []) or []),
+        "source_precedence": bundle["ontology"]["authority"]["precedence"],
+    }
+
+
+def lookup_defines(
+    name: str, bundle: dict[str, Any], *, node_id: str | None = None
+) -> dict[str, Any]:
+    """Bare-name definition lookup across the whole symbol index.
+
+    Useful when an agent has a name but no node id — e.g., during design to
+    surface existing coverage of a proposed canonical-node name. Empty
+    result list is valid (e.g., the name is genuinely new); not an error.
+    """
+    matches = match_symbol_by_name(name, bundle, node_id=node_id)
+    return {
+        "query": {"kind": "defines", "name": name, "node": node_id},
+        "matched_count": len(matches),
+        "matches": [_summarize_symbol_brief(s) for s in matches],
+        "source_precedence": bundle["ontology"]["authority"]["precedence"],
+    }
+
+
+def emit_narrow_lookup_telemetry(
+    telemetry_file: Path | None,
+    run_id: str | None,
+    payload: dict[str, Any] | None,
+    *,
+    query_kind: str,
+    query_value: str,
+    unresolved: bool = False,
+) -> None:
+    """Telemetry for the narrow-projection modes (--callers-only,
+    --callees-only, --defines).
+
+    Distinct from emit_lookup_telemetry because the narrow payload shape
+    has no `matches` / `matched_node_ids` keys. Confidence is `low` for
+    unresolved symbol ids or empty result lists; `high` otherwise.
+    """
+    if payload is None:
+        event: dict[str, Any] = {
+            "query_kind": query_kind,
+            "query_value": query_value,
+            "nodes_returned": [],
+            "nodes_count": 0,
+            "symbols_returned": [],
+            "symbols_count": 0,
+            "ambiguous_count": 0,
+            "empty_scope": True,
+            "hint_emitted": False,
+            "confidence_band": "low",
+            "tokens_estimated": 0,
+            "unresolved": True,
+        }
+        emit_telemetry(telemetry_file, run_id, "lookup", event)
+        return
+
+    if query_kind == "defines":
+        matches = payload.get("matches", []) or []
+        symbol_ids = [m.get("id") for m in matches if m.get("id")]
+        nodes_returned = sorted({m.get("node") for m in matches if m.get("node")})
+    else:
+        # callers-only / callees-only
+        ids = payload.get("callers") or payload.get("callees") or []
+        symbol_ids = list(ids)
+        node = payload.get("node")
+        nodes_returned = [node] if node else []
+
+    empty_scope = not symbol_ids
+    event = {
+        "query_kind": query_kind,
+        "query_value": query_value,
+        "nodes_returned": nodes_returned,
+        "nodes_count": len(nodes_returned),
+        "symbols_returned": symbol_ids,
+        "symbols_count": len(symbol_ids),
+        "ambiguous_count": 0,
+        "empty_scope": empty_scope,
+        "hint_emitted": False,
+        "confidence_band": "low" if empty_scope else "high",
+        "tokens_estimated": estimate_tokens(payload),
+        "unresolved": unresolved,
+    }
+    emit_telemetry(telemetry_file, run_id, "lookup", event)
+
+
 def lookup_by_file(path: str, bundle: dict[str, Any]) -> dict[str, Any]:
     binding_matches = match_bindings_for_path(path, bundle)
     node_ids = [match["id"] for match in binding_matches]
@@ -506,9 +621,33 @@ def main() -> int:
         help="Look up a symbol by source name (e.g. TransitionAsync). Uses symbol-index.yaml.",
     )
     parser.add_argument(
+        "--callers-only",
+        dest="callers_only_id",
+        help=(
+            "Narrow projection: return only the callers id list for a known "
+            "symbol id. Cheaper context than --symbol."
+        ),
+    )
+    parser.add_argument(
+        "--callees-only",
+        dest="callees_only_id",
+        help="Narrow projection: return only the callees id list for a known symbol id.",
+    )
+    parser.add_argument(
+        "--defines",
+        dest="defines_name",
+        help=(
+            "Return brief definitions for every symbol matching a bare name. "
+            "Optionally scope with --node."
+        ),
+    )
+    parser.add_argument(
         "--node",
         dest="symbol_node",
-        help="Scope --symbol lookups to a canonical node id (e.g. entity:submission).",
+        help=(
+            "Scope --symbol or --defines lookups to a canonical node id "
+            "(e.g. entity:submission)."
+        ),
     )
     parser.add_argument(
         "--tier",
@@ -537,13 +676,74 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    modes = sum(bool(x) for x in (args.target, args.file_path, args.symbol_name))
+    mode_values = (
+        args.target,
+        args.file_path,
+        args.symbol_name,
+        args.callers_only_id,
+        args.callees_only_id,
+        args.defines_name,
+    )
+    modes = sum(bool(x) for x in mode_values)
     if modes == 0:
-        parser.error("Provide a target ID, --file, or --symbol.")
+        parser.error(
+            "Provide a target ID, --file, --symbol, --callers-only, "
+            "--callees-only, or --defines."
+        )
     if modes > 1:
-        parser.error("Use only one of: target ID, --file, --symbol.")
+        parser.error(
+            "Use only one of: target ID, --file, --symbol, --callers-only, "
+            "--callees-only, --defines."
+        )
 
     bundle = load_bundle()
+
+    if args.callers_only_id:
+        payload = lookup_callers_only(args.callers_only_id, bundle)
+        if payload is None:
+            sys.stderr.write(f"Symbol not found: {args.callers_only_id}\n")
+            emit_narrow_lookup_telemetry(
+                args.telemetry_file, args.run_id, None,
+                query_kind="callers-only", query_value=args.callers_only_id,
+                unresolved=True,
+            )
+            return 2
+        emit_narrow_lookup_telemetry(
+            args.telemetry_file, args.run_id, payload,
+            query_kind="callers-only", query_value=args.callers_only_id,
+        )
+        json.dump(payload, sys.stdout, indent=2)
+        sys.stdout.write("\n")
+        return 0
+
+    if args.callees_only_id:
+        payload = lookup_callees_only(args.callees_only_id, bundle)
+        if payload is None:
+            sys.stderr.write(f"Symbol not found: {args.callees_only_id}\n")
+            emit_narrow_lookup_telemetry(
+                args.telemetry_file, args.run_id, None,
+                query_kind="callees-only", query_value=args.callees_only_id,
+                unresolved=True,
+            )
+            return 2
+        emit_narrow_lookup_telemetry(
+            args.telemetry_file, args.run_id, payload,
+            query_kind="callees-only", query_value=args.callees_only_id,
+        )
+        json.dump(payload, sys.stdout, indent=2)
+        sys.stdout.write("\n")
+        return 0
+
+    if args.defines_name:
+        payload = lookup_defines(args.defines_name, bundle, node_id=args.symbol_node)
+        emit_narrow_lookup_telemetry(
+            args.telemetry_file, args.run_id, payload,
+            query_kind="defines", query_value=args.defines_name,
+        )
+        json.dump(payload, sys.stdout, indent=2)
+        sys.stdout.write("\n")
+        return 0
+
     if args.symbol_name:
         payload = lookup_by_symbol(
             args.symbol_name, bundle, node_id=args.symbol_node
