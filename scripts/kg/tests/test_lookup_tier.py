@@ -122,6 +122,29 @@ def test_allow_missing_unset_preserves_legacy_error() -> None:
     assert "Unknown target: F9999" in result.stderr
 
 
+def test_untested_lookup_is_node_scoped(bundle: dict[str, object]) -> None:
+    symbols_by_id = bundle["symbols_by_id"]
+    target_node = next(
+        sym["node"]
+        for sym in symbols_by_id.values()
+        if sym.get("kind") in {"method", "function"}
+        and sym.get("visibility") in {None, "public", "internal", "export"}
+        and not sym.get("is_test")
+        and not any(
+            symbols_by_id.get(caller_id, {}).get("is_test")
+            for caller_id in sym.get("callers", []) or []
+        )
+    )
+
+    payload = lookup.lookup_untested(target_node, bundle)
+
+    assert payload is not None
+    assert payload["query"] == {"kind": "untested", "node": target_node}
+    assert payload["untested_count"] == len(payload["untested"])
+    assert payload["untested_count"] >= 1
+    assert {entry["node"] for entry in payload["untested"]} == {target_node}
+
+
 def test_fields_ids_strip_rationale_and_source_docs(bundle: dict[str, object]) -> None:
     payload = _lookup_target(bundle, tier=3, fields="ids")
 

@@ -1,5 +1,5 @@
 version: 0
-generated_at: '2026-05-20T02:33:17+00:00'
+generated_at: '2026-05-21T01:21:36+00:00'
 summary:
   total_invocations: 7
   by_language:
@@ -7,6 +7,10 @@ summary:
     typescript: 2
   source_files: 3
   bound_targets: 3
+  refreshed_languages:
+  - csharp
+  - typescript
+  preserved_languages: []
 invocations:
 - source_file: engine/tests/Nebula.Tests/Unit/AuthEndpoints/LogoutHandlerTests.cs
   source_line: 36

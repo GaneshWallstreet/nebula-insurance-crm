@@ -84,6 +84,10 @@ def _attach_hotspots(node: dict[str, Any]) -> dict[str, Any]:
 
 FEATURE_OR_STORY_ID_RE = re.compile(r"^(?:feature:)?F\d{4}$|^(?:story:)?F\d{4}-S\d{4}$")
 LOW_CONFIDENCE_THRESHOLD = 0.5
+UNTESTED_TARGET_KINDS: frozenset[str] = frozenset({"method", "function"})
+UNTESTED_VISIBILITIES: frozenset[str | None] = frozenset(
+    {None, "public", "internal", "export"}
+)
 
 
 def _include_label(node: dict[str, Any], summary: dict[str, Any]) -> None:
@@ -568,6 +572,54 @@ def lookup_overrides(
     }
 
 
+def lookup_untested(node_id: str, bundle: dict[str, Any]) -> dict[str, Any] | None:
+    """Node-scoped projection of public/internal callable surfaces without tests.
+
+    Mirrors validate.py --check-untested selection rules but keeps output scoped
+    to one canonical node so feature-close agents can triage touched surfaces
+    without reading the entire validation report.
+    """
+    node = resolve_node(node_id, bundle)
+    if node is None:
+        return None
+
+    symbols_by_id = bundle["symbols_by_id"]
+    untested: list[dict[str, Any]] = []
+
+    for symbol in match_symbols_for_node(node_id, bundle):
+        if symbol.get("is_test"):
+            continue
+        if symbol.get("kind") not in UNTESTED_TARGET_KINDS:
+            continue
+        if symbol.get("visibility") not in UNTESTED_VISIBILITIES:
+            continue
+
+        has_test_caller = False
+        for caller_id in symbol.get("callers") or []:
+            caller = symbols_by_id.get(caller_id)
+            if caller and caller.get("is_test"):
+                has_test_caller = True
+                break
+        if has_test_caller:
+            continue
+
+        brief = _summarize_symbol_brief(symbol)
+        brief["callers_count"] = len(symbol.get("callers") or [])
+        untested.append(brief)
+
+    untested.sort(key=lambda s: (s.get("file") or "", s.get("line") or 0, s["id"]))
+    return {
+        "query": {"kind": "untested", "node": node_id},
+        "target": {
+            "id": node["id"],
+            "label": node.get("label"),
+        },
+        "untested_count": len(untested),
+        "untested": untested,
+        "source_precedence": bundle["ontology"]["authority"]["precedence"],
+    }
+
+
 def emit_narrow_lookup_telemetry(
     telemetry_file: Path | None,
     run_id: str | None,
@@ -610,6 +662,11 @@ def emit_narrow_lookup_telemetry(
         matches = payload.get(query_kind, []) or []
         symbol_ids = [m.get("id") for m in matches if m.get("id")]
         nodes_returned = sorted({m.get("node") for m in matches if m.get("node")})
+    elif query_kind == "untested":
+        matches = payload.get("untested", []) or []
+        symbol_ids = [m.get("id") for m in matches if m.get("id")]
+        node = payload.get("query", {}).get("node")
+        nodes_returned = [node] if node else []
     else:
         # callers-only / callees-only
         ids = payload.get("callers") or payload.get("callees") or []
@@ -719,6 +776,14 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--untested",
+        dest="untested_node",
+        help=(
+            "Return public/internal methods and functions on a canonical node "
+            "with no caller from a classified tests bucket."
+        ),
+    )
+    parser.add_argument(
         "--node",
         dest="symbol_node",
         help=(
@@ -762,17 +827,20 @@ def main() -> int:
         args.defines_name,
         args.implementers_id,
         args.overrides_id,
+        args.untested_node,
     )
     modes = sum(bool(x) for x in mode_values)
     if modes == 0:
         parser.error(
             "Provide a target ID, --file, --symbol, --callers-only, "
-            "--callees-only, --defines, --implementers, or --overrides."
+            "--callees-only, --defines, --implementers, --overrides, "
+            "or --untested."
         )
     if modes > 1:
         parser.error(
             "Use only one of: target ID, --file, --symbol, --callers-only, "
-            "--callees-only, --defines, --implementers, --overrides."
+            "--callees-only, --defines, --implementers, --overrides, "
+            "--untested."
         )
 
     bundle = load_bundle()
@@ -854,6 +922,24 @@ def main() -> int:
         emit_narrow_lookup_telemetry(
             args.telemetry_file, args.run_id, payload,
             query_kind="overrides", query_value=args.overrides_id,
+        )
+        json.dump(payload, sys.stdout, indent=2)
+        sys.stdout.write("\n")
+        return 0
+
+    if args.untested_node:
+        payload = lookup_untested(args.untested_node, bundle)
+        if payload is None:
+            sys.stderr.write(f"Canonical node not found: {args.untested_node}\n")
+            emit_narrow_lookup_telemetry(
+                args.telemetry_file, args.run_id, None,
+                query_kind="untested", query_value=args.untested_node,
+                unresolved=True,
+            )
+            return 2
+        emit_narrow_lookup_telemetry(
+            args.telemetry_file, args.run_id, payload,
+            query_kind="untested", query_value=args.untested_node,
         )
         json.dump(payload, sys.stdout, indent=2)
         sys.stdout.write("\n")
