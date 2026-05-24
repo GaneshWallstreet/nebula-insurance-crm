@@ -1,0 +1,8 @@
+planning-mds/features/F0035-session-continuity-and-token-refresh/feature-assembly-plan.md
+planning-mds/operations/evidence/F0035-session-continuity-and-token-refresh/2026-05-24-c92b16b6/README.md
+planning-mds/operations/evidence/F0035-session-continuity-and-token-refresh/2026-05-24-c92b16b6/action-context.md
+planning-mds/operations/evidence/F0035-session-continuity-and-token-refresh/2026-05-24-c92b16b6/artifact-trace.md
+planning-mds/operations/evidence/F0035-session-continuity-and-token-refresh/2026-05-24-c92b16b6/gate-decisions.md
+planning-mds/operations/evidence/F0035-session-continuity-and-token-refresh/2026-05-24-c92b16b6/g0-assembly-plan-validation.md
+planning-mds/operations/evidence/F0035-session-continuity-and-token-refresh/2026-05-24-c92b16b6/evidence-manifest.json
+planning-mds/operations/evidence/F0035-session-continuity-and-token-refresh/2026-05-24-c92b16b6/artifacts/diffs/changed-files.txt
