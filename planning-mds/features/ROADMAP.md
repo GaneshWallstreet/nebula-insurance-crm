@@ -1,6 +1,6 @@
 # Feature Roadmap (Now / Next / Later)
 
-**Last Reviewed:** 2026-05-17
+**Last Reviewed:** 2026-05-24
 
 This document is the working prioritization view for feature sequencing.
 
@@ -20,10 +20,9 @@ This document is the working prioritization view for feature sequencing.
 
 | Feature | Phase | Why Now |
 |---------|-------|---------|
-| [F0035 — Session Continuity & Token Refresh](./F0035-session-continuity-and-token-refresh/README.md) | Release Enablement / Platform Operations | Current OIDC token-expiry behavior can interrupt active users and should be planned before more high-API-count CRM workflows are added. |
 | [F0019 — Submission Quoting, Proposal & Approval Workflow](./F0019-submission-quoting-proposal-and-approval/README.md) | CRM Release MVP | Completes the core submission journey now that intake, policy, document, and product-schema foundations are archived and available; owns submission-bound quote/proposal packet workflow, not the broader outbound template engine. |
 
-**Implementation Readiness Note:** F0034 completed on 2026-05-07 and now unblocks F0019/F0022 product-specific quote, coverage, and reporting work without adding fixed product fields. F0035 is sequenced first as a reliability and trust fix for the authenticated application shell, with F0019 now pulled into `Now` because it is the missing core workflow between completed intake, policy, document, and product-schema capabilities.
+**Implementation Readiness Note:** F0034 completed on 2026-05-07 and F0035 completed on 2026-05-24. F0019 remains in `Now` because it is the missing core workflow between completed intake, policy, document, product-schema, and authenticated-session reliability capabilities.
 
 **Boundary Notes:** F0019 owns the submission-bound quote/proposal packet needed to move a submission through approval and bind. F0027 later owns reusable COI, ACORD, proposal-template, and outbound document generation capability.
 
@@ -62,6 +61,7 @@ This document is the working prioritization view for feature sequencing.
 
 | Feature | Phase | Completion State |
 |---------|-------|------------------|
+| [F0035 — Session Continuity & Token Refresh](./archive/F0035-session-continuity-and-token-refresh/README.md) | Release Enablement / Platform Operations | Done and archived (2026-05-24) - 5 stories: silent renewal, idle warning modal, forced re-auth restore, auth error semantics, session telemetry |
 | [F0034 — Product Schema Registry and Dynamic LOB Attributes](./archive/F0034-product-schema-registry-and-dynamic-lob-attributes/README.md) | Platform Foundation / CRM Release MVP Enabler | Done and archived (2026-05-07) — 7 stories: decision lock, registry foundation, lifecycle carrier pinning, validator parity, dynamic panel, Cyber bundle, lifecycle/F0019 handoff |
 | [F0020 — Document Management & ACORD Intake](./archive/F0020-document-management-and-acord-intake/README.md) | CRM Release MVP | Done and archived (2026-05-05) — 12 stories: single upload, bulk upload, quarantine promote, classification-filtered list, detail/provenance, downloads, immutable replace, metadata update, classification ABAC, completeness signal, retention cleanup, templates library |
 | [F0018 — Policy Lifecycle & Policy 360](./archive/F0018-policy-lifecycle-and-policy-360/README.md) | CRM Release MVP | Done and archived (2026-04-22) — 11 stories: list, create, profile edit, 360 composition, versions, endorsements, cancellation, reinstatement, renewal linkage, timeline, summary projection |

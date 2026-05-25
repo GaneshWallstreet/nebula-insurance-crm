@@ -21,15 +21,19 @@
  */
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { onAuthEvent } from './authEvents';
+import { onAuthEvent, type ForcedReauthPayload } from './authEvents';
+import { oidcUserManager } from './oidcUserManager';
 import { useSessionTeardown } from './useSessionTeardown';
+import { useDirtyFormRegistry } from '@/features/session-continuity';
+import { readSessionUserId, sanitizeReturnTo } from '@/features/session-continuity/sessionRestore';
 
 export function useAuthEventHandler(): void {
   const teardown = useSessionTeardown();
   const navigate = useNavigate();
+  const dirtyForms = useDirtyFormRegistry();
 
   useEffect(() => {
-    const unsubscribe = onAuthEvent((event) => {
+    const unsubscribe = onAuthEvent((event, payload) => {
       if (event === 'session_expired') {
         // teardown is async but we intentionally do not await here.
         // The function handles its own sequencing internally.
@@ -40,9 +44,26 @@ export function useAuthEventHandler(): void {
         // message. The failed request is abandoned (never-resolving promise in
         // api.ts) and must not be retried.
         navigate('/unauthorized?reason=broker_inactive', { replace: true });
+      } else if (event === 'forced_reauth') {
+        const forcedPayload = payload as ForcedReauthPayload | undefined;
+        const unsafeReturnTo =
+          forcedPayload?.returnTo ??
+          `${window.location.pathname}${window.location.search}`;
+        const returnTo = sanitizeReturnTo(unsafeReturnTo) ?? '/';
+        void oidcUserManager.getUser().catch(() => null).then((user) => {
+          const userId = readSessionUserId(user);
+          if (userId) {
+            dirtyForms.snapshotAllDirty(userId, returnTo);
+          }
+
+          navigate(
+            `/login?reason=session_expired&return_to=${encodeURIComponent(returnTo)}`,
+            { replace: true },
+          );
+        });
       }
     });
 
     return unsubscribe;
-  }, [teardown, navigate]);
+  }, [dirtyForms, teardown, navigate]);
 }

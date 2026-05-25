@@ -50,13 +50,43 @@ public static class ProblemDetailsHelper
         title: "Forbidden",
         detail: "You do not have permission to perform this action.",
         statusCode: 403,
+        type: "https://nebula.local/problems/authz/forbidden",
         extensions: Ext("forbidden"));
 
     public static IResult PolicyDenied() => Results.Problem(
         title: "Forbidden",
         detail: "You do not have permission to perform this action.",
         statusCode: 403,
+        type: "https://nebula.local/problems/authz/forbidden",
         extensions: Ext("policy_denied"));
+
+    public static IResult AuthTokenExpired(string traceId) => Results.Problem(
+        title: "Authentication token expired",
+        detail: "The access token has expired. Renew the session and retry the request.",
+        statusCode: 401,
+        type: "https://nebula.local/problems/auth/token-expired",
+        extensions: Ext("token_expired", traceId));
+
+    public static IResult AuthInvalidToken(string traceId) => Results.Problem(
+        title: "Authentication token invalid",
+        detail: "The access token is invalid.",
+        statusCode: 401,
+        type: "https://nebula.local/problems/auth/invalid-token",
+        extensions: Ext("invalid_token", traceId));
+
+    public static IResult AuthSessionRevoked(string traceId) => Results.Problem(
+        title: "Session revoked",
+        detail: "The session is no longer valid.",
+        statusCode: 401,
+        type: "https://nebula.local/problems/auth/session-revoked",
+        extensions: Ext("session_revoked", traceId));
+
+    public static IResult AuthorizationForbidden(string traceId) => Results.Problem(
+        title: "Forbidden",
+        detail: "You do not have permission to perform this action.",
+        statusCode: 403,
+        type: "https://nebula.local/problems/authz/forbidden",
+        extensions: Ext("forbidden", traceId));
 
     public static IResult InactiveAssignee() => Results.Problem(
         title: "Inactive assignee",
@@ -98,6 +128,18 @@ public static class ProblemDetailsHelper
         title: "Validation error",
         detail: "One or more validation errors occurred.",
         statusCode: 400,
+        extensions: new Dictionary<string, object?>
+        {
+            ["code"] = "validation_error",
+            ["errors"] = errors,
+            ["traceId"] = Activity.Current?.Id,
+        });
+
+    public static IResult TelemetryValidationError(IDictionary<string, string[]> errors) => Results.Problem(
+        title: "Session continuity telemetry validation error",
+        detail: "One or more telemetry events failed validation.",
+        statusCode: 400,
+        type: "https://nebula.local/problems/session-continuity/telemetry-validation",
         extensions: new Dictionary<string, object?>
         {
             ["code"] = "validation_error",
@@ -199,5 +241,11 @@ public static class ProblemDetailsHelper
     {
         ["code"] = code,
         ["traceId"] = Activity.Current?.Id,
+    };
+
+    private static Dictionary<string, object?> Ext(string code, string traceId) => new()
+    {
+        ["code"] = code,
+        ["traceId"] = traceId,
     };
 }

@@ -15,9 +15,39 @@
  * (useAuthEventHandler) will be active at a time.
  */
 
-export type AuthEvent = 'session_expired' | 'broker_scope_unresolvable';
+export type AuthEvent =
+  | 'session_expired'
+  | 'broker_scope_unresolvable'
+  | 'forced_reauth'
+  | 'mutation_retry_required';
 
-type AuthEventListener = (event: AuthEvent) => void;
+export type ForcedReauthCause =
+  | 'auth_token_invalid'
+  | 'auth_session_revoked'
+  | 'auth_unknown'
+  | 'silent_renewal_failed'
+  | 'idle_timeout'
+  | 'rolling_window_exceeded'
+  | 'hard_cap_reached'
+
+export interface ForcedReauthPayload {
+  cause: ForcedReauthCause
+  endpointRoute?: string
+  method?: string
+  returnTo?: string
+}
+
+export interface MutationRetryRequiredPayload {
+  endpointRoute: string
+  method: string
+}
+
+export type AuthEventPayload =
+  | ForcedReauthPayload
+  | MutationRetryRequiredPayload
+  | undefined
+
+type AuthEventListener = (event: AuthEvent, payload?: AuthEventPayload) => void;
 
 const listeners = new Set<AuthEventListener>();
 
@@ -34,8 +64,8 @@ export function onAuthEvent(listener: AuthEventListener): () => void {
  * Publish an auth event to all registered listeners.
  * Called by the API 401 interceptor.
  */
-export function emitAuthEvent(event: AuthEvent): void {
+export function emitAuthEvent(event: AuthEvent, payload?: AuthEventPayload): void {
   for (const listener of listeners) {
-    listener(event);
+    listener(event, payload);
   }
 }

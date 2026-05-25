@@ -1,8 +1,11 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Nebula.Api.Helpers;
 
 namespace Nebula.Tests.Integration;
 
@@ -12,6 +15,16 @@ public class TestAuthHandler(
     UrlEncoder encoder)
     : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
+    public enum AuthMode
+    {
+        Success,
+        NoResult,
+        Expired,
+        Invalid,
+        Revoked,
+    }
+
+    public static AuthMode Mode { get; set; } = AuthMode.Success;
     public static string TestSubject { get; set; } = "test-user-001";
     public static string TestRole { get; set; } = "Admin";
     public static string TestDisplayName { get; set; } = "Test User";
@@ -26,6 +39,15 @@ public class TestAuthHandler(
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
+        if (Mode == AuthMode.NoResult)
+            return Task.FromResult(AuthenticateResult.NoResult());
+        if (Mode == AuthMode.Expired)
+            return Task.FromResult(AuthenticateResult.Fail(new SecurityTokenExpiredException("test token expired")));
+        if (Mode == AuthMode.Invalid)
+            return Task.FromResult(AuthenticateResult.Fail("test invalid token"));
+        if (Mode == AuthMode.Revoked)
+            return Task.FromResult(AuthenticateResult.Fail("test session revoked"));
+
         var claims = new List<Claim>
         {
             new("iss", "http://test.local/application/o/nebula/"),
@@ -53,9 +75,36 @@ public class TestAuthHandler(
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 
+    protected override Task HandleChallengeAsync(AuthenticationProperties properties)
+    {
+        Response.StatusCode = StatusCodes.Status401Unauthorized;
+        Response.ContentType = "application/problem+json";
+        Response.Headers.WWWAuthenticate =
+            "Bearer error=\"invalid_token\", error_description=\"Authentication token is invalid or expired.\"";
+        var traceId = System.Diagnostics.Activity.Current?.Id ?? Context.TraceIdentifier;
+        var result = Mode switch
+        {
+            AuthMode.Expired => ProblemDetailsHelper.AuthTokenExpired(traceId),
+            AuthMode.Revoked => ProblemDetailsHelper.AuthSessionRevoked(traceId),
+            _ => ProblemDetailsHelper.AuthInvalidToken(traceId),
+        };
+        return result.ExecuteAsync(Context);
+    }
+
+    protected override Task HandleForbiddenAsync(AuthenticationProperties properties)
+    {
+        Response.Headers.Remove("WWW-Authenticate");
+        Response.StatusCode = StatusCodes.Status403Forbidden;
+        Response.ContentType = "application/problem+json";
+        return ProblemDetailsHelper.AuthorizationForbidden(
+            System.Diagnostics.Activity.Current?.Id ?? Context.TraceIdentifier)
+            .ExecuteAsync(Context);
+    }
+
     /// <summary>Resets all optional F0009 properties to default (call in test teardown).</summary>
     public static void ResetF0009Overrides()
     {
+        Mode = AuthMode.Success;
         TestNebulaRoles = null;
         TestBrokerTenantId = null;
     }

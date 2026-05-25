@@ -592,7 +592,7 @@ capabilities:
   - id: capability:session-continuity
     label: Session Continuity
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/PRD.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/PRD.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:authentication
@@ -608,7 +608,7 @@ capabilities:
   - id: capability:silent-token-renewal
     label: Silent Token Renewal
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0001-silent-token-renewal.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0001-silent-token-renewal.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:authentication
@@ -620,7 +620,7 @@ capabilities:
   - id: capability:idle-warning
     label: Idle Warning Modal
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     rationale:
       - adr: adr:024
@@ -629,7 +629,7 @@ capabilities:
   - id: capability:session-context-restore
     label: Session Context Restore (Route + Form State)
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0003-forced-reauth-context-restore.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0003-forced-reauth-context-restore.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:authentication
@@ -640,7 +640,7 @@ capabilities:
   - id: capability:auth-error-classification
     label: Auth Error Classification (401-expired / 401-failed / 403-denied)
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0004-auth-error-semantics.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0004-auth-error-semantics.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:authentication
@@ -652,7 +652,7 @@ capabilities:
   - id: capability:session-telemetry
     label: Session Continuity Telemetry
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0005-session-telemetry-events.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0005-session-telemetry-events.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:session-continuity
@@ -1421,7 +1421,7 @@ endpoints:
     source_docs:
       - planning-mds/api/nebula-api.yaml
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0005-session-telemetry-events.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0005-session-telemetry-events.md
     related_nodes:
       - capability:session-telemetry
       - capability:session-continuity
@@ -1623,7 +1623,7 @@ events:
     label: SilentRenewalSuccess
     event_type: SilentRenewalSuccess
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0001-silent-token-renewal.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0001-silent-token-renewal.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:silent-token-renewal
@@ -1632,7 +1632,7 @@ events:
     label: SilentRenewalFail
     event_type: SilentRenewalFail
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0001-silent-token-renewal.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0001-silent-token-renewal.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:silent-token-renewal
@@ -1641,7 +1641,7 @@ events:
     label: ForcedRedirect
     event_type: ForcedRedirect
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0003-forced-reauth-context-restore.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0003-forced-reauth-context-restore.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:session-context-restore
@@ -1650,7 +1650,7 @@ events:
     label: IdleWarningShown
     event_type: IdleWarningShown
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:idle-warning
@@ -1659,7 +1659,7 @@ events:
     label: IdleWarningAccepted
     event_type: IdleWarningAccepted
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:idle-warning
@@ -1668,7 +1668,7 @@ events:
     label: IdleWarningDismissed
     event_type: IdleWarningDismissed
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:idle-warning
@@ -1677,7 +1677,7 @@ events:
     label: AuthClassifierFallback
     event_type: AuthClassifierFallback
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0004-auth-error-semantics.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0004-auth-error-semantics.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:auth-error-classification
@@ -1686,7 +1686,7 @@ events:
     label: AuthClassifierConflict
     event_type: AuthClassifierConflict
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0004-auth-error-semantics.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0004-auth-error-semantics.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:auth-error-classification
@@ -1695,7 +1695,7 @@ events:
     label: FormSnapshotSkipped
     event_type: FormSnapshotSkipped
     source_docs:
-      - planning-mds/features/F0035-session-continuity-and-token-refresh/F0035-S0003-forced-reauth-context-restore.md
+      - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0003-forced-reauth-context-restore.md
       - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
     related_nodes:
       - capability:session-context-restore

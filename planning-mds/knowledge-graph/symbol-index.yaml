@@ -1,17 +1,17 @@
 version: 0
-generated_at: '2026-05-21T01:21:33+00:00'
+generated_at: '2026-05-25T01:50:16+00:00'
 summary:
-  total_symbols: 2332
+  total_symbols: 2463
   by_language:
     typescript:
-      files: 54
-      parsed: 54
-      cached: 0
+      files: 61
+      parsed: 0
+      cached: 61
     csharp:
-      files: 266
-      parsed: 266
-      cached: 0
-  disambiguated_ids: 10
+      files: 273
+      parsed: 0
+      cached: 273
+  disambiguated_ids: 12
   compilation_roots_by_language:
     python: []
     typescript:
@@ -965,6 +965,7 @@ symbols:
   callees:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-service.get-kpis-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -985,6 +986,7 @@ symbols:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-service.get-nudges-async
   - symbol:capability-dashboard-home:dashboard-service.get-nudges-for-broker-user-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -1004,6 +1006,7 @@ symbols:
   callees:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-service.get-opportunities-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -1023,6 +1026,7 @@ symbols:
   callees:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-service.get-opportunity-aging-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -1042,6 +1046,7 @@ symbols:
   callees:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-service.get-opportunity-breakdown-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -1061,6 +1066,7 @@ symbols:
   callees:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-service.get-opportunity-flow-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -1080,6 +1086,7 @@ symbols:
   callees:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-service.get-opportunity-hierarchy-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -1099,6 +1106,7 @@ symbols:
   callees:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-service.get-opportunity-items-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -1119,6 +1127,7 @@ symbols:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-endpoints.try-parse-entity-types
   - symbol:capability-dashboard-home:dashboard-service.get-opportunity-outcome-items-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -1139,6 +1148,7 @@ symbols:
   - symbol:capability-dashboard-home:dashboard-endpoints.has-access-async
   - symbol:capability-dashboard-home:dashboard-endpoints.try-parse-entity-types
   - symbol:capability-dashboard-home:dashboard-service.get-opportunity-outcomes-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-dashboard-home:dashboard-service.dashboard-service
@@ -5578,6 +5588,8 @@ symbols:
   callees:
   - symbol:capability-product-schema-registry:lob-schema-endpoints.has-access-async
   - symbol:capability-product-schema-registry:lob-schema-service.activate-product-version-async
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-product-schema-registry:lob-attribute-dtos.lob-bundle-activation-request-dto
@@ -5598,6 +5610,8 @@ symbols:
   callees:
   - symbol:capability-product-schema-registry:lob-schema-endpoints.has-access-async
   - symbol:capability-product-schema-registry:lob-schema-service.get-bundle-async
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-product-schema-registry:lob-schema-service.lob-schema-service
@@ -5639,6 +5653,7 @@ symbols:
   callees:
   - symbol:capability-product-schema-registry:lob-schema-endpoints.has-access-async
   - symbol:capability-product-schema-registry:lob-schema-service.list-active-async
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-product-schema-registry:lob-schema-service.lob-schema-service
@@ -5684,6 +5699,7 @@ symbols:
   callees:
   - symbol:capability-product-schema-registry:lob-schema-endpoints.has-access-async
   - symbol:capability-product-schema-registry:lob-schema-service.resolve-active-async
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-product-schema-registry:lob-schema-service.lob-schema-service
@@ -5703,6 +5719,8 @@ symbols:
   callees:
   - symbol:capability-product-schema-registry:lob-schema-endpoints.has-access-async
   - symbol:capability-product-schema-registry:lob-schema-service.get-bundle-by-product-version-async
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
   - symbol:capability-product-schema-registry:lob-schema-service.lob-schema-service
@@ -6018,6 +6036,1722 @@ symbols:
   - symbol:capability-product-schema-registry:lob-schema-service.map-bundle
   type_refs:
   - symbol:capability-product-schema-registry:lob-attribute-dtos.lob-schema-bundle-dto
+- id: symbol:capability-session-continuity:auth-events.auth-event
+  node: capability:session-continuity
+  kind: type
+  name: AuthEvent
+  file: experience/src/features/auth/authEvents.ts
+  line: 18
+  signature: export type AuthEvent =
+  visibility: export
+  language: typescript
+  end_line: 22
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:auth-events.auth-event-listener
+  node: capability:session-continuity
+  kind: type
+  name: AuthEventListener
+  file: experience/src/features/auth/authEvents.ts
+  line: 50
+  signature: 'type AuthEventListener = (event: AuthEvent, payload?: AuthEventPayload)
+    => void;'
+  visibility: local
+  language: typescript
+  end_line: 50
+  callers: []
+  callees: []
+  type_refs:
+  - symbol:capability-session-continuity:auth-events.auth-event
+  - symbol:capability-session-continuity:auth-events.auth-event-payload
+- id: symbol:capability-session-continuity:auth-events.auth-event-payload
+  node: capability:session-continuity
+  kind: type
+  name: AuthEventPayload
+  file: experience/src/features/auth/authEvents.ts
+  line: 45
+  signature: export type AuthEventPayload =
+  visibility: export
+  language: typescript
+  end_line: 48
+  callers: []
+  callees: []
+  type_refs:
+  - symbol:capability-session-continuity:auth-events.forced-reauth-payload
+  - symbol:capability-session-continuity:auth-events.mutation-retry-required-payload
+- id: symbol:capability-session-continuity:auth-events.emit-auth-event
+  node: capability:session-continuity
+  kind: function
+  name: emitAuthEvent
+  file: experience/src/features/auth/authEvents.ts
+  line: 67
+  signature: 'export function emitAuthEvent(event: AuthEvent, payload?: AuthEventPayload):
+    void'
+  visibility: export
+  language: typescript
+  end_line: 71
+  callers: []
+  callees: []
+  type_refs:
+  - symbol:capability-session-continuity:auth-events.auth-event
+  - symbol:capability-session-continuity:auth-events.auth-event-payload
+- id: symbol:capability-session-continuity:auth-events.forced-reauth-cause
+  node: capability:session-continuity
+  kind: type
+  name: ForcedReauthCause
+  file: experience/src/features/auth/authEvents.ts
+  line: 24
+  signature: export type ForcedReauthCause =
+  visibility: export
+  language: typescript
+  end_line: 31
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:auth-events.forced-reauth-payload
+  node: capability:session-continuity
+  kind: interface
+  name: ForcedReauthPayload
+  file: experience/src/features/auth/authEvents.ts
+  line: 33
+  signature: export interface ForcedReauthPayload
+  visibility: export
+  language: typescript
+  end_line: 38
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:auth-events.mutation-retry-required-payload
+  node: capability:session-continuity
+  kind: interface
+  name: MutationRetryRequiredPayload
+  file: experience/src/features/auth/authEvents.ts
+  line: 40
+  signature: export interface MutationRetryRequiredPayload
+  visibility: export
+  language: typescript
+  end_line: 43
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:auth-events.on-auth-event
+  node: capability:session-continuity
+  kind: function
+  name: onAuthEvent
+  file: experience/src/features/auth/authEvents.ts
+  line: 58
+  signature: 'export function onAuthEvent(listener: AuthEventListener): () => void'
+  visibility: export
+  language: typescript
+  end_line: 61
+  callers:
+  - symbol:capability-session-continuity:use-auth-event-handler.use-auth-event-handler
+  callees: []
+  type_refs:
+  - symbol:capability-session-continuity:auth-events.auth-event-listener
+- id: symbol:capability-session-continuity:auth-problem-details-contract-tests.arrange-current-user-async
+  node: capability:session-continuity
+  kind: method
+  name: ArrangeCurrentUserAsync
+  file: engine/tests/Nebula.Tests/Integration/AuthProblemDetailsContractTests.cs
+  line: 65
+  signature: private async Task<Guid> ArrangeCurrentUserAsync()
+  visibility: private
+  language: csharp
+  container: AuthProblemDetailsContractTests
+  end_line: 90
+  is_test: true
+  callers:
+  - symbol:capability-session-continuity:auth-problem-details-contract-tests.protected-endpoint-forbidden-returns-adr024-problem-details-without-authenticate-header
+  callees:
+  - symbol:capability-session-continuity:session-telemetry-validation-result.add
+  instantiates:
+  - symbol:entity-user-profile:user-profile.user-profile
+- id: symbol:capability-session-continuity:auth-problem-details-contract-tests.auth-problem-details-contract-tests
+  node: capability:session-continuity
+  kind: class
+  name: AuthProblemDetailsContractTests
+  file: engine/tests/Nebula.Tests/Integration/AuthProblemDetailsContractTests.cs
+  line: 11
+  signature: public class AuthProblemDetailsContractTests(CustomWebApplicationFactory
+    factory)
+  visibility: public
+  language: csharp
+  end_line: 112
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:auth-problem-details-contract-tests.dispose
+  node: capability:session-continuity
+  kind: method
+  name: Dispose
+  file: engine/tests/Nebula.Tests/Integration/AuthProblemDetailsContractTests.cs
+  line: 17
+  signature: public void Dispose()
+  visibility: public
+  language: csharp
+  container: AuthProblemDetailsContractTests
+  end_line: 23
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:test-auth-handler.reset-f0009-overrides
+- id: symbol:capability-session-continuity:auth-problem-details-contract-tests.protected-endpoint-auth-challenge-returns-adr024-problem-details
+  node: capability:session-continuity
+  kind: method
+  name: ProtectedEndpoint_AuthChallenge_ReturnsAdr024ProblemDetails
+  file: engine/tests/Nebula.Tests/Integration/AuthProblemDetailsContractTests.cs
+  line: 25
+  signature: public async Task ProtectedEndpoint_AuthChallenge_ReturnsAdr024ProblemDetails(
+  visibility: public
+  language: csharp
+  container: AuthProblemDetailsContractTests
+  end_line: 46
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:auth-problem-details-contract-tests.request-body
+  type_refs:
+  - symbol:capability-session-continuity:test-auth-handler.auth-mode
+- id: symbol:capability-session-continuity:auth-problem-details-contract-tests.protected-endpoint-forbidden-returns-adr024-problem-details-without-authenticate-header
+  node: capability:session-continuity
+  kind: method
+  name: ProtectedEndpoint_Forbidden_ReturnsAdr024ProblemDetailsWithoutAuthenticateHeader
+  file: engine/tests/Nebula.Tests/Integration/AuthProblemDetailsContractTests.cs
+  line: 48
+  signature: public async Task ProtectedEndpoint_Forbidden_ReturnsAdr024ProblemDetailsWithoutAuthenticateHeader()
+  visibility: public
+  language: csharp
+  container: AuthProblemDetailsContractTests
+  end_line: 63
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:auth-problem-details-contract-tests.arrange-current-user-async
+  - symbol:capability-session-continuity:auth-problem-details-contract-tests.request-body
+- id: symbol:capability-session-continuity:auth-problem-details-contract-tests.request-body
+  node: capability:session-continuity
+  kind: method
+  name: RequestBody
+  file: engine/tests/Nebula.Tests/Integration/AuthProblemDetailsContractTests.cs
+  line: 92
+  signature: private static Dictionary<string, object?> RequestBody(Guid userId)
+  visibility: private
+  language: csharp
+  container: AuthProblemDetailsContractTests
+  end_line: 111
+  is_test: true
+  callers:
+  - symbol:capability-session-continuity:auth-problem-details-contract-tests.protected-endpoint-auth-challenge-returns-adr024-problem-details
+  - symbol:capability-session-continuity:auth-problem-details-contract-tests.protected-endpoint-forbidden-returns-adr024-problem-details-without-authenticate-header
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.active-dependencies-exist
+  node: capability:session-continuity
+  kind: method
+  name: ActiveDependenciesExist
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 13
+  signature: public static IResult ActiveDependenciesExist()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 17
+  callers:
+  - symbol:entity-broker:broker-endpoints.delete-broker
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.already-active
+  node: capability:session-continuity
+  kind: method
+  name: AlreadyActive
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 19
+  signature: public static IResult AlreadyActive()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 23
+  callers:
+  - symbol:entity-broker:broker-endpoints.reactivate-broker
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.assignment-not-allowed-in-terminal-state
+  node: capability:session-continuity
+  kind: method
+  name: AssignmentNotAllowedInTerminalState
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 109
+  signature: public static IResult AssignmentNotAllowedInTerminalState()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 113
+  callers:
+  - symbol:entity-renewal:renewal-endpoints.put-assignment
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.auth-invalid-token
+  node: capability:session-continuity
+  kind: method
+  name: AuthInvalidToken
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 70
+  signature: public static IResult AuthInvalidToken(string traceId)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 75
+  callers:
+  - symbol:capability-session-continuity:test-auth-handler.handle-challenge-async
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.auth-session-revoked
+  node: capability:session-continuity
+  kind: method
+  name: AuthSessionRevoked
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 77
+  signature: public static IResult AuthSessionRevoked(string traceId)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 82
+  callers:
+  - symbol:capability-session-continuity:test-auth-handler.handle-challenge-async
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.auth-token-expired
+  node: capability:session-continuity
+  kind: method
+  name: AuthTokenExpired
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 63
+  signature: public static IResult AuthTokenExpired(string traceId)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 68
+  callers:
+  - symbol:capability-session-continuity:test-auth-handler.handle-challenge-async
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.authorization-forbidden
+  node: capability:session-continuity
+  kind: method
+  name: AuthorizationForbidden
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 84
+  signature: public static IResult AuthorizationForbidden(string traceId)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 89
+  callers:
+  - symbol:capability-session-continuity:session-telemetry-endpoints.ingest-async
+  - symbol:capability-session-continuity:test-auth-handler.handle-forbidden-async
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.concurrency-conflict
+  node: capability:session-continuity
+  kind: method
+  name: ConcurrencyConflict
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 37
+  signature: public static IResult ConcurrencyConflict()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 41
+  callers:
+  - symbol:entity-broker:broker-endpoints.update-broker
+  - symbol:entity-task-item:task-endpoints.update-task
+  - symbol:event-contact-created:contact-endpoints.update-contact
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.duplicate-license
+  node: capability:session-continuity
+  kind: method
+  name: DuplicateLicense
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 7
+  signature: public static IResult DuplicateLicense()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 11
+  callers:
+  - symbol:entity-broker:broker-endpoints.create-broker
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.duplicate-renewal
+  node: capability:session-continuity
+  kind: method
+  name: DuplicateRenewal
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 103
+  signature: public static IResult DuplicateRenewal()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 107
+  callers:
+  - symbol:entity-renewal:renewal-endpoints.create-renewal
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.ext
+  node: capability:session-continuity
+  kind: method
+  name: Ext
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 240
+  signature: private static Dictionary<string, object?> Ext(string code)
+  visibility: private
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 244
+  callers:
+  - symbol:capability-session-continuity:problem-details-helper.active-dependencies-exist
+  - symbol:capability-session-continuity:problem-details-helper.already-active
+  - symbol:capability-session-continuity:problem-details-helper.assignment-not-allowed-in-terminal-state
+  - symbol:capability-session-continuity:problem-details-helper.auth-invalid-token
+  - symbol:capability-session-continuity:problem-details-helper.auth-session-revoked
+  - symbol:capability-session-continuity:problem-details-helper.auth-token-expired
+  - symbol:capability-session-continuity:problem-details-helper.authorization-forbidden
+  - symbol:capability-session-continuity:problem-details-helper.concurrency-conflict
+  - symbol:capability-session-continuity:problem-details-helper.duplicate-license
+  - symbol:capability-session-continuity:problem-details-helper.duplicate-renewal
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.inactive-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-account
+  - symbol:capability-session-continuity:problem-details-helper.invalid-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-broker
+  - symbol:capability-session-continuity:problem-details-helper.invalid-lob
+  - symbol:capability-session-continuity:problem-details-helper.invalid-program
+  - symbol:capability-session-continuity:problem-details-helper.invalid-status-transition
+  - symbol:capability-session-continuity:problem-details-helper.invalid-submission-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-transition
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.region-mismatch
+  - symbol:capability-session-continuity:problem-details-helper.status-change-restricted
+  - symbol:capability-session-continuity:problem-details-helper.view-not-authorized
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.ext-2
+  node: capability:session-continuity
+  kind: method
+  name: Ext
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 246
+  signature: private static Dictionary<string, object?> Ext(string code, string traceId)
+  visibility: private
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 250
+  callers:
+  - symbol:capability-session-continuity:problem-details-helper.active-dependencies-exist
+  - symbol:capability-session-continuity:problem-details-helper.already-active
+  - symbol:capability-session-continuity:problem-details-helper.assignment-not-allowed-in-terminal-state
+  - symbol:capability-session-continuity:problem-details-helper.auth-invalid-token
+  - symbol:capability-session-continuity:problem-details-helper.auth-session-revoked
+  - symbol:capability-session-continuity:problem-details-helper.auth-token-expired
+  - symbol:capability-session-continuity:problem-details-helper.authorization-forbidden
+  - symbol:capability-session-continuity:problem-details-helper.concurrency-conflict
+  - symbol:capability-session-continuity:problem-details-helper.duplicate-license
+  - symbol:capability-session-continuity:problem-details-helper.duplicate-renewal
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.inactive-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-account
+  - symbol:capability-session-continuity:problem-details-helper.invalid-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-broker
+  - symbol:capability-session-continuity:problem-details-helper.invalid-lob
+  - symbol:capability-session-continuity:problem-details-helper.invalid-program
+  - symbol:capability-session-continuity:problem-details-helper.invalid-status-transition
+  - symbol:capability-session-continuity:problem-details-helper.invalid-submission-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-transition
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.region-mismatch
+  - symbol:capability-session-continuity:problem-details-helper.status-change-restricted
+  - symbol:capability-session-continuity:problem-details-helper.view-not-authorized
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.forbidden
+  node: capability:session-continuity
+  kind: method
+  name: Forbidden
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 49
+  signature: public static IResult Forbidden()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 54
+  callers:
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-kpis
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-nudges
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-opportunities
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-opportunity-aging
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-opportunity-breakdown
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-opportunity-flow
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-opportunity-hierarchy
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-opportunity-items
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-opportunity-outcome-items
+  - symbol:capability-dashboard-home:dashboard-endpoints.get-opportunity-outcomes
+  - symbol:entity-activity-timeline-event:timeline-endpoints.map-timeline-endpoints
+  - symbol:entity-broker:broker-endpoints.create-broker
+  - symbol:entity-broker:broker-endpoints.delete-broker
+  - symbol:entity-broker:broker-endpoints.get-broker
+  - symbol:entity-broker:broker-endpoints.list-brokers
+  - symbol:entity-broker:broker-endpoints.reactivate-broker
+  - symbol:entity-broker:broker-endpoints.update-broker
+  - symbol:entity-task-item:task-endpoints.create-task
+  - symbol:entity-task-item:task-endpoints.get-my-tasks
+  - symbol:entity-task-item:task-endpoints.get-task-list
+  - symbol:entity-task-item:task-endpoints.update-task
+  - symbol:event-contact-created:contact-endpoints.create-contact
+  - symbol:event-contact-created:contact-endpoints.delete-contact
+  - symbol:event-contact-created:contact-endpoints.get-contact
+  - symbol:event-contact-created:contact-endpoints.list-contacts
+  - symbol:event-contact-created:contact-endpoints.update-contact
+  - symbol:policy_rule-renewal-assign:user-endpoints.search-users
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.idempotency-key-conflict
+  node: capability:session-continuity
+  kind: method
+  name: IdempotencyKeyConflict
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 220
+  signature: public static IResult IdempotencyKeyConflict(string key)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 229
+  callers:
+  - symbol:entity-account:account-endpoints.merge-account
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.inactive-assignee
+  node: capability:session-continuity
+  kind: method
+  name: InactiveAssignee
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 91
+  signature: public static IResult InactiveAssignee()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 95
+  callers:
+  - symbol:entity-renewal:renewal-endpoints.create-renewal
+  - symbol:entity-renewal:renewal-endpoints.put-assignment
+  - symbol:entity-task-item:task-endpoints.create-task
+  - symbol:entity-task-item:task-endpoints.update-task
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.invalid-account
+  node: capability:session-continuity
+  kind: method
+  name: InvalidAccount
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 167
+  signature: public static IResult InvalidAccount(Guid id)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 171
+  callers:
+  - symbol:entity-submission:submission-endpoints.create-submission
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.invalid-assignee
+  node: capability:session-continuity
+  kind: method
+  name: InvalidAssignee
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 97
+  signature: public static IResult InvalidAssignee()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 101
+  callers:
+  - symbol:entity-renewal:renewal-endpoints.create-renewal
+  - symbol:entity-renewal:renewal-endpoints.put-assignment
+  - symbol:entity-task-item:task-endpoints.create-task
+  - symbol:entity-task-item:task-endpoints.update-task
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.invalid-broker
+  node: capability:session-continuity
+  kind: method
+  name: InvalidBroker
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 173
+  signature: public static IResult InvalidBroker(Guid id)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 177
+  callers:
+  - symbol:entity-submission:submission-endpoints.create-submission
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.invalid-lob
+  node: capability:session-continuity
+  kind: method
+  name: InvalidLob
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 185
+  signature: public static IResult InvalidLob(string lob)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 189
+  callers:
+  - symbol:entity-submission:submission-endpoints.create-submission
+  - symbol:entity-submission:submission-endpoints.update-submission
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.invalid-program
+  node: capability:session-continuity
+  kind: method
+  name: InvalidProgram
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 179
+  signature: public static IResult InvalidProgram(Guid id)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 183
+  callers:
+  - symbol:entity-submission:submission-endpoints.create-submission
+  - symbol:entity-submission:submission-endpoints.update-submission
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.invalid-status-transition
+  node: capability:session-continuity
+  kind: method
+  name: InvalidStatusTransition
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 31
+  signature: public static IResult InvalidStatusTransition(string from, string to)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 35
+  callers:
+  - symbol:entity-task-item:task-endpoints.update-task
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.invalid-submission-assignee
+  node: capability:session-continuity
+  kind: method
+  name: InvalidSubmissionAssignee
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 191
+  signature: public static IResult InvalidSubmissionAssignee(string detail)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 195
+  callers:
+  - symbol:entity-submission:submission-endpoints.assign-submission
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.invalid-transition
+  node: capability:session-continuity
+  kind: method
+  name: InvalidTransition
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 25
+  signature: public static IResult InvalidTransition(string from, string to)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 29
+  callers:
+  - symbol:entity-account:account-endpoints.merge-account
+  - symbol:entity-account:account-endpoints.transition-lifecycle
+  - symbol:entity-policy:policy-endpoints.endorse-policy
+  - symbol:entity-policy:policy-endpoints.policy-write-result
+  - symbol:entity-renewal:renewal-endpoints.post-transition
+  - symbol:entity-submission:submission-endpoints.post-transition
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.lob-validation-failed
+  node: capability:session-continuity
+  kind: method
+  name: LobValidationFailed
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 150
+  signature: public static IResult LobValidationFailed(object errors)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 159
+  callers:
+  - symbol:entity-policy:policy-endpoints.endorse-policy
+  - symbol:entity-policy:policy-endpoints.policy-write-result
+  - symbol:entity-renewal:renewal-endpoints.create-renewal
+  - symbol:entity-renewal:renewal-endpoints.put-lob-attributes
+  - symbol:entity-submission:submission-endpoints.create-submission
+  - symbol:entity-submission:submission-endpoints.update-submission
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.merge-too-large
+  node: capability:session-continuity
+  kind: method
+  name: MergeTooLarge
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 208
+  signature: public static IResult MergeTooLarge(int linkedCount, int threshold)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 218
+  callers:
+  - symbol:entity-account:account-endpoints.merge-account
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.missing-transition-prerequisite
+  node: capability:session-continuity
+  kind: method
+  name: MissingTransitionPrerequisite
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 197
+  signature: public static IResult MissingTransitionPrerequisite(IReadOnlyList<string>
+    missingItems)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 206
+  callers:
+  - symbol:entity-renewal:renewal-endpoints.post-transition
+  - symbol:entity-submission:submission-endpoints.post-transition
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.not-found
+  node: capability:session-continuity
+  kind: method
+  name: NotFound
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 43
+  signature: public static IResult NotFound(string resource, Guid id)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 47
+  callers:
+  - symbol:capability-product-schema-registry:lob-schema-endpoints.activate-product-version
+  - symbol:capability-product-schema-registry:lob-schema-endpoints.get-bundle
+  - symbol:capability-product-schema-registry:lob-schema-endpoints.resolve-bundle-by-product-version
+  - symbol:entity-account:account-endpoints.change-relationship
+  - symbol:entity-account:account-endpoints.create-contact
+  - symbol:entity-account:account-endpoints.delete-contact
+  - symbol:entity-account:account-endpoints.get-account
+  - symbol:entity-account:account-endpoints.get-merge-preview
+  - symbol:entity-account:account-endpoints.get-policy-summary
+  - symbol:entity-account:account-endpoints.get-summary
+  - symbol:entity-account:account-endpoints.list-contacts
+  - symbol:entity-account:account-endpoints.list-policies
+  - symbol:entity-account:account-endpoints.list-renewals
+  - symbol:entity-account:account-endpoints.list-submissions
+  - symbol:entity-account:account-endpoints.list-timeline
+  - symbol:entity-account:account-endpoints.merge-account
+  - symbol:entity-account:account-endpoints.transition-lifecycle
+  - symbol:entity-account:account-endpoints.update-account
+  - symbol:entity-account:account-endpoints.update-contact
+  - symbol:entity-broker:broker-endpoints.delete-broker
+  - symbol:entity-broker:broker-endpoints.get-broker
+  - symbol:entity-broker:broker-endpoints.reactivate-broker
+  - symbol:entity-broker:broker-endpoints.update-broker
+  - symbol:entity-policy:policy-endpoints.endorse-policy
+  - symbol:entity-policy:policy-endpoints.get-policy
+  - symbol:entity-policy:policy-endpoints.get-policy-summary
+  - symbol:entity-policy:policy-endpoints.get-version
+  - symbol:entity-policy:policy-endpoints.list-coverages
+  - symbol:entity-policy:policy-endpoints.list-endorsements
+  - symbol:entity-policy:policy-endpoints.list-timeline
+  - symbol:entity-policy:policy-endpoints.list-versions
+  - symbol:entity-policy:policy-endpoints.policy-write-result
+  - symbol:entity-renewal:renewal-endpoints.create-renewal
+  - symbol:entity-renewal:renewal-endpoints.get-renewal
+  - symbol:entity-renewal:renewal-endpoints.get-timeline
+  - symbol:entity-renewal:renewal-endpoints.post-transition
+  - symbol:entity-renewal:renewal-endpoints.put-assignment
+  - symbol:entity-renewal:renewal-endpoints.put-lob-attributes
+  - symbol:entity-submission:submission-endpoints.assign-submission
+  - symbol:entity-submission:submission-endpoints.get-submission
+  - symbol:entity-submission:submission-endpoints.get-timeline
+  - symbol:entity-submission:submission-endpoints.post-transition
+  - symbol:entity-submission:submission-endpoints.update-submission
+  - symbol:entity-task-item:task-endpoints.delete-task
+  - symbol:entity-task-item:task-endpoints.get-task-by-id
+  - symbol:entity-task-item:task-endpoints.update-task
+  - symbol:event-contact-created:contact-endpoints.create-contact
+  - symbol:event-contact-created:contact-endpoints.delete-contact
+  - symbol:event-contact-created:contact-endpoints.get-contact
+  - symbol:event-contact-created:contact-endpoints.update-contact
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.policy-denied
+  node: capability:session-continuity
+  kind: method
+  name: PolicyDenied
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 56
+  signature: public static IResult PolicyDenied()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 61
+  callers:
+  - symbol:capability-product-schema-registry:lob-schema-endpoints.activate-product-version
+  - symbol:capability-product-schema-registry:lob-schema-endpoints.get-bundle
+  - symbol:capability-product-schema-registry:lob-schema-endpoints.list-active-bundles
+  - symbol:capability-product-schema-registry:lob-schema-endpoints.resolve-active-bundle
+  - symbol:capability-product-schema-registry:lob-schema-endpoints.resolve-bundle-by-product-version
+  - symbol:entity-account:account-endpoints.change-relationship
+  - symbol:entity-account:account-endpoints.create-account
+  - symbol:entity-account:account-endpoints.create-contact
+  - symbol:entity-account:account-endpoints.delete-contact
+  - symbol:entity-account:account-endpoints.get-account
+  - symbol:entity-account:account-endpoints.get-merge-preview
+  - symbol:entity-account:account-endpoints.get-policy-summary
+  - symbol:entity-account:account-endpoints.get-summary
+  - symbol:entity-account:account-endpoints.list-accounts
+  - symbol:entity-account:account-endpoints.list-contacts
+  - symbol:entity-account:account-endpoints.list-policies
+  - symbol:entity-account:account-endpoints.list-renewals
+  - symbol:entity-account:account-endpoints.list-submissions
+  - symbol:entity-account:account-endpoints.list-timeline
+  - symbol:entity-account:account-endpoints.merge-account
+  - symbol:entity-account:account-endpoints.transition-lifecycle
+  - symbol:entity-account:account-endpoints.update-account
+  - symbol:entity-account:account-endpoints.update-contact
+  - symbol:entity-policy:policy-endpoints.cancel-policy
+  - symbol:entity-policy:policy-endpoints.create-policy
+  - symbol:entity-policy:policy-endpoints.create-policy-from-bind
+  - symbol:entity-policy:policy-endpoints.endorse-policy
+  - symbol:entity-policy:policy-endpoints.get-policy
+  - symbol:entity-policy:policy-endpoints.get-policy-summary
+  - symbol:entity-policy:policy-endpoints.get-version
+  - symbol:entity-policy:policy-endpoints.import-policies
+  - symbol:entity-policy:policy-endpoints.issue-policy
+  - symbol:entity-policy:policy-endpoints.list-coverages
+  - symbol:entity-policy:policy-endpoints.list-endorsements
+  - symbol:entity-policy:policy-endpoints.list-policies
+  - symbol:entity-policy:policy-endpoints.list-timeline
+  - symbol:entity-policy:policy-endpoints.list-versions
+  - symbol:entity-policy:policy-endpoints.policy-write-result
+  - symbol:entity-policy:policy-endpoints.reinstate-policy
+  - symbol:entity-policy:policy-endpoints.update-policy
+  - symbol:entity-renewal:renewal-endpoints.create-renewal
+  - symbol:entity-renewal:renewal-endpoints.get-renewal
+  - symbol:entity-renewal:renewal-endpoints.get-timeline
+  - symbol:entity-renewal:renewal-endpoints.list-renewals
+  - symbol:entity-renewal:renewal-endpoints.post-transition
+  - symbol:entity-renewal:renewal-endpoints.put-assignment
+  - symbol:entity-renewal:renewal-endpoints.put-lob-attributes
+  - symbol:entity-submission:submission-endpoints.assign-submission
+  - symbol:entity-submission:submission-endpoints.create-submission
+  - symbol:entity-submission:submission-endpoints.get-submission
+  - symbol:entity-submission:submission-endpoints.get-timeline
+  - symbol:entity-submission:submission-endpoints.list-submissions
+  - symbol:entity-submission:submission-endpoints.post-transition
+  - symbol:entity-submission:submission-endpoints.update-submission
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  node: capability:session-continuity
+  kind: method
+  name: PreconditionFailed
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 231
+  signature: public static IResult PreconditionFailed()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 232
+  callers:
+  - symbol:entity-account:account-endpoints.change-relationship
+  - symbol:entity-account:account-endpoints.delete-contact
+  - symbol:entity-account:account-endpoints.merge-account
+  - symbol:entity-account:account-endpoints.transition-lifecycle
+  - symbol:entity-account:account-endpoints.update-account
+  - symbol:entity-account:account-endpoints.update-contact
+  - symbol:entity-policy:policy-endpoints.cancel-policy
+  - symbol:entity-policy:policy-endpoints.endorse-policy
+  - symbol:entity-policy:policy-endpoints.issue-policy
+  - symbol:entity-policy:policy-endpoints.policy-write-result
+  - symbol:entity-policy:policy-endpoints.reinstate-policy
+  - symbol:entity-policy:policy-endpoints.update-policy
+  - symbol:entity-renewal:renewal-endpoints.post-transition
+  - symbol:entity-renewal:renewal-endpoints.put-assignment
+  - symbol:entity-renewal:renewal-endpoints.put-lob-attributes
+  - symbol:entity-submission:submission-endpoints.assign-submission
+  - symbol:entity-submission:submission-endpoints.post-transition
+  - symbol:entity-submission:submission-endpoints.update-submission
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+- id: symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  node: capability:session-continuity
+  kind: method
+  name: PreconditionFailed
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 234
+  signature: public static IResult PreconditionFailed(string resourceName)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 238
+  callers:
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:entity-account:account-endpoints.change-relationship
+  - symbol:entity-account:account-endpoints.delete-contact
+  - symbol:entity-account:account-endpoints.merge-account
+  - symbol:entity-account:account-endpoints.transition-lifecycle
+  - symbol:entity-account:account-endpoints.update-account
+  - symbol:entity-account:account-endpoints.update-contact
+  - symbol:entity-policy:policy-endpoints.cancel-policy
+  - symbol:entity-policy:policy-endpoints.endorse-policy
+  - symbol:entity-policy:policy-endpoints.issue-policy
+  - symbol:entity-policy:policy-endpoints.policy-write-result
+  - symbol:entity-policy:policy-endpoints.reinstate-policy
+  - symbol:entity-policy:policy-endpoints.update-policy
+  - symbol:entity-renewal:renewal-endpoints.post-transition
+  - symbol:entity-renewal:renewal-endpoints.put-assignment
+  - symbol:entity-renewal:renewal-endpoints.put-lob-attributes
+  - symbol:entity-submission:submission-endpoints.assign-submission
+  - symbol:entity-submission:submission-endpoints.post-transition
+  - symbol:entity-submission:submission-endpoints.update-submission
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.problem-details-helper
+  node: capability:session-continuity
+  kind: class
+  name: ProblemDetailsHelper
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 5
+  signature: public static class ProblemDetailsHelper
+  visibility: public
+  language: csharp
+  end_line: 251
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.region-mismatch
+  node: capability:session-continuity
+  kind: method
+  name: RegionMismatch
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 161
+  signature: public static IResult RegionMismatch()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 165
+  callers:
+  - symbol:entity-submission:submission-endpoints.create-submission
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.status-change-restricted
+  node: capability:session-continuity
+  kind: method
+  name: StatusChangeRestricted
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 115
+  signature: public static IResult StatusChangeRestricted()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 119
+  callers:
+  - symbol:entity-task-item:task-endpoints.update-task
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:problem-details-helper.telemetry-validation-error
+  node: capability:session-continuity
+  kind: method
+  name: TelemetryValidationError
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 138
+  signature: public static IResult TelemetryValidationError(IDictionary<string, string[]>
+    errors)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 148
+  callers:
+  - symbol:capability-session-continuity:session-telemetry-endpoints.ingest-async
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.validation-error
+  node: capability:session-continuity
+  kind: method
+  name: ValidationError
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 127
+  signature: public static IResult ValidationError(IDictionary<string, string[]> errors)
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 136
+  callers:
+  - symbol:entity-account:account-endpoints.change-relationship
+  - symbol:entity-account:account-endpoints.create-account
+  - symbol:entity-account:account-endpoints.create-contact
+  - symbol:entity-account:account-endpoints.merge-account
+  - symbol:entity-account:account-endpoints.transition-lifecycle
+  - symbol:entity-account:account-endpoints.update-account
+  - symbol:entity-account:account-endpoints.update-contact
+  - symbol:entity-broker:broker-endpoints.create-broker
+  - symbol:entity-broker:broker-endpoints.list-brokers
+  - symbol:entity-broker:broker-endpoints.update-broker
+  - symbol:entity-policy:policy-endpoints.validation-problem
+  - symbol:entity-renewal:renewal-endpoints.create-renewal
+  - symbol:entity-renewal:renewal-endpoints.get-timeline
+  - symbol:entity-renewal:renewal-endpoints.list-renewals
+  - symbol:entity-renewal:renewal-endpoints.post-transition
+  - symbol:entity-renewal:renewal-endpoints.put-assignment
+  - symbol:entity-renewal:renewal-endpoints.put-lob-attributes
+  - symbol:entity-submission:submission-endpoints.assign-submission
+  - symbol:entity-submission:submission-endpoints.create-submission
+  - symbol:entity-submission:submission-endpoints.get-timeline
+  - symbol:entity-submission:submission-endpoints.list-submissions
+  - symbol:entity-submission:submission-endpoints.post-transition
+  - symbol:entity-submission:submission-endpoints.update-submission
+  - symbol:entity-task-item:task-endpoints.create-task
+  - symbol:entity-task-item:task-endpoints.get-task-list
+  - symbol:entity-task-item:task-endpoints.update-task
+  - symbol:event-contact-created:contact-endpoints.create-contact
+  - symbol:event-contact-created:contact-endpoints.update-contact
+  - symbol:policy_rule-renewal-assign:user-endpoints.search-users
+  callees: []
+- id: symbol:capability-session-continuity:problem-details-helper.view-not-authorized
+  node: capability:session-continuity
+  kind: method
+  name: ViewNotAuthorized
+  file: engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+  line: 121
+  signature: public static IResult ViewNotAuthorized()
+  visibility: public
+  language: csharp
+  container: ProblemDetailsHelper
+  end_line: 125
+  callers:
+  - symbol:entity-task-item:task-endpoints.get-task-list
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.ext
+  - symbol:capability-session-continuity:problem-details-helper.ext-2
+- id: symbol:capability-session-continuity:session-continuity-telemetry-models.session-continuity-event-dto
+  node: capability:session-continuity
+  kind: record
+  name: SessionContinuityEventDto
+  file: engine/src/Nebula.Api/Models/SessionContinuityTelemetryModels.cs
+  line: 9
+  signature: public sealed record SessionContinuityEventDto(
+  visibility: public
+  language: csharp
+  end_line: 15
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-continuity-telemetry-models.session-continuity-event-names
+  node: capability:session-continuity
+  kind: class
+  name: SessionContinuityEventNames
+  file: engine/src/Nebula.Api/Models/SessionContinuityTelemetryModels.cs
+  line: 17
+  signature: public static class SessionContinuityEventNames
+  visibility: public
+  language: csharp
+  end_line: 28
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-continuity-telemetry-models.session-continuity-telemetry-request
+  node: capability:session-continuity
+  kind: record
+  name: SessionContinuityTelemetryRequest
+  file: engine/src/Nebula.Api/Models/SessionContinuityTelemetryModels.cs
+  line: 6
+  signature: public sealed record SessionContinuityTelemetryRequest(
+  visibility: public
+  language: csharp
+  end_line: 7
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-continuity-telemetry-service..ctor
+  node: capability:session-continuity
+  kind: constructor
+  name: .ctor
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 81
+  signature: public SessionContinuityTelemetryService(ILoggerFactory loggerFactory)
+  visibility: public
+  language: csharp
+  container: SessionContinuityTelemetryService
+  end_line: 84
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-continuity-telemetry-service.keys
+  node: capability:session-continuity
+  kind: method
+  name: Keys
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 221
+  signature: private static HashSet<string> Keys(params string[] keys)
+  visibility: private
+  language: csharp
+  container: SessionContinuityTelemetryService
+  end_line: 221
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-continuity-telemetry-service.payload-for-log
+  node: capability:session-continuity
+  kind: method
+  name: PayloadForLog
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 203
+  signature: private static Dictionary<string, object?> PayloadForLog(Dictionary<string,
+    JsonElement> payload)
+  visibility: private
+  language: csharp
+  container: SessionContinuityTelemetryService
+  end_line: 219
+  callers:
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.write-accepted-events
+  callees: []
+- id: symbol:capability-session-continuity:session-continuity-telemetry-service.session-continuity-telemetry-service
+  node: capability:session-continuity
+  kind: class
+  name: SessionContinuityTelemetryService
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 24
+  signature: public sealed class SessionContinuityTelemetryService
+  visibility: public
+  language: csharp
+  end_line: 222
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-continuity-telemetry-service.session-telemetry-validation-result
+  node: capability:session-continuity
+  kind: class
+  name: SessionTelemetryValidationResult
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 6
+  signature: public sealed class SessionTelemetryValidationResult
+  visibility: public
+  language: csharp
+  end_line: 22
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-continuity-telemetry-service.validate-async
+  node: capability:session-continuity
+  kind: method
+  name: ValidateAsync
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 86
+  signature: public Task<SessionTelemetryValidationResult> ValidateAsync(
+  visibility: public
+  language: csharp
+  container: SessionContinuityTelemetryService
+  end_line: 108
+  callers:
+  - symbol:capability-session-continuity:session-telemetry-endpoints.ingest-async
+  callees:
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.validate-event
+  - symbol:capability-session-continuity:session-telemetry-validation-result.add
+  instantiates:
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.session-telemetry-validation-result
+  type_refs:
+  - symbol:capability-session-continuity:session-continuity-telemetry-models.session-continuity-telemetry-request
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.session-telemetry-validation-result
+- id: symbol:capability-session-continuity:session-continuity-telemetry-service.validate-event
+  node: capability:session-continuity
+  kind: method
+  name: ValidateEvent
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 132
+  signature: private static void ValidateEvent(
+  visibility: private
+  language: csharp
+  container: SessionContinuityTelemetryService
+  end_line: 162
+  callers:
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.validate-async
+  callees:
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.validate-payload
+  - symbol:capability-session-continuity:session-telemetry-validation-result.add
+  type_refs:
+  - symbol:capability-session-continuity:session-continuity-telemetry-models.session-continuity-event-dto
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.session-telemetry-validation-result
+- id: symbol:capability-session-continuity:session-continuity-telemetry-service.validate-payload
+  node: capability:session-continuity
+  kind: method
+  name: ValidatePayload
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 164
+  signature: private static void ValidatePayload(
+  visibility: private
+  language: csharp
+  container: SessionContinuityTelemetryService
+  end_line: 201
+  callers:
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.validate-event
+  callees:
+  - symbol:capability-session-continuity:session-telemetry-validation-result.add
+  type_refs:
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.session-telemetry-validation-result
+- id: symbol:capability-session-continuity:session-continuity-telemetry-service.write-accepted-events
+  node: capability:session-continuity
+  kind: method
+  name: WriteAcceptedEvents
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 110
+  signature: public void WriteAcceptedEvents(
+  visibility: public
+  language: csharp
+  container: SessionContinuityTelemetryService
+  end_line: 130
+  callers:
+  - symbol:capability-session-continuity:session-telemetry-endpoints.ingest-async
+  callees:
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.payload-for-log
+  type_refs:
+  - symbol:capability-session-continuity:session-continuity-telemetry-models.session-continuity-telemetry-request
+- id: symbol:capability-session-continuity:session-telemetry-endpoint-tests.arrange-current-user-async
+  node: capability:session-continuity
+  kind: method
+  name: ArrangeCurrentUserAsync
+  file: engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+  line: 93
+  signature: private async Task<Guid> ArrangeCurrentUserAsync()
+  visibility: private
+  language: csharp
+  container: SessionTelemetryEndpointTests
+  end_line: 118
+  is_test: true
+  callers:
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-pii-payload-key-returns400-validation-problem
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-user-mismatch-returns403-without-authenticate-header
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-valid-batch-returns202-accepted
+  callees:
+  - symbol:capability-session-continuity:session-telemetry-validation-result.add
+  instantiates:
+  - symbol:entity-user-profile:user-profile.user-profile
+- id: symbol:capability-session-continuity:session-telemetry-endpoint-tests.dispose
+  node: capability:session-continuity
+  kind: method
+  name: Dispose
+  file: engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+  line: 17
+  signature: public void Dispose()
+  visibility: public
+  language: csharp
+  container: SessionTelemetryEndpointTests
+  end_line: 23
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:test-auth-handler.reset-f0009-overrides
+- id: symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-invalid-token-returns401-auth-problem
+  node: capability:session-continuity
+  kind: method
+  name: PostSessionContinuityTelemetry_InvalidToken_Returns401AuthProblem
+  file: engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+  line: 77
+  signature: public async Task PostSessionContinuityTelemetry_InvalidToken_Returns401AuthProblem()
+  visibility: public
+  language: csharp
+  container: SessionTelemetryEndpointTests
+  end_line: 91
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.request-body
+- id: symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-pii-payload-key-returns400-validation-problem
+  node: capability:session-continuity
+  kind: method
+  name: PostSessionContinuityTelemetry_PiiPayloadKey_Returns400ValidationProblem
+  file: engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+  line: 37
+  signature: public async Task PostSessionContinuityTelemetry_PiiPayloadKey_Returns400ValidationProblem()
+  visibility: public
+  language: csharp
+  container: SessionTelemetryEndpointTests
+  end_line: 58
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.arrange-current-user-async
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.request-body
+- id: symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-user-mismatch-returns403-without-authenticate-header
+  node: capability:session-continuity
+  kind: method
+  name: PostSessionContinuityTelemetry_UserMismatch_Returns403WithoutAuthenticateHeader
+  file: engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+  line: 60
+  signature: public async Task PostSessionContinuityTelemetry_UserMismatch_Returns403WithoutAuthenticateHeader()
+  visibility: public
+  language: csharp
+  container: SessionTelemetryEndpointTests
+  end_line: 75
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.arrange-current-user-async
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.request-body
+- id: symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-valid-batch-returns202-accepted
+  node: capability:session-continuity
+  kind: method
+  name: PostSessionContinuityTelemetry_ValidBatch_Returns202Accepted
+  file: engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+  line: 25
+  signature: public async Task PostSessionContinuityTelemetry_ValidBatch_Returns202Accepted()
+  visibility: public
+  language: csharp
+  container: SessionTelemetryEndpointTests
+  end_line: 35
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.arrange-current-user-async
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.request-body
+- id: symbol:capability-session-continuity:session-telemetry-endpoint-tests.request-body
+  node: capability:session-continuity
+  kind: method
+  name: RequestBody
+  file: engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+  line: 120
+  signature: private static Dictionary<string, object?> RequestBody(
+  visibility: private
+  language: csharp
+  container: SessionTelemetryEndpointTests
+  end_line: 142
+  is_test: true
+  callers:
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-invalid-token-returns401-auth-problem
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-pii-payload-key-returns400-validation-problem
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-user-mismatch-returns403-without-authenticate-header
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.post-session-continuity-telemetry-valid-batch-returns202-accepted
+  callees: []
+- id: symbol:capability-session-continuity:session-telemetry-endpoint-tests.session-telemetry-endpoint-tests
+  node: capability:session-continuity
+  kind: class
+  name: SessionTelemetryEndpointTests
+  file: engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+  line: 11
+  signature: public class SessionTelemetryEndpointTests(CustomWebApplicationFactory
+    factory)
+  visibility: public
+  language: csharp
+  end_line: 143
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-telemetry-endpoints.ingest-async
+  node: capability:session-continuity
+  kind: method
+  name: IngestAsync
+  file: engine/src/Nebula.Api/Endpoints/SessionTelemetryEndpoints.cs
+  line: 22
+  signature: internal static async Task<IResult> IngestAsync(
+  visibility: internal
+  language: csharp
+  container: SessionTelemetryEndpoints
+  end_line: 39
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.authorization-forbidden
+  - symbol:capability-session-continuity:problem-details-helper.telemetry-validation-error
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.validate-async
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.write-accepted-events
+  - symbol:capability-session-continuity:session-telemetry-endpoints.trace-id
+  type_refs:
+  - symbol:capability-session-continuity:session-continuity-telemetry-models.session-continuity-telemetry-request
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.session-continuity-telemetry-service
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-session-continuity:session-telemetry-endpoints.map-session-telemetry-endpoints
+  node: capability:session-continuity
+  kind: method
+  name: MapSessionTelemetryEndpoints
+  file: engine/src/Nebula.Api/Endpoints/SessionTelemetryEndpoints.cs
+  line: 10
+  signature: public static IEndpointRouteBuilder MapSessionTelemetryEndpoints(this
+    IEndpointRouteBuilder app)
+  visibility: public
+  language: csharp
+  container: SessionTelemetryEndpoints
+  end_line: 20
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-telemetry-endpoints.session-telemetry-endpoints
+  node: capability:session-continuity
+  kind: class
+  name: SessionTelemetryEndpoints
+  file: engine/src/Nebula.Api/Endpoints/SessionTelemetryEndpoints.cs
+  line: 8
+  signature: public static class SessionTelemetryEndpoints
+  visibility: public
+  language: csharp
+  end_line: 43
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-telemetry-endpoints.trace-id
+  node: capability:session-continuity
+  kind: method
+  name: TraceId
+  file: engine/src/Nebula.Api/Endpoints/SessionTelemetryEndpoints.cs
+  line: 41
+  signature: private static string TraceId(HttpContext httpContext)
+  visibility: private
+  language: csharp
+  container: SessionTelemetryEndpoints
+  end_line: 42
+  callers:
+  - symbol:capability-session-continuity:session-telemetry-endpoints.ingest-async
+  callees: []
+- id: symbol:capability-session-continuity:session-telemetry-validation-result.add
+  node: capability:session-continuity
+  kind: method
+  name: Add
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 12
+  signature: public void Add(string path, string message)
+  visibility: public
+  language: csharp
+  container: SessionTelemetryValidationResult
+  end_line: 21
+  callers:
+  - symbol:capability-session-continuity:auth-problem-details-contract-tests.arrange-current-user-async
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.validate-async
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.validate-event
+  - symbol:capability-session-continuity:session-continuity-telemetry-service.validate-payload
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.arrange-current-user-async
+  - symbol:capability-session-continuity:test-auth-handler.handle-authenticate-async
+  callees: []
+- id: symbol:capability-session-continuity:session-telemetry-validation-result.errors
+  node: capability:session-continuity
+  kind: property
+  name: Errors
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 10
+  signature: public Dictionary<string, string[]> Errors
+  visibility: public
+  language: csharp
+  container: SessionTelemetryValidationResult
+  end_line: 10
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-telemetry-validation-result.is-forbidden
+  node: capability:session-continuity
+  kind: property
+  name: IsForbidden
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 9
+  signature: public bool IsForbidden
+  visibility: public
+  language: csharp
+  container: SessionTelemetryValidationResult
+  end_line: 9
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:session-telemetry-validation-result.is-valid
+  node: capability:session-continuity
+  kind: property
+  name: IsValid
+  file: engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+  line: 8
+  signature: public bool IsValid
+  visibility: public
+  language: csharp
+  container: SessionTelemetryValidationResult
+  end_line: 8
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:test-auth-handler.auth-mode
+  node: capability:session-continuity
+  kind: enum
+  name: AuthMode
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 18
+  signature: public enum AuthMode
+  visibility: public
+  language: csharp
+  container: TestAuthHandler
+  end_line: 25
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:test-auth-handler.handle-authenticate-async
+  node: capability:session-continuity
+  kind: method
+  name: HandleAuthenticateAsync
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 40
+  signature: protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+  visibility: protected
+  language: csharp
+  container: TestAuthHandler
+  end_line: 76
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:session-telemetry-validation-result.add
+- id: symbol:capability-session-continuity:test-auth-handler.handle-challenge-async
+  node: capability:session-continuity
+  kind: method
+  name: HandleChallengeAsync
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 78
+  signature: protected override Task HandleChallengeAsync(AuthenticationProperties
+    properties)
+  visibility: protected
+  language: csharp
+  container: TestAuthHandler
+  end_line: 92
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.auth-invalid-token
+  - symbol:capability-session-continuity:problem-details-helper.auth-session-revoked
+  - symbol:capability-session-continuity:problem-details-helper.auth-token-expired
+- id: symbol:capability-session-continuity:test-auth-handler.handle-forbidden-async
+  node: capability:session-continuity
+  kind: method
+  name: HandleForbiddenAsync
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 94
+  signature: protected override Task HandleForbiddenAsync(AuthenticationProperties
+    properties)
+  visibility: protected
+  language: csharp
+  container: TestAuthHandler
+  end_line: 102
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.authorization-forbidden
+- id: symbol:capability-session-continuity:test-auth-handler.mode
+  node: capability:session-continuity
+  kind: property
+  name: Mode
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 27
+  signature: public static AuthMode Mode
+  visibility: public
+  language: csharp
+  container: TestAuthHandler
+  end_line: 27
+  is_test: true
+  callers: []
+  callees: []
+  type_refs:
+  - symbol:capability-session-continuity:test-auth-handler.auth-mode
+- id: symbol:capability-session-continuity:test-auth-handler.reset-f0009-overrides
+  node: capability:session-continuity
+  kind: method
+  name: ResetF0009Overrides
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 105
+  signature: public static void ResetF0009Overrides()
+  visibility: public
+  language: csharp
+  container: TestAuthHandler
+  end_line: 110
+  is_test: true
+  callers:
+  - symbol:capability-session-continuity:auth-problem-details-contract-tests.dispose
+  - symbol:capability-session-continuity:session-telemetry-endpoint-tests.dispose
+  - symbol:entity-broker:broker-authorization-tests.dispose
+  - symbol:entity-broker:broker-user-access-tests.dispose
+  - symbol:entity-task-item:task-endpoint-tests.dispose-async
+  callees: []
+- id: symbol:capability-session-continuity:test-auth-handler.test-auth-handler
+  node: capability:session-continuity
+  kind: class
+  name: TestAuthHandler
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 12
+  signature: public class TestAuthHandler(
+  visibility: public
+  language: csharp
+  end_line: 111
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:test-auth-handler.test-broker-tenant-id
+  node: capability:session-continuity
+  kind: property
+  name: TestBrokerTenantId
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 38
+  signature: public static string? TestBrokerTenantId
+  visibility: public
+  language: csharp
+  container: TestAuthHandler
+  end_line: 38
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:test-auth-handler.test-display-name
+  node: capability:session-continuity
+  kind: property
+  name: TestDisplayName
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 30
+  signature: public static string TestDisplayName
+  visibility: public
+  language: csharp
+  container: TestAuthHandler
+  end_line: 30
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:test-auth-handler.test-nebula-roles
+  node: capability:session-continuity
+  kind: property
+  name: TestNebulaRoles
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 34
+  signature: public static string[]? TestNebulaRoles
+  visibility: public
+  language: csharp
+  container: TestAuthHandler
+  end_line: 34
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:test-auth-handler.test-role
+  node: capability:session-continuity
+  kind: property
+  name: TestRole
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 29
+  signature: public static string TestRole
+  visibility: public
+  language: csharp
+  container: TestAuthHandler
+  end_line: 29
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:test-auth-handler.test-subject
+  node: capability:session-continuity
+  kind: property
+  name: TestSubject
+  file: engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+  line: 28
+  signature: public static string TestSubject
+  visibility: public
+  language: csharp
+  container: TestAuthHandler
+  end_line: 28
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:use-auth-event-handler.use-auth-event-handler
+  node: capability:session-continuity
+  kind: function
+  name: useAuthEventHandler
+  file: experience/src/features/auth/useAuthEventHandler.ts
+  line: 30
+  signature: 'export function useAuthEventHandler(): void'
+  visibility: export
+  language: typescript
+  end_line: 69
+  callers: []
+  callees:
+  - symbol:capability-session-continuity:auth-events.on-auth-event
+  - symbol:capability-session-continuity:use-session-teardown.use-session-teardown
+  type_refs:
+  - symbol:capability-session-continuity:auth-events.forced-reauth-payload
+- id: symbol:capability-session-continuity:use-session-teardown.call-logout-endpoint
+  node: capability:session-continuity
+  kind: function
+  name: callLogoutEndpoint
+  file: experience/src/features/auth/useSessionTeardown.ts
+  line: 38
+  signature: 'async function callLogoutEndpoint(): Promise<void>'
+  visibility: local
+  language: typescript
+  end_line: 49
+  callers:
+  - symbol:capability-session-continuity:use-session-teardown.use-session-teardown
+  callees: []
+- id: symbol:capability-session-continuity:use-session-teardown.clear-oidc-state
+  node: capability:session-continuity
+  kind: function
+  name: clearOidcState
+  file: experience/src/features/auth/useSessionTeardown.ts
+  line: 56
+  signature: 'async function clearOidcState(): Promise<void>'
+  visibility: local
+  language: typescript
+  end_line: 59
+  callers:
+  - symbol:capability-session-continuity:use-session-teardown.use-session-teardown
+  callees: []
+- id: symbol:capability-session-continuity:use-session-teardown.teardown-reason
+  node: capability:session-continuity
+  kind: type
+  name: TeardownReason
+  file: experience/src/features/auth/useSessionTeardown.ts
+  line: 29
+  signature: export type TeardownReason = 'session_expired' | 'logout' | 'signed_out';
+  visibility: export
+  language: typescript
+  end_line: 29
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:use-session-teardown.test.wrapper
+  node: capability:session-continuity
+  kind: function
+  name: wrapper
+  file: experience/src/features/auth/tests/useSessionTeardown.test.tsx
+  line: 65
+  signature: function wrapper(
+  visibility: local
+  language: typescript
+  end_line: 71
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-session-continuity:use-session-teardown.use-session-teardown
+  node: capability:session-continuity
+  kind: function
+  name: useSessionTeardown
+  file: experience/src/features/auth/useSessionTeardown.ts
+  line: 73
+  signature: export function useSessionTeardown()
+  visibility: export
+  language: typescript
+  end_line: 111
+  callers:
+  - symbol:capability-session-continuity:use-auth-event-handler.use-auth-event-handler
+  callees:
+  - symbol:capability-session-continuity:use-session-teardown.call-logout-endpoint
+  - symbol:capability-session-continuity:use-session-teardown.clear-oidc-state
+  type_refs:
+  - symbol:capability-session-continuity:use-session-teardown.teardown-reason
 - id: symbol:capability-validator-equivalence:cyber.as-record
   node: capability:validator-equivalence
   kind: function
@@ -6772,6 +8506,283 @@ symbols:
   end_line: 13
   callers: []
   callees: []
+- id: symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.build-deferred-key
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: buildDeferredKey
+  file: experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+  line: 88
+  signature: 'function buildDeferredKey(userId: string, eventId: string): string'
+  visibility: local
+  language: typescript
+  end_line: 90
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.persist-failure-class-event
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.remove-deferred-event
+  callees: []
+- id: symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.clear-deferred-events-for-user
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: clearDeferredEventsForUser
+  file: experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+  line: 46
+  signature: 'export function clearDeferredEventsForUser(userId: string): void'
+  visibility: export
+  language: typescript
+  end_line: 55
+  callers: []
+  callees:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.read-entries-for-user
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.safe-local-storage
+- id: symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.create-event-id
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: createEventId
+  file: experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+  line: 97
+  signature: 'function createEventId(): string'
+  visibility: local
+  language: typescript
+  end_line: 103
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.persist-failure-class-event
+  callees: []
+- id: symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.drain-deferred-events
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: drainDeferredEvents
+  file: experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+  line: 28
+  signature: 'export async function drainDeferredEvents(userId: string): Promise<void>'
+  visibility: export
+  language: typescript
+  end_line: 44
+  callers: []
+  callees:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.read-entries-for-user
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.safe-local-storage
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.emit-session-continuity-event
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.flush-session-continuity-events
+- id: symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.is-expired
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: isExpired
+  file: experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+  line: 92
+  signature: 'function isExpired(event: SessionContinuityEvent): boolean'
+  visibility: local
+  language: typescript
+  end_line: 95
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.read-entries-for-user
+  callees: []
+  type_refs:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-event
+- id: symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.persist-failure-class-event
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: persistFailureClassEvent
+  file: experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+  line: 10
+  signature: export function persistFailureClassEvent(
+  visibility: export
+  language: typescript
+  end_line: 22
+  callers: []
+  callees:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.build-deferred-key
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.create-event-id
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.safe-local-storage
+  type_refs:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-event
+- id: symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.read-entries-for-user
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: readEntriesForUser
+  file: experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+  line: 57
+  signature: 'function readEntriesForUser(storage: Storage, userId: string)'
+  visibility: local
+  language: typescript
+  end_line: 86
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.clear-deferred-events-for-user
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.drain-deferred-events
+  callees:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.is-expired
+  type_refs:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-event
+- id: symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.remove-deferred-event
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: removeDeferredEvent
+  file: experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+  line: 24
+  signature: 'export function removeDeferredEvent(userId: string, eventId: string):
+    void'
+  visibility: export
+  language: typescript
+  end_line: 26
+  callers: []
+  callees:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.build-deferred-key
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.safe-local-storage
+- id: symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.safe-local-storage
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: safeLocalStorage
+  file: experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+  line: 105
+  signature: 'function safeLocalStorage(): Storage | null'
+  visibility: local
+  language: typescript
+  end_line: 111
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.clear-deferred-events-for-user
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.drain-deferred-events
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.persist-failure-class-event
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.remove-deferred-event
+  callees: []
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.build-session-continuity-event
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: buildSessionContinuityEvent
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 42
+  signature: export function buildSessionContinuityEvent(
+  visibility: export
+  language: typescript
+  end_line: 65
+  callers: []
+  callees:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.read-string-claim
+  type_refs:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-event
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-event-name
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-identity
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.emit-session-continuity-event
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: emitSessionContinuityEvent
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 67
+  signature: export function emitSessionContinuityEvent(
+  visibility: export
+  language: typescript
+  end_line: 72
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.drain-deferred-events
+  callees:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.flush-session-continuity-events
+  type_refs:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-event
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.flush-buffered-events
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: flushBufferedEvents
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 91
+  signature: 'async function flushBufferedEvents(): Promise<void>'
+  visibility: local
+  language: typescript
+  end_line: 97
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.flush-session-continuity-events
+  callees:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.post-telemetry-batch
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.flush-session-continuity-events
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: flushSessionContinuityEvents
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 74
+  signature: 'export async function flushSessionContinuityEvents(): Promise<void>'
+  visibility: export
+  language: typescript
+  end_line: 84
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:deferred-telemetry-buffer.drain-deferred-events
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.emit-session-continuity-event
+  callees:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.flush-buffered-events
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.post-telemetry-batch
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: postTelemetryBatch
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 99
+  signature: async function postTelemetryBatch(
+  visibility: local
+  language: typescript
+  end_line: 134
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.flush-buffered-events
+  callees: []
+  type_refs:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-event
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.read-string-claim
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: readStringClaim
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 136
+  signature: function readStringClaim(
+  visibility: local
+  language: typescript
+  end_line: 144
+  callers:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.build-session-continuity-event
+  callees: []
+  type_refs:
+  - symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-identity
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.reset-session-telemetry-for-tests
+  node: endpoint:internal-telemetry-session-continuity
+  kind: function
+  name: resetSessionTelemetryForTests
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 86
+  signature: 'export function resetSessionTelemetryForTests(): void'
+  visibility: export
+  language: typescript
+  end_line: 89
+  callers: []
+  callees: []
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-event
+  node: endpoint:internal-telemetry-session-continuity
+  kind: interface
+  name: SessionContinuityEvent
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 14
+  signature: export interface SessionContinuityEvent
+  visibility: export
+  language: typescript
+  end_line: 21
+  callers: []
+  callees: []
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-event-name
+  node: endpoint:internal-telemetry-session-continuity
+  kind: type
+  name: SessionContinuityEventName
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 3
+  signature: export type SessionContinuityEventName =
+  visibility: export
+  language: typescript
+  end_line: 12
+  callers: []
+  callees: []
+- id: symbol:endpoint-internal-telemetry-session-continuity:session-telemetry.session-continuity-identity
+  node: endpoint:internal-telemetry-session-continuity
+  kind: interface
+  name: SessionContinuityIdentity
+  file: experience/src/features/session-continuity/sessionTelemetry.ts
+  line: 23
+  signature: export interface SessionContinuityIdentity
+  visibility: export
+  language: typescript
+  end_line: 32
+  callers: []
+  callees: []
 - id: symbol:entity-account:20260414120000-f0016-account-lifecycle.f0016-account-lifecycle
   node: entity:account
   kind: class
@@ -7363,6 +9374,11 @@ symbols:
   end_line: 517
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-endpoints.try-parse-expected-row-version
   - symbol:entity-account:account-service.change-relationship-async
@@ -7384,6 +9400,8 @@ symbols:
   end_line: 118
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.create-async
   type_refs:
@@ -7404,6 +9422,9 @@ symbols:
   end_line: 421
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-account:account-contact-service.create-async
   - symbol:entity-account:account-endpoints.has-access-async
   type_refs:
@@ -7424,6 +9445,10 @@ symbols:
   end_line: 482
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
   - symbol:entity-account:account-contact-service.delete-async
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-endpoints.try-parse-expected-row-version
@@ -7444,6 +9469,8 @@ symbols:
   end_line: 147
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.get-by-id-async
   type_refs:
@@ -7463,6 +9490,8 @@ symbols:
   end_line: 255
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.get-merge-preview-async
   type_refs:
@@ -7482,6 +9511,8 @@ symbols:
   end_line: 614
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.exists-accessible-async
   - symbol:entity-policy:policy-service.get-account-summary-async
@@ -7503,6 +9534,8 @@ symbols:
   end_line: 368
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.get-summary-async
   type_refs:
@@ -7557,6 +9590,7 @@ symbols:
   end_line: 91
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.list-async
   instantiates:
@@ -7578,6 +9612,8 @@ symbols:
   end_line: 393
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-contact-service.list-async
   - symbol:entity-account:account-endpoints.has-access-async
   type_refs:
@@ -7597,6 +9633,8 @@ symbols:
   end_line: 597
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.exists-accessible-async
   - symbol:entity-policy:policy-service.list-async
@@ -7620,6 +9658,8 @@ symbols:
   end_line: 562
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.exists-accessible-async
   - symbol:entity-renewal:renewal-service.list-async
@@ -7643,6 +9683,8 @@ symbols:
   end_line: 540
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.exists-accessible-async
   - symbol:entity-submission:submission-service.list-async
@@ -7666,6 +9708,8 @@ symbols:
   end_line: 640
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-service.exists-accessible-async
   - symbol:policy_rule-timeline-event-read:timeline-service.list-events-paged-async
@@ -7701,6 +9745,14 @@ symbols:
   end_line: 322
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.idempotency-key-conflict
+  - symbol:capability-session-continuity:problem-details-helper.invalid-transition
+  - symbol:capability-session-continuity:problem-details-helper.merge-too-large
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-endpoints.read-idempotency-key
   - symbol:entity-account:account-endpoints.replay-idempotent-response
@@ -7752,6 +9804,12 @@ symbols:
   end_line: 232
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.invalid-transition
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-endpoints.try-parse-expected-row-version
   - symbol:entity-account:account-service.transition-async
@@ -7793,6 +9851,11 @@ symbols:
   end_line: 190
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-endpoints.try-parse-expected-row-version
   - symbol:entity-account:account-service.update-async
@@ -7814,6 +9877,11 @@ symbols:
   end_line: 456
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-account:account-contact-service.update-async
   - symbol:entity-account:account-endpoints.has-access-async
   - symbol:entity-account:account-endpoints.try-parse-expected-row-version
@@ -10973,6 +13041,7 @@ symbols:
   end_line: 40
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   - symbol:entity-activity-timeline-event:timeline-endpoints.has-access-async
   - symbol:policy_rule-timeline-event-read:timeline-service.list-events-for-broker-user-async
   - symbol:policy_rule-timeline-event-read:timeline-service.list-events-paged-async
@@ -11337,7 +13406,8 @@ symbols:
   end_line: 25
   is_test: true
   callers: []
-  callees: []
+  callees:
+  - symbol:capability-session-continuity:test-auth-handler.reset-f0009-overrides
 - id: symbol:entity-broker:broker-authorization-tests.get-broker-with-no-roles-returns403
   node: entity:broker
   kind: method
@@ -11808,6 +13878,9 @@ symbols:
   end_line: 74
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.duplicate-license
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-broker:broker-endpoints.has-access-async
   - symbol:entity-broker:broker-service.create-async
   type_refs:
@@ -11828,6 +13901,9 @@ symbols:
   end_line: 144
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.active-dependencies-exist
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.not-found
   - symbol:entity-broker:broker-endpoints.has-access-async
   - symbol:entity-broker:broker-service.delete-async
   type_refs:
@@ -11847,6 +13923,8 @@ symbols:
   end_line: 91
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.not-found
   - symbol:entity-broker:broker-endpoints.has-access-async
   - symbol:entity-broker:broker-service.get-by-id-async
   - symbol:entity-broker:broker-service.get-by-id-for-broker-user-async
@@ -11890,6 +13968,8 @@ symbols:
   end_line: 49
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-broker:broker-endpoints.has-access-async
   - symbol:entity-broker:broker-service.list-async
   - symbol:entity-broker:broker-service.list-for-broker-user-async
@@ -11924,6 +14004,9 @@ symbols:
   end_line: 163
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.already-active
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.not-found
   - symbol:entity-broker:broker-endpoints.has-access-async
   - symbol:entity-broker:broker-service.reactivate-async
   type_refs:
@@ -11943,6 +14026,10 @@ symbols:
   end_line: 129
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.concurrency-conflict
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-broker:broker-endpoints.has-access-async
   - symbol:entity-broker:broker-service.update-async
   type_refs:
@@ -12872,7 +14959,8 @@ symbols:
   end_line: 30
   is_test: true
   callers: []
-  callees: []
+  callees:
+  - symbol:capability-session-continuity:test-auth-handler.reset-f0009-overrides
 - id: symbol:entity-broker:broker-user-access-tests.get-broker-by-id-as-broker-user-cross-scope-request-returns403-broker-scope-unresolvable
   node: entity:broker
   kind: method
@@ -13938,28 +16026,96 @@ symbols:
   type_refs:
   - symbol:entity-document:i-document-classification-gate.document-access-decision
   - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:entity-document:api.access-token-resolution
+  node: entity:document
+  kind: interface
+  name: AccessTokenResolution
+  file: experience/src/services/api.ts
+  line: 23
+  signature: interface AccessTokenResolution
+  visibility: local
+  language: typescript
+  end_line: 26
+  callers: []
+  callees: []
 - id: symbol:entity-document:api.api-error
   node: entity:document
   kind: class
   name: ApiError
   file: experience/src/services/api.ts
-  line: 23
+  line: 28
   signature: export class ApiError extends Error
   visibility: export
   language: typescript
-  end_line: 39
+  end_line: 44
   callers: []
+  callees: []
+- id: symbol:entity-document:api.begin-forced-reauth
+  node: entity:document
+  kind: function
+  name: beginForcedReauth
+  file: experience/src/services/api.ts
+  line: 251
+  signature: function beginForcedReauth(
+  visibility: local
+  language: typescript
+  end_line: 267
+  callers:
+  - symbol:entity-document:api.handle-expired-token
+  - symbol:entity-document:api.handle-problem-response
+  callees:
+  - symbol:entity-document:api.current-route-with-query
+  - symbol:entity-document:api.current-route-without-query
+  - symbol:entity-document:api.record-failure-class-event
+- id: symbol:entity-document:api.current-route-with-query
+  node: entity:document
+  kind: function
+  name: currentRouteWithQuery
+  file: experience/src/services/api.ts
+  line: 328
+  signature: 'function currentRouteWithQuery(): string'
+  visibility: local
+  language: typescript
+  end_line: 332
+  callers:
+  - symbol:entity-document:api.begin-forced-reauth
+  callees: []
+- id: symbol:entity-document:api.current-route-without-query
+  node: entity:document
+  kind: function
+  name: currentRouteWithoutQuery
+  file: experience/src/services/api.ts
+  line: 334
+  signature: 'function currentRouteWithoutQuery(): string'
+  visibility: local
+  language: typescript
+  end_line: 336
+  callers:
+  - symbol:entity-document:api.begin-forced-reauth
+  callees: []
+- id: symbol:entity-document:api.endpoint-route-from-path
+  node: entity:document
+  kind: function
+  name: endpointRouteFromPath
+  file: experience/src/services/api.ts
+  line: 317
+  signature: 'function endpointRouteFromPath(path: string): string'
+  visibility: local
+  language: typescript
+  end_line: 326
+  callers:
+  - symbol:entity-document:api.request-api
   callees: []
 - id: symbol:entity-document:api.fetch-api
   node: entity:document
   kind: function
   name: fetchApi
   file: experience/src/services/api.ts
-  line: 95
+  line: 87
   signature: 'async function fetchApi<T>(path: string, options?: RequestInit): Promise<T>'
   visibility: local
   language: typescript
-  end_line: 98
+  end_line: 90
   callers: []
   callees:
   - symbol:entity-document:api.request-api
@@ -13968,12 +16124,12 @@ symbols:
   kind: function
   name: fetchApiNoBody
   file: experience/src/services/api.ts
-  line: 100
+  line: 92
   signature: 'async function fetchApiNoBody(path: string, options?: RequestInit):
     Promise<void>'
   visibility: local
   language: typescript
-  end_line: 102
+  end_line: 94
   callers: []
   callees:
   - symbol:entity-document:api.request-api
@@ -13982,73 +16138,184 @@ symbols:
   kind: function
   name: fetchBlob
   file: experience/src/services/api.ts
-  line: 104
+  line: 96
   signature: 'async function fetchBlob(path: string, options?: RequestInit): Promise<Blob>'
   visibility: local
   language: typescript
-  end_line: 107
+  end_line: 99
   callers: []
   callees:
   - symbol:entity-document:api.request-api
-- id: symbol:entity-document:api.handle-error-intercept
+- id: symbol:entity-document:api.handle-expired-token
   node: entity:document
   kind: function
-  name: handleErrorIntercept
+  name: handleExpiredToken
   file: experience/src/services/api.ts
-  line: 55
-  signature: 'function handleErrorIntercept(status: number, problem: ProblemDetails
-    | null): void'
+  line: 195
+  signature: async function handleExpiredToken(
   visibility: local
   language: typescript
-  end_line: 63
+  end_line: 249
   callers:
+  - symbol:entity-document:api.handle-problem-response
+  callees:
+  - symbol:entity-document:api.begin-forced-reauth
+  - symbol:entity-document:api.handle-problem-response
+  - symbol:entity-document:api.is-read-method
+  - symbol:entity-document:api.navigation-in-flight
+  - symbol:entity-document:api.record-failure-class-event
+  - symbol:entity-document:api.send-request
+  instantiates:
+  - symbol:entity-document:api.api-error
+  - symbol:entity-document:api.mutation-retry-required-error
+  type_refs:
+  - symbol:entity-document:api.problem-response-context
+- id: symbol:entity-document:api.handle-problem-response
+  node: entity:document
+  kind: function
+  name: handleProblemResponse
+  file: experience/src/services/api.ts
+  line: 153
+  signature: async function handleProblemResponse(
+  visibility: local
+  language: typescript
+  end_line: 193
+  callers:
+  - symbol:entity-document:api.handle-expired-token
   - symbol:entity-document:api.request-api
-  callees: []
+  callees:
+  - symbol:entity-document:api.begin-forced-reauth
+  - symbol:entity-document:api.handle-expired-token
+  - symbol:entity-document:api.navigation-in-flight
+  - symbol:entity-document:api.record-classification-telemetry
   instantiates:
   - symbol:entity-document:api.api-error
   type_refs:
-  - symbol:entity-document:api.problem-details
-- id: symbol:entity-document:api.problem-details
+  - symbol:entity-document:api.problem-response-context
+- id: symbol:entity-document:api.is-read-method
   node: entity:document
-  kind: interface
-  name: ProblemDetails
+  kind: function
+  name: isReadMethod
   file: experience/src/services/api.ts
-  line: 7
-  signature: interface ProblemDetails
+  line: 313
+  signature: 'function isReadMethod(method: string): boolean'
   visibility: local
   language: typescript
-  end_line: 21
+  end_line: 315
+  callers:
+  - symbol:entity-document:api.handle-expired-token
+  callees: []
+- id: symbol:entity-document:api.mutation-retry-required-error
+  node: entity:document
+  kind: class
+  name: MutationRetryRequiredError
+  file: experience/src/services/api.ts
+  line: 46
+  signature: export class MutationRetryRequiredError extends ApiError
+  visibility: export
+  language: typescript
+  end_line: 57
   callers: []
+  callees: []
+- id: symbol:entity-document:api.navigation-in-flight
+  node: entity:document
+  kind: function
+  name: navigationInFlight
+  file: experience/src/services/api.ts
+  line: 305
+  signature: 'function navigationInFlight(): Promise<Response>'
+  visibility: local
+  language: typescript
+  end_line: 307
+  callers:
+  - symbol:entity-document:api.handle-expired-token
+  - symbol:entity-document:api.handle-problem-response
+  callees: []
+- id: symbol:entity-document:api.problem-response-context
+  node: entity:document
+  kind: interface
+  name: ProblemResponseContext
+  file: experience/src/services/api.ts
+  line: 142
+  signature: interface ProblemResponseContext
+  visibility: local
+  language: typescript
+  end_line: 151
+  callers: []
+  callees: []
+- id: symbol:entity-document:api.record-classification-telemetry
+  node: entity:document
+  kind: function
+  name: recordClassificationTelemetry
+  file: experience/src/services/api.ts
+  line: 269
+  signature: function recordClassificationTelemetry(
+  visibility: local
+  language: typescript
+  end_line: 289
+  callers:
+  - symbol:entity-document:api.handle-problem-response
+  callees:
+  - symbol:entity-document:api.record-failure-class-event
+- id: symbol:entity-document:api.record-failure-class-event
+  node: entity:document
+  kind: function
+  name: recordFailureClassEvent
+  file: experience/src/services/api.ts
+  line: 291
+  signature: function recordFailureClassEvent(
+  visibility: local
+  language: typescript
+  end_line: 303
+  callers:
+  - symbol:entity-document:api.begin-forced-reauth
+  - symbol:entity-document:api.handle-expired-token
+  - symbol:entity-document:api.record-classification-telemetry
   callees: []
 - id: symbol:entity-document:api.request-api
   node: entity:document
   kind: function
   name: requestApi
   file: experience/src/services/api.ts
-  line: 109
+  line: 101
   signature: 'async function requestApi(path: string, options?: RequestInit, jsonContent
     = true): Promise<Response>'
   visibility: local
   language: typescript
-  end_line: 134
+  end_line: 121
   callers:
   - symbol:entity-document:api.fetch-api
   - symbol:entity-document:api.fetch-api-no-body
   - symbol:entity-document:api.fetch-blob
   callees:
-  - symbol:entity-document:api.handle-error-intercept
-  - symbol:entity-document:api.resolve-api-url
+  - symbol:entity-document:api.endpoint-route-from-path
+  - symbol:entity-document:api.handle-problem-response
+  - symbol:entity-document:api.resolve-method
   - symbol:entity-document:api.resolve-token
+  - symbol:entity-document:api.send-request
 - id: symbol:entity-document:api.resolve-api-url
   node: entity:document
   kind: function
   name: resolveApiUrl
   file: experience/src/services/api.ts
-  line: 83
+  line: 75
   signature: 'function resolveApiUrl(path: string): string'
   visibility: local
   language: typescript
-  end_line: 93
+  end_line: 85
+  callers:
+  - symbol:entity-document:api.send-request
+  callees: []
+- id: symbol:entity-document:api.resolve-method
+  node: entity:document
+  kind: function
+  name: resolveMethod
+  file: experience/src/services/api.ts
+  line: 309
+  signature: 'function resolveMethod(options?: RequestInit): string'
+  visibility: local
+  language: typescript
+  end_line: 311
   callers:
   - symbol:entity-document:api.request-api
   callees: []
@@ -14057,27 +16324,72 @@ symbols:
   kind: function
   name: resolveToken
   file: experience/src/services/api.ts
-  line: 67
-  signature: 'async function resolveToken(): Promise<string>'
+  line: 61
+  signature: 'async function resolveToken(): Promise<AccessTokenResolution>'
   visibility: local
   language: typescript
-  end_line: 81
+  end_line: 73
   callers:
   - symbol:entity-document:api.request-api
   callees: []
+  type_refs:
+  - symbol:entity-document:api.access-token-resolution
+- id: symbol:entity-document:api.send-request
+  node: entity:document
+  kind: function
+  name: sendRequest
+  file: experience/src/services/api.ts
+  line: 123
+  signature: async function sendRequest(
+  visibility: local
+  language: typescript
+  end_line: 140
+  callers:
+  - symbol:entity-document:api.handle-expired-token
+  - symbol:entity-document:api.request-api
+  callees:
+  - symbol:entity-document:api.resolve-api-url
 - id: symbol:entity-document:api.test.json-response
   node: entity:document
   kind: function
   name: jsonResponse
   file: experience/src/services/api.test.ts
-  line: 24
-  signature: 'function jsonResponse(body: unknown, status: number): Response'
+  line: 73
+  signature: function jsonResponse(
   visibility: local
   language: typescript
-  end_line: 29
+  end_line: 82
+  is_test: true
+  callers:
+  - symbol:entity-document:api.test.token-expired-response
+  callees: []
+- id: symbol:entity-document:api.test.pending-outcome
+  node: entity:document
+  kind: function
+  name: pendingOutcome
+  file: experience/src/services/api.test.ts
+  line: 96
+  signature: 'async function pendingOutcome<T>(promise: Promise<T>): Promise<string>'
+  visibility: local
+  language: typescript
+  end_line: 104
   is_test: true
   callers: []
   callees: []
+- id: symbol:entity-document:api.test.token-expired-response
+  node: entity:document
+  kind: function
+  name: tokenExpiredResponse
+  file: experience/src/services/api.test.ts
+  line: 84
+  signature: 'function tokenExpiredResponse(): Response'
+  visibility: local
+  language: typescript
+  end_line: 94
+  is_test: true
+  callers: []
+  callees:
+  - symbol:entity-document:api.test.json-response
 - id: symbol:entity-document:data.build-opportunity-breakdown-fixture
   node: entity:document
   kind: function
@@ -19037,11 +21349,11 @@ symbols:
   kind: class
   name: Program
   file: engine/src/Nebula.Api/Program.cs
-  line: 294
+  line: 333
   signature: public partial class Program
   visibility: public
   language: csharp
-  end_line: 294
+  end_line: 333
   callers: []
   callees: []
 - id: symbol:entity-document:quarantine-promotion-worker.execute-async
@@ -21800,11 +24112,11 @@ symbols:
   kind: function
   name: addDays
   file: experience/src/mocks/policies.ts
-  line: 567
+  line: 568
   signature: 'function addDays(dateText: string, days: number): string'
   visibility: local
   language: typescript
-  end_line: 571
+  end_line: 572
   callers:
   - symbol:entity-policy:policies.cancel-policy
   callees: []
@@ -21813,12 +24125,12 @@ symbols:
   kind: function
   name: availableTransitions
   file: experience/src/mocks/policies.ts
-  line: 546
+  line: 547
   signature: 'function availableTransitions(status: PolicyStatus, reinstatementDeadline?:
     string | null): string[]'
   visibility: local
   language: typescript
-  end_line: 551
+  end_line: 552
   callers:
   - symbol:entity-policy:policies.build-policy
   - symbol:entity-policy:policies.mutate-policy
@@ -21828,11 +24140,11 @@ symbols:
   kind: function
   name: buildPolicy
   file: experience/src/mocks/policies.ts
-  line: 419
+  line: 420
   signature: 'function buildPolicy(input:'
   visibility: local
   language: typescript
-  end_line: 480
+  end_line: 481
   callers:
   - symbol:entity-policy:policies.create-policy
   callees:
@@ -21873,12 +24185,12 @@ symbols:
   kind: function
   name: endorsePolicy
   file: experience/src/mocks/policies.ts
-  line: 311
+  line: 312
   signature: 'export function endorsePolicy(policyId: string, rowVersion: string |
     null, dto: PolicyEndorsementRequestDto): PolicyEndorsementDto | null |'
   visibility: export
   language: typescript
-  end_line: 344
+  end_line: 345
   callers: []
   callees:
   - symbol:entity-policy:policies.get-policy
@@ -21888,11 +24200,11 @@ symbols:
   kind: function
   name: findBroker
   file: experience/src/mocks/policies.ts
-  line: 553
+  line: 554
   signature: 'function findBroker(brokerId: string)'
   visibility: local
   language: typescript
-  end_line: 555
+  end_line: 556
   callers:
   - symbol:entity-policy:policies.get-policy-summary
   - symbol:entity-policy:policies.to-list-item
@@ -21924,11 +24236,11 @@ symbols:
   kind: function
   name: getPolicyAccountSummary
   file: experience/src/mocks/policies.ts
-  line: 400
+  line: 401
   signature: 'export function getPolicyAccountSummary(accountId: string): PolicyAccountSummaryDto'
   visibility: export
   language: typescript
-  end_line: 417
+  end_line: 418
   callers: []
   callees: []
 - id: symbol:entity-policy:policies.get-policy-summary
@@ -22006,12 +24318,12 @@ symbols:
   kind: function
   name: listPolicyCoverages
   file: experience/src/mocks/policies.ts
-  line: 378
+  line: 379
   signature: 'export function listPolicyCoverages(policyId: string): PolicyCoverageLineDto[]
     | null'
   visibility: export
   language: typescript
-  end_line: 381
+  end_line: 382
   callers: []
   callees:
   - symbol:entity-policy:policies.get-policy
@@ -22020,12 +24332,12 @@ symbols:
   kind: function
   name: listPolicyEndorsements
   file: experience/src/mocks/policies.ts
-  line: 373
+  line: 374
   signature: 'export function listPolicyEndorsements(policyId: string): PaginatedResponse<PolicyEndorsementDto>
     | null'
   visibility: export
   language: typescript
-  end_line: 376
+  end_line: 377
   callers: []
   callees:
   - symbol:entity-policy:policies.get-policy
@@ -22035,12 +24347,12 @@ symbols:
   kind: function
   name: listPolicyTimeline
   file: experience/src/mocks/policies.ts
-  line: 383
+  line: 384
   signature: 'export function listPolicyTimeline(policyId: string): PaginatedResponse<TimelineEventDto>
     | null'
   visibility: export
   language: typescript
-  end_line: 398
+  end_line: 399
   callers: []
   callees:
   - symbol:entity-policy:policies.get-policy
@@ -22050,12 +24362,12 @@ symbols:
   kind: function
   name: listPolicyVersions
   file: experience/src/mocks/policies.ts
-  line: 346
+  line: 347
   signature: 'export function listPolicyVersions(policyId: string): PaginatedResponse<PolicyVersionDto>
     | null'
   visibility: export
   language: typescript
-  end_line: 371
+  end_line: 372
   callers: []
   callees:
   - symbol:entity-policy:policies.get-policy
@@ -22065,12 +24377,12 @@ symbols:
   kind: function
   name: mutatePolicy
   file: experience/src/mocks/policies.ts
-  line: 510
+  line: 511
   signature: 'function mutatePolicy(policy: PolicyDto, status: PolicyStatus, patch:
     Partial<PolicyDto>)'
   visibility: local
   language: typescript
-  end_line: 518
+  end_line: 519
   callers:
   - symbol:entity-policy:policies.cancel-policy
   - symbol:entity-policy:policies.issue-policy
@@ -22082,11 +24394,11 @@ symbols:
   kind: function
   name: paginate
   file: experience/src/mocks/policies.ts
-  line: 557
+  line: 558
   signature: 'function paginate<T>(data: T[], page = 1, pageSize = 25): PaginatedResponse<T>'
   visibility: local
   language: typescript
-  end_line: 565
+  end_line: 566
   callers:
   - symbol:entity-policy:policies.list-policy-endorsements
   - symbol:entity-policy:policies.list-policy-timeline
@@ -22099,10 +24411,10 @@ symbols:
   file: experience/src/mocks/policies.ts
   line: 296
   signature: 'export function reinstatePolicy(policyId: string, rowVersion: string
-    | null, _dto: PolicyReinstateRequestDto): PolicyDto | null |'
+    | null, dto: PolicyReinstateRequestDto): PolicyDto | null |'
   visibility: export
   language: typescript
-  end_line: 309
+  end_line: 310
   callers: []
   callees:
   - symbol:entity-policy:policies.get-policy
@@ -22112,12 +24424,12 @@ symbols:
   kind: function
   name: toCoverageLines
   file: experience/src/mocks/policies.ts
-  line: 520
+  line: 521
   signature: 'function toCoverageLines(policy: PolicyDto, coverages: PolicyCoverageInputDto[]
     | null | undefined): PolicyCoverageLineDto[]'
   visibility: local
   language: typescript
-  end_line: 544
+  end_line: 545
   callers:
   - symbol:entity-policy:policies.create-policy
   - symbol:entity-policy:policies.endorse-policy
@@ -22127,11 +24439,11 @@ symbols:
   kind: function
   name: toListItem
   file: experience/src/mocks/policies.ts
-  line: 482
+  line: 483
   signature: 'function toListItem(policy: PolicyDto): PolicyListItemDto'
   visibility: local
   language: typescript
-  end_line: 508
+  end_line: 509
   callers: []
   callees:
   - symbol:entity-policy:policies.find-broker
@@ -23020,6 +25332,9 @@ symbols:
   end_line: 263
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-endpoints.policy-write-result
   - symbol:entity-policy:policy-endpoints.try-parse-expected-row-version
@@ -23043,6 +25358,7 @@ symbols:
   end_line: 93
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-endpoints.policy-write-result
   - symbol:entity-policy:policy-endpoints.validation-problem
@@ -23065,6 +25381,7 @@ symbols:
   end_line: 127
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-endpoints.policy-write-result
   - symbol:entity-policy:policy-endpoints.validation-problem
@@ -23089,6 +25406,12 @@ symbols:
   end_line: 240
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.invalid-transition
+  - symbol:capability-session-continuity:problem-details-helper.lob-validation-failed
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-endpoints.try-parse-expected-row-version
   - symbol:entity-policy:policy-endpoints.validation-problem
@@ -23111,6 +25434,8 @@ symbols:
   end_line: 154
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-service.get-by-id-async
   type_refs:
@@ -23130,6 +25455,8 @@ symbols:
   end_line: 191
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-service.get-summary-async
   type_refs:
@@ -23149,6 +25476,8 @@ symbols:
   end_line: 315
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-service.get-version-async
   type_refs:
@@ -23201,6 +25530,7 @@ symbols:
   end_line: 140
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-service.import-async
   type_refs:
@@ -23221,6 +25551,9 @@ symbols:
   end_line: 209
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-endpoints.policy-write-result
   - symbol:entity-policy:policy-endpoints.try-parse-expected-row-version
@@ -23243,6 +25576,8 @@ symbols:
   end_line: 343
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-service.list-current-coverage-lines-async
   type_refs:
@@ -23262,6 +25597,8 @@ symbols:
   end_line: 330
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-service.list-endorsements-async
   type_refs:
@@ -23281,6 +25618,7 @@ symbols:
   end_line: 74
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-endpoints.parse-sort
   - symbol:entity-policy:policy-service.list-async
@@ -23303,6 +25641,8 @@ symbols:
   end_line: 360
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-service.exists-accessible-async
   - symbol:policy_rule-timeline-event-read:timeline-service.list-events-paged-async
@@ -23324,6 +25664,8 @@ symbols:
   end_line: 301
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-service.list-versions-async
   type_refs:
@@ -23388,7 +25730,13 @@ symbols:
   - symbol:entity-policy:policy-endpoints.issue-policy
   - symbol:entity-policy:policy-endpoints.reinstate-policy
   - symbol:entity-policy:policy-endpoints.update-policy
-  callees: []
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.invalid-transition
+  - symbol:capability-session-continuity:problem-details-helper.lob-validation-failed
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
   type_refs:
   - symbol:capability-product-schema-registry:lob-attribute-dtos.lob-validation-issue-dto
   - symbol:entity-policy:policy-dtos.policy-dto
@@ -23405,6 +25753,9 @@ symbols:
   end_line: 286
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-endpoints.policy-write-result
   - symbol:entity-policy:policy-endpoints.try-parse-expected-row-version
@@ -23447,6 +25798,9 @@ symbols:
   end_line: 177
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
   - symbol:entity-policy:policy-endpoints.has-access-async
   - symbol:entity-policy:policy-endpoints.policy-write-result
   - symbol:entity-policy:policy-endpoints.try-parse-expected-row-version
@@ -23476,7 +25830,8 @@ symbols:
   - symbol:entity-policy:policy-endpoints.endorse-policy
   - symbol:entity-policy:policy-endpoints.reinstate-policy
   - symbol:entity-policy:policy-endpoints.update-policy
-  callees: []
+  callees:
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
 - id: symbol:entity-policy:policy-expiration-hosted-service.delay-until-next-run
   node: entity:policy
   kind: method
@@ -26619,6 +28974,13 @@ symbols:
   end_line: 108
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.duplicate-renewal
+  - symbol:capability-session-continuity:problem-details-helper.inactive-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-assignee
+  - symbol:capability-session-continuity:problem-details-helper.lob-validation-failed
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-renewal:renewal-endpoints.has-access-async
   - symbol:entity-renewal:renewal-service.create-async
   type_refs:
@@ -26639,6 +29001,8 @@ symbols:
   end_line: 122
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-renewal:renewal-endpoints.has-access-async
   - symbol:entity-renewal:renewal-service.get-by-id-async
   type_refs:
@@ -26658,6 +29022,9 @@ symbols:
   end_line: 223
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-renewal:renewal-endpoints.has-access-async
   - symbol:entity-renewal:renewal-endpoints.validate-page-query
   - symbol:entity-renewal:renewal-service.exists-async
@@ -26704,6 +29071,8 @@ symbols:
   end_line: 72
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-renewal:renewal-endpoints.has-access-async
   - symbol:entity-renewal:renewal-endpoints.validate-list-query
   - symbol:entity-renewal:renewal-service.list-async
@@ -26740,6 +29109,13 @@ symbols:
   end_line: 257
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.invalid-transition
+  - symbol:capability-session-continuity:problem-details-helper.missing-transition-prerequisite
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-renewal:renewal-endpoints.has-access-async
   - symbol:entity-renewal:renewal-endpoints.try-parse-expected-row-version
   - symbol:entity-renewal:renewal-service.transition-async
@@ -26761,6 +29137,14 @@ symbols:
   end_line: 198
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.assignment-not-allowed-in-terminal-state
+  - symbol:capability-session-continuity:problem-details-helper.inactive-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-assignee
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-renewal:renewal-endpoints.has-access-async
   - symbol:entity-renewal:renewal-endpoints.try-parse-expected-row-version
   - symbol:entity-renewal:renewal-service.assign-async
@@ -26782,6 +29166,12 @@ symbols:
   end_line: 158
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.lob-validation-failed
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-renewal:renewal-endpoints.has-access-async
   - symbol:entity-renewal:renewal-endpoints.try-parse-expected-row-version
   - symbol:entity-renewal:renewal-service.update-lob-attributes-async
@@ -30746,6 +33136,12 @@ symbols:
   end_line: 235
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.invalid-submission-assignee
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-submission:submission-endpoints.has-access-async
   - symbol:entity-submission:submission-endpoints.try-parse-expected-row-version
   - symbol:entity-submission:submission-service.assign-async
@@ -30767,6 +33163,14 @@ symbols:
   end_line: 101
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.invalid-account
+  - symbol:capability-session-continuity:problem-details-helper.invalid-broker
+  - symbol:capability-session-continuity:problem-details-helper.invalid-lob
+  - symbol:capability-session-continuity:problem-details-helper.invalid-program
+  - symbol:capability-session-continuity:problem-details-helper.lob-validation-failed
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.region-mismatch
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-submission:submission-endpoints.has-access-async
   - symbol:entity-submission:submission-service.create-async
   type_refs:
@@ -30787,6 +33191,8 @@ symbols:
   end_line: 115
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
   - symbol:entity-submission:submission-endpoints.has-access-async
   - symbol:entity-submission:submission-service.get-by-id-async
   type_refs:
@@ -30806,6 +33212,9 @@ symbols:
   end_line: 266
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-submission:submission-endpoints.has-access-async
   - symbol:entity-submission:submission-endpoints.validate-page-query
   - symbol:entity-submission:submission-service.exists-async
@@ -30852,6 +33261,8 @@ symbols:
   end_line: 71
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-submission:submission-endpoints.has-access-async
   - symbol:entity-submission:submission-endpoints.validate-list-query
   - symbol:entity-submission:submission-service.list-async
@@ -30888,6 +33299,13 @@ symbols:
   end_line: 203
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.invalid-transition
+  - symbol:capability-session-continuity:problem-details-helper.missing-transition-prerequisite
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-submission:submission-endpoints.has-access-async
   - symbol:entity-submission:submission-endpoints.try-parse-expected-row-version
   - symbol:entity-submission:submission-service.transition-async
@@ -30938,6 +33356,14 @@ symbols:
   end_line: 169
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.invalid-lob
+  - symbol:capability-session-continuity:problem-details-helper.invalid-program
+  - symbol:capability-session-continuity:problem-details-helper.lob-validation-failed
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.policy-denied
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed
+  - symbol:capability-session-continuity:problem-details-helper.precondition-failed-2
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-submission:submission-endpoints.has-access-async
   - symbol:entity-submission:submission-endpoints.try-parse-expected-row-version
   - symbol:entity-submission:submission-service.update-async
@@ -34264,7 +36690,8 @@ symbols:
   end_line: 36
   is_test: true
   callers: []
-  callees: []
+  callees:
+  - symbol:capability-session-continuity:test-auth-handler.reset-f0009-overrides
 - id: symbol:entity-task-item:task-endpoint-tests.full-lifecycle-create-update-completion-reopen-delete
   node: entity:task-item
   kind: method
@@ -34888,6 +37315,10 @@ symbols:
   callers: []
   callees:
   - symbol:capability-authorization-enforcement:i-authorization-service.authorize-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.inactive-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-assignee
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-task-item:task-service.create-async
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
@@ -34907,6 +37338,7 @@ symbols:
   end_line: 291
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
   - symbol:entity-task-item:task-service.delete-async
   type_refs:
   - symbol:entity-task-item:task-service.task-service
@@ -34925,6 +37357,7 @@ symbols:
   callers: []
   callees:
   - symbol:capability-authorization-enforcement:i-authorization-service.authorize-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   - symbol:entity-task-item:task-service.get-broker-scoped-tasks-async
   - symbol:entity-task-item:task-service.get-my-tasks-async
   type_refs:
@@ -34944,6 +37377,7 @@ symbols:
   end_line: 162
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.not-found
   - symbol:entity-task-item:task-service.get-by-id-authorized-async
   type_refs:
   - symbol:entity-task-item:task-service.task-service
@@ -34962,6 +37396,9 @@ symbols:
   callers: []
   callees:
   - symbol:capability-authorization-enforcement:i-authorization-service.authorize-async
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
+  - symbol:capability-session-continuity:problem-details-helper.view-not-authorized
   - symbol:entity-task-item:task-endpoints.parse-multi-value
   - symbol:entity-task-item:task-service.get-task-list-async
   instantiates:
@@ -35023,6 +37460,14 @@ symbols:
   end_line: 274
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.concurrency-conflict
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.inactive-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-assignee
+  - symbol:capability-session-continuity:problem-details-helper.invalid-status-transition
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.status-change-restricted
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-task-item:task-service.update-async
   type_refs:
   - symbol:entity-task-item:task-service.task-service
@@ -36778,24 +39223,38 @@ symbols:
   kind: function
   name: AuthCallbackPage
   file: experience/src/pages/AuthCallbackPage.tsx
-  line: 32
+  line: 51
   signature: export function AuthCallbackPage()
   visibility: export
   language: typescript
-  end_line: 96
+  end_line: 123
   callers: []
   callees:
+  - symbol:entity-user-profile:auth-callback-page.read-return-to
   - symbol:entity-user-profile:auth-callback-page.resolve-landing-route
+- id: symbol:entity-user-profile:auth-callback-page.read-return-to
+  node: entity:user-profile
+  kind: function
+  name: readReturnTo
+  file: experience/src/pages/AuthCallbackPage.tsx
+  line: 38
+  signature: 'function readReturnTo(state: unknown): string | null'
+  visibility: local
+  language: typescript
+  end_line: 49
+  callers:
+  - symbol:entity-user-profile:auth-callback-page.auth-callback-page
+  callees: []
 - id: symbol:entity-user-profile:auth-callback-page.resolve-landing-route
   node: entity:user-profile
   kind: function
   name: resolveLandingRoute
   file: experience/src/pages/AuthCallbackPage.tsx
-  line: 27
+  line: 33
   signature: 'function resolveLandingRoute(roles: string[]): string'
   visibility: local
   language: typescript
-  end_line: 30
+  end_line: 36
   callers:
   - symbol:entity-user-profile:auth-callback-page.auth-callback-page
   callees: []
@@ -37960,6 +40419,9 @@ symbols:
   end_line: 68
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:event-contact-created:contact-endpoints.has-access-async
   - symbol:event-contact-created:contact-service.create-async
   type_refs:
@@ -37979,6 +40441,8 @@ symbols:
   end_line: 136
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.not-found
   - symbol:event-contact-created:contact-endpoints.has-access-async
   - symbol:event-contact-created:contact-service.delete-async
   type_refs:
@@ -37998,6 +40462,8 @@ symbols:
   end_line: 84
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.not-found
   - symbol:event-contact-created:contact-endpoints.has-access-async
   - symbol:event-contact-created:contact-service.get-by-id-async
   - symbol:event-contact-created:contact-service.get-by-id-for-broker-user-async
@@ -38040,6 +40506,7 @@ symbols:
   end_line: 43
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
   - symbol:event-contact-created:contact-endpoints.has-access-async
   - symbol:event-contact-created:contact-service.list-async
   - symbol:event-contact-created:contact-service.list-for-broker-user-async
@@ -38074,6 +40541,10 @@ symbols:
   end_line: 122
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.concurrency-conflict
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.not-found
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:event-contact-created:contact-endpoints.has-access-async
   - symbol:event-contact-created:contact-service.update-async
   type_refs:
@@ -38576,6 +41047,8 @@ symbols:
   end_line: 43
   callers: []
   callees:
+  - symbol:capability-session-continuity:problem-details-helper.forbidden
+  - symbol:capability-session-continuity:problem-details-helper.validation-error
   - symbol:entity-user-profile:user-service.search-async
   type_refs:
   - symbol:capability-authorization-enforcement:i-authorization-service.i-authorization-service
@@ -38707,11 +41180,11 @@ symbols:
   kind: function
   name: App
   file: experience/src/App.tsx
-  line: 81
+  line: 82
   signature: function App()
   visibility: local
   language: typescript
-  end_line: 93
+  end_line: 96
   callers: []
   callees: []
 - id: symbol:ui_route-dashboard-home:app.app-inner
@@ -38719,11 +41192,11 @@ symbols:
   kind: function
   name: AppInner
   file: experience/src/App.tsx
-  line: 44
+  line: 45
   signature: function AppInner()
   visibility: local
   language: typescript
-  end_line: 79
+  end_line: 80
   callers: []
   callees: []
 - id: symbol:ui_route-login:login-page.login-page
@@ -38731,11 +41204,11 @@ symbols:
   kind: function
   name: LoginPage
   file: experience/src/pages/LoginPage.tsx
-  line: 27
+  line: 28
   signature: export function LoginPage()
   visibility: export
   language: typescript
-  end_line: 119
+  end_line: 123
   callers: []
   callees: []
 - id: symbol:ui_route-login:login-page.test.import-login-page

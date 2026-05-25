@@ -1,23 +1,28 @@
 import { getDevToken } from './dev-auth'
 import { emitAuthEvent } from '@/features/auth/authEvents'
 import { oidcUserManager } from '@/features/auth/oidcUserManager'
+import {
+  classifyAuthResponse,
+  type AuthClassification,
+  type ProblemDetails,
+} from '@/features/session-continuity/authErrorClassifier'
+import { persistFailureClassEvent } from '@/features/session-continuity/deferredTelemetryBuffer'
+import {
+  renewSessionForExpiredToken,
+  RenewalError,
+} from '@/features/session-continuity/sessionRenewal'
+import {
+  buildSessionContinuityEvent,
+  emitSessionContinuityEvent,
+  type SessionContinuityEventName,
+  type SessionContinuityIdentity,
+} from '@/features/session-continuity/sessionTelemetry'
 
 const API_BASE = ''
 
-interface ProblemDetails {
-  type?: string
-  title?: string
-  status?: number
-  detail?: string
-  code?: string
-  traceId?: string
-  errors?: Record<string, string[]>
-  lobErrors?: Array<{
-    code: string
-    path: string
-    message: string
-    severity: string
-  }>
+interface AccessTokenResolution {
+  token: string
+  user: SessionContinuityIdentity | null
 }
 
 export class ApiError extends Error {
@@ -38,46 +43,33 @@ export class ApiError extends Error {
   }
 }
 
-/**
- * 401/403 interceptor: emits auth events so useAuthEventHandler (mounted in
- * AppInner) can execute navigation without coupling api.ts to React Router.
- *
- * - 401 → emits 'session_expired' → session teardown → /login?reason=session_expired
- * - 403 with code='broker_scope_unresolvable' → emits 'broker_scope_unresolvable'
- *   → navigate to /unauthorized?reason=broker_inactive (no session teardown —
- *   the JWT is valid; only the broker scope mapping is missing/deactivated).
- * - All other errors → re-thrown as ApiError for callers to handle.
- *
- * The interceptor never throws for the two emitted cases — navigation is in
- * flight via the event bus and callers receive a never-resolving promise so
- * TanStack Query does not process a stale result during redirect.
- */
-function handleErrorIntercept(status: number, problem: ProblemDetails | null): void {
-  if (status === 401) {
-    emitAuthEvent('session_expired')
-  } else if (status === 403 && problem?.code === 'broker_scope_unresolvable') {
-    emitAuthEvent('broker_scope_unresolvable')
-  } else {
-    throw new ApiError(status, problem)
+export class MutationRetryRequiredError extends ApiError {
+  constructor(public endpointRoute: string, method: string) {
+    super(409, {
+      type: 'https://nebula.local/problems/session-continuity/mutation-retry-required',
+      title: 'Session renewed. Retry the change.',
+      status: 409,
+      detail: `${method} ${endpointRoute} was not replayed automatically after session renewal.`,
+      code: 'mutation_retry_required',
+    })
+    this.name = 'MutationRetryRequiredError'
   }
 }
 
 const AUTH_MODE = import.meta.env.VITE_AUTH_MODE as string | undefined
 
-async function resolveToken(): Promise<string> {
+async function resolveToken(): Promise<AccessTokenResolution> {
   if (AUTH_MODE !== 'dev') {
-    // OIDC mode: source access token from oidc-client-ts in-memory user object.
     const user = await oidcUserManager.getUser()
     if (user?.access_token && !user.expired) {
-      return user.access_token
+      return { token: user.access_token, user }
     }
-    // No valid session — emit session_expired so the auth event handler
-    // tears down and redirects to /login. Return a never-resolving promise
-    // so the caller's request is abandoned while navigation is in flight.
+
     emitAuthEvent('session_expired')
-    return new Promise<string>(() => {})
+    return new Promise<AccessTokenResolution>(() => {})
   }
-  return getDevToken()
+
+  return { token: await getDevToken(), user: null }
 }
 
 function resolveApiUrl(path: string): string {
@@ -107,30 +99,240 @@ async function fetchBlob(path: string, options?: RequestInit): Promise<Blob> {
 }
 
 async function requestApi(path: string, options?: RequestInit, jsonContent = true): Promise<Response> {
-  const token = await resolveToken()
+  const auth = await resolveToken()
+  const method = resolveMethod(options)
+  const endpointRoute = endpointRouteFromPath(path)
+  const response = await sendRequest(path, options, jsonContent, auth.token)
+
+  if (response.ok) {
+    return response
+  }
+
+  return handleProblemResponse({
+    response,
+    path,
+    options,
+    jsonContent,
+    auth,
+    method,
+    endpointRoute,
+    allowRenewalRetry: true,
+  })
+}
+
+async function sendRequest(
+  path: string,
+  options: RequestInit | undefined,
+  jsonContent: boolean,
+  token: string,
+): Promise<Response> {
   const headers = new Headers(options?.headers)
   if (jsonContent && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json')
   }
   headers.set('Authorization', `Bearer ${token}`)
 
-  const response = await fetch(resolveApiUrl(path), {
+  return fetch(resolveApiUrl(path), {
     ...options,
     headers,
     credentials: 'include',
   })
+}
 
-  if (!response.ok) {
-    const problem = await response.json().catch(() => null)
-    handleErrorIntercept(response.status, problem)
-    // Execution reaches here only when an auth event was emitted (401 or
-    // broker_scope_unresolvable 403): navigation is in flight via the event
-    // bus. Return a promise that never resolves so downstream TanStack Query
-    // callers don't process a stale result while the app is redirecting away.
-    return new Promise<Response>(() => {})
+interface ProblemResponseContext {
+  response: Response
+  path: string
+  options: RequestInit | undefined
+  jsonContent: boolean
+  auth: AccessTokenResolution
+  method: string
+  endpointRoute: string
+  allowRenewalRetry: boolean
+}
+
+async function handleProblemResponse(
+  context: ProblemResponseContext,
+): Promise<Response> {
+  const { response, auth, method, endpointRoute } = context
+  const problem = await response.json().catch(() => null) as ProblemDetails | null
+
+  if (response.status === 403 && problem?.code === 'broker_scope_unresolvable') {
+    emitAuthEvent('broker_scope_unresolvable')
+    return navigationInFlight()
   }
 
-  return response
+  if (response.status !== 401 && response.status !== 403) {
+    throw new ApiError(response.status, problem)
+  }
+
+  const classification = classifyAuthResponse(
+    response,
+    problem,
+    endpointRoute,
+  )
+  recordClassificationTelemetry(classification, response.status, problem, auth.user)
+
+  if (classification.kind === 'authz_forbidden') {
+    throw new ApiError(response.status, problem)
+  }
+
+  if (classification.kind === 'auth_token_expired') {
+    return handleExpiredToken(context)
+  }
+
+  if (
+    classification.kind === 'auth_token_invalid' ||
+    classification.kind === 'auth_session_revoked'
+  ) {
+    beginForcedReauth(classification.kind, method, endpointRoute, auth.user)
+    return navigationInFlight()
+  }
+
+  beginForcedReauth('auth_unknown', method, endpointRoute, auth.user)
+  return navigationInFlight()
+}
+
+async function handleExpiredToken(
+  context: ProblemResponseContext,
+): Promise<Response> {
+  const { path, options, jsonContent, method, endpointRoute } = context
+
+  try {
+    const renewal = await renewSessionForExpiredToken()
+    if (!isReadMethod(method)) {
+      emitAuthEvent('mutation_retry_required', { endpointRoute, method })
+      throw new MutationRetryRequiredError(endpointRoute, method)
+    }
+
+    const retry = await sendRequest(
+      path,
+      options,
+      jsonContent,
+      renewal.accessToken,
+    )
+    if (retry.ok) {
+      return retry
+    }
+
+    if (!context.allowRenewalRetry) {
+      throw new ApiError(retry.status, await retry.json().catch(() => null))
+    }
+
+    return handleProblemResponse({
+      ...context,
+      response: retry,
+      allowRenewalRetry: false,
+    })
+  } catch (error) {
+    if (
+      error instanceof MutationRetryRequiredError ||
+      error instanceof ApiError
+    ) {
+      throw error
+    }
+
+    const cause = error instanceof RenewalError
+      ? error.cause
+      : 'idp_unreachable'
+
+    recordFailureClassEvent(context.auth.user, 'silent-renewal-fail', {
+      cause,
+    })
+    beginForcedReauth(
+      'silent_renewal_failed',
+      method,
+      endpointRoute,
+      context.auth.user,
+    )
+    return navigationInFlight()
+  }
+}
+
+function beginForcedReauth(
+  cause: 'auth_token_invalid' | 'auth_session_revoked' | 'auth_unknown' | 'silent_renewal_failed',
+  method: string,
+  endpointRoute: string,
+  user: SessionContinuityIdentity | null,
+): void {
+  recordFailureClassEvent(user, 'forced-redirect', {
+    cause,
+    route_at_redirect: currentRouteWithoutQuery(),
+  })
+  emitAuthEvent('forced_reauth', {
+    cause,
+    method,
+    endpointRoute,
+    returnTo: currentRouteWithQuery(),
+  })
+}
+
+function recordClassificationTelemetry(
+  classification: AuthClassification,
+  responseStatus: number,
+  problem: ProblemDetails | null,
+  user: SessionContinuityIdentity | null,
+): void {
+  if (classification.conflict) {
+    recordFailureClassEvent(user, 'auth-classifier-conflict', {
+      endpoint_route: classification.endpointRoute,
+      www_authenticate_class: classification.wwwAuthenticateClass ?? 'unknown',
+      problem_details_type: problem?.type ?? 'unknown',
+    })
+  }
+
+  if (classification.kind === 'auth_unknown') {
+    recordFailureClassEvent(user, 'auth-classifier-fallback', {
+      endpoint_route: classification.endpointRoute,
+      response_status: responseStatus,
+    })
+  }
+}
+
+function recordFailureClassEvent(
+  user: SessionContinuityIdentity | null,
+  eventName: SessionContinuityEventName,
+  payload: Record<string, unknown>,
+): void {
+  const event = buildSessionContinuityEvent(user, eventName, payload)
+  if (!event) {
+    return
+  }
+
+  persistFailureClassEvent(event)
+  emitSessionContinuityEvent(event)
+}
+
+function navigationInFlight(): Promise<Response> {
+  return new Promise<Response>(() => {})
+}
+
+function resolveMethod(options?: RequestInit): string {
+  return (options?.method ?? 'GET').toUpperCase()
+}
+
+function isReadMethod(method: string): boolean {
+  return method === 'GET' || method === 'HEAD'
+}
+
+function endpointRouteFromPath(path: string): string {
+  try {
+    const origin = typeof window === 'undefined'
+      ? 'http://localhost'
+      : window.location.origin
+    return new URL(path, origin).pathname
+  } catch {
+    return path.split('?')[0] || path
+  }
+}
+
+function currentRouteWithQuery(): string {
+  return typeof window === 'undefined'
+    ? '/'
+    : `${window.location.pathname}${window.location.search}`
+}
+
+function currentRouteWithoutQuery(): string {
+  return typeof window === 'undefined' ? '/' : window.location.pathname
 }
 
 export const api = {

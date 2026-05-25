@@ -1,0 +1,3 @@
+Frontend final build artifact placeholder.
+
+The corresponding build command completed successfully during G2. The full command, exit code, and console output reference are recorded in commands.log.

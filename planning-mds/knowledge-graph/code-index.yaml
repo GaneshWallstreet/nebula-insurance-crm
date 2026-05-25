@@ -1628,6 +1628,76 @@ node_bindings:
           - engine/tests/Nebula.Tests/Unit/WorkflowStateMachineTests.cs
           - engine/tests/Nebula.Tests/Integration/WorkflowEndpointTests.cs
 
+  - id: capability:session-continuity
+    paths:
+      docs:
+        feature:
+          - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/PRD.md
+          - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/feature-assembly-plan.md
+          - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0001-silent-token-renewal.md
+          - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md
+          - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0003-forced-reauth-context-restore.md
+          - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0004-auth-error-semantics.md
+          - planning-mds/features/archive/F0035-session-continuity-and-token-refresh/F0035-S0005-session-telemetry-events.md
+        architecture:
+          - planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
+        schema:
+          - planning-mds/schemas/session-continuity-event.schema.json
+      backend:
+        api:
+          - engine/src/Nebula.Api/Program.cs
+          - engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs
+          - engine/src/Nebula.Api/Endpoints/SessionTelemetryEndpoints.cs
+          - engine/src/Nebula.Api/Models/SessionContinuityTelemetryModels.cs
+          - engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+        tests:
+          - engine/tests/Nebula.Tests/Integration/AuthProblemDetailsContractTests.cs
+          - engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+          - engine/tests/Nebula.Tests/Integration/TestAuthHandler.cs
+      frontend:
+        api:
+          - experience/src/services/api.ts
+        auth:
+          - experience/src/features/auth/authEvents.ts
+          - experience/src/features/auth/oidcUserManager.ts
+          - experience/src/features/auth/useAuthEventHandler.ts
+          - experience/src/features/auth/useSessionTeardown.ts
+        feature:
+          - experience/src/features/session-continuity/**
+        pages:
+          - experience/src/pages/AuthCallbackPage.tsx
+          - experience/src/pages/LoginPage.tsx
+        app:
+          - experience/src/App.tsx
+        tests:
+          - experience/src/services/api.test.ts
+          - experience/src/features/auth/tests/LoginPage.test.tsx
+          - experience/src/features/auth/tests/useSessionTeardown.test.tsx
+          - experience/src/pages/tests/AuthCallbackPage.test.tsx
+          - experience/src/features/session-continuity/tests/**
+
+  - id: endpoint:internal-telemetry-session-continuity
+    paths:
+      docs:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        schema:
+          - planning-mds/schemas/session-continuity-event.schema.json
+      backend:
+        api:
+          - engine/src/Nebula.Api/Endpoints/SessionTelemetryEndpoints.cs
+          - engine/src/Nebula.Api/Models/SessionContinuityTelemetryModels.cs
+          - engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs
+          - engine/src/Nebula.Api/Program.cs
+        tests:
+          - engine/tests/Nebula.Tests/Integration/SessionTelemetryEndpointTests.cs
+      frontend:
+        telemetry:
+          - experience/src/features/session-continuity/sessionTelemetry.ts
+          - experience/src/features/session-continuity/deferredTelemetryBuffer.ts
+        tests:
+          - experience/src/features/session-continuity/tests/sessionTelemetry.test.ts
+
   - id: config_key:authentication-authority
     paths:
       docs:

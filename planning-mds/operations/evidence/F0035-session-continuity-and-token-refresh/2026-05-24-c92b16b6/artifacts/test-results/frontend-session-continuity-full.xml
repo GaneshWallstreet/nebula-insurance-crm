@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="56" failures="0" errors="0" time="6.896">
+    <testsuite name="src/services/api.test.ts" timestamp="2026-05-25T00:12:03.263Z" hostname="InfectedPC" tests="9" failures="0" errors="0" skipped="0" time="0.189274187">
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; renews once and retries expired GET requests with the new token" time="0.039042337">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; coalesces concurrent expired GET renewals into one signinSilent call" time="0.059527452">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; renews expired mutations but does not replay them automatically" time="0.003693783">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; leaves navigation pending and emits forced reauth for invalid tokens" time="0.028557417">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; records fallback telemetry before forced reauth for unknown 401 responses" time="0.022723627">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; throws ApiError for ordinary 403 authorization denial without renewal" time="0.003327065">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; preserves broker scope redirect behavior without session teardown" time="0.021272255">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api multipart and binary helpers &gt; does not force a JSON content type for multipart requests" time="0.002468022">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api multipart and binary helpers &gt; returns blobs for download helpers without parsing JSON" time="0.003329065">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/tests/AuthCallbackPage.test.tsx" timestamp="2026-05-25T00:12:03.282Z" hostname="InfectedPC" tests="8" failures="0" errors="0" skipped="0" time="0.374327363">
+        <testcase classname="src/pages/tests/AuthCallbackPage.test.tsx" name="AuthCallbackPage &gt; redirects broker users to the brokers route after a successful callback" time="0.107398126">
+        </testcase>
+        <testcase classname="src/pages/tests/AuthCallbackPage.test.tsx" name="AuthCallbackPage &gt; redirects non-broker users to the dashboard route after a successful callback" time="0.063585153">
+        </testcase>
+        <testcase classname="src/pages/tests/AuthCallbackPage.test.tsx" name="AuthCallbackPage &gt; uses the remembered landing route when the exact callback was already completed" time="0.008053799">
+        </testcase>
+        <testcase classname="src/pages/tests/AuthCallbackPage.test.tsx" name="AuthCallbackPage &gt; treats an in-flight strict-mode replay as a no-op" time="0.004803039">
+        </testcase>
+        <testcase classname="src/pages/tests/AuthCallbackPage.test.tsx" name="AuthCallbackPage &gt; falls back to the remembered landing route when a replayed callback throws after prior success" time="0.008031398">
+        </testcase>
+        <testcase classname="src/pages/tests/AuthCallbackPage.test.tsx" name="AuthCallbackPage &gt; clears stale state and redirects to login when the callback fails without a remembered success" time="0.061083029">
+        </testcase>
+        <testcase classname="src/pages/tests/AuthCallbackPage.test.tsx" name="AuthCallbackPage &gt; navigates to a safe return_to from OIDC state after draining deferred telemetry" time="0.056727713">
+        </testcase>
+        <testcase classname="src/pages/tests/AuthCallbackPage.test.tsx" name="AuthCallbackPage &gt; rejects unsafe return_to values and falls back to the role landing route" time="0.055597157">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/auth/tests/LoginPage.test.tsx" timestamp="2026-05-25T00:12:03.289Z" hostname="InfectedPC" tests="7" failures="0" errors="0" skipped="0" time="1.192172421">
+        <testcase classname="src/features/auth/tests/LoginPage.test.tsx" name="LoginPage &gt; renders the Sign In button" time="0.561202931">
+        </testcase>
+        <testcase classname="src/features/auth/tests/LoginPage.test.tsx" name="LoginPage &gt; shows session_expired notice when reason=session_expired" time="0.06412318">
+        </testcase>
+        <testcase classname="src/features/auth/tests/LoginPage.test.tsx" name="LoginPage &gt; shows callback_failed error when error=callback_failed" time="0.031811878">
+        </testcase>
+        <testcase classname="src/features/auth/tests/LoginPage.test.tsx" name="LoginPage &gt; shows misconfiguration error when OIDC env vars are missing" time="0.160375853">
+        </testcase>
+        <testcase classname="src/features/auth/tests/LoginPage.test.tsx" name="LoginPage &gt; calls oidcUserManager.signinRedirect() when Sign In is clicked" time="0.066095378">
+        </testcase>
+        <testcase classname="src/features/auth/tests/LoginPage.test.tsx" name="LoginPage &gt; passes return_to through OIDC state when present" time="0.186603553">
+        </testcase>
+        <testcase classname="src/features/auth/tests/LoginPage.test.tsx" name="LoginPage &gt; shows IdP-unavailable error when signinRedirect throws" time="0.115923449">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/auth/tests/useSessionTeardown.test.tsx" timestamp="2026-05-25T00:12:03.303Z" hostname="InfectedPC" tests="11" failures="0" errors="0" skipped="0" time="0.257334662">
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useSessionTeardown — reason: session_expired &gt; redirects to /login?reason=session_expired" time="0.121487325">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useSessionTeardown — reason: session_expired &gt; clears OIDC state (removeUser + clearStaleState) before redirecting" time="0.021026243">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useSessionTeardown — reason: session_expired &gt; completes teardown even if POST /auth/logout throws a network error" time="0.009662879">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useSessionTeardown — reason: session_expired &gt; completes teardown even if POST /auth/logout returns a non-2xx status" time="0.009214157">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useSessionTeardown — reason: logout &gt; redirects to /login with no query string" time="0.009856989">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useSessionTeardown — reason: logout &gt; calls oidcUserManager.removeUser() and clearStaleState()" time="0.006811938">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useSessionTeardown — reason: logout &gt; calls POST /auth/logout with correct method and credentials" time="0.006339314">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useSessionTeardown — reason: logout &gt; still clears OIDC state and redirects even if logout endpoint call fails" time="0.006012398">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useSessionTeardown — reason: logout &gt; clears OIDC state before redirecting" time="0.013943392">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useAuthEventHandler — 401 interceptor wiring &gt; triggers teardown with session_expired when auth event is emitted" time="0.015431865">
+        </testcase>
+        <testcase classname="src/features/auth/tests/useSessionTeardown.test.tsx" name="useAuthEventHandler — 401 interceptor wiring &gt; unsubscribes from auth events on unmount — no teardown after unmount" time="0.027929085">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/IdleWarningModal.a11y.test.tsx" timestamp="2026-05-25T00:12:03.326Z" hostname="InfectedPC" tests="1" failures="0" errors="0" skipped="0" time="0.155570115">
+        <testcase classname="src/features/session-continuity/tests/IdleWarningModal.a11y.test.tsx" name="IdleWarningModal accessibility &gt; has no axe violations when open" time="0.151195898">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/IdleWarningModal.test.tsx" timestamp="2026-05-25T00:12:03.330Z" hostname="InfectedPC" tests="3" failures="0" errors="0" skipped="0" time="0.143190101">
+        <testcase classname="src/features/session-continuity/tests/IdleWarningModal.test.tsx" name="IdleWarningModal &gt; renders the alert dialog with countdown text" time="0.102073662">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/IdleWarningModal.test.tsx" name="IdleWarningModal &gt; calls the selected action handlers" time="0.027152346">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/IdleWarningModal.test.tsx" name="IdleWarningModal &gt; treats Escape as sign out" time="0.009129553">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/authErrorClassifier.test.ts" timestamp="2026-05-25T00:12:03.336Z" hostname="InfectedPC" tests="4" failures="0" errors="0" skipped="0" time="0.023576069">
+        <testcase classname="src/features/session-continuity/tests/authErrorClassifier.test.ts" name="classifyAuthResponse &gt; uses ProblemDetails as the authoritative token-expired source" time="0.012724831">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/authErrorClassifier.test.ts" name="classifyAuthResponse &gt; marks conflicts when WWW-Authenticate disagrees with ProblemDetails" time="0.003262362">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/authErrorClassifier.test.ts" name="classifyAuthResponse &gt; falls back to status-only unknown for malformed 401 responses" time="0.001979598">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/authErrorClassifier.test.ts" name="classifyAuthResponse &gt; classifies 403 responses as authorization denial when no finer code exists" time="0.001073053">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/sessionRenewal.test.ts" timestamp="2026-05-25T00:12:03.346Z" hostname="InfectedPC" tests="3" failures="0" errors="0" skipped="0" time="0.041410854">
+        <testcase classname="src/features/session-continuity/tests/sessionRenewal.test.ts" name="renewSessionForExpiredToken &gt; coalesces concurrent renewal callers behind one silent sign-in" time="0.026045391">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionRenewal.test.ts" name="renewSessionForExpiredToken &gt; blocks immediate renewal loops after success" time="0.005009048">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionRenewal.test.ts" name="renewSessionForExpiredToken &gt; maps invalid_grant renewal failures to refresh expiration" time="0.004024699">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/sessionRestore.test.ts" timestamp="2026-05-25T00:12:03.351Z" hostname="InfectedPC" tests="3" failures="0" errors="0" skipped="0" time="0.031821678">
+        <testcase classname="src/features/session-continuity/tests/sessionRestore.test.ts" name="session restore helpers &gt; accepts same-origin return paths and rejects unsafe destinations" time="0.016552621">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionRestore.test.ts" name="session restore helpers &gt; stores and consumes a same-user dirty form snapshot once" time="0.005686882">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionRestore.test.ts" name="session restore helpers &gt; clears snapshots by current user and by other users" time="0.00343027">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/sessionTelemetry.test.ts" timestamp="2026-05-25T00:12:03.361Z" hostname="InfectedPC" tests="3" failures="0" errors="0" skipped="0" time="0.02863632">
+        <testcase classname="src/features/session-continuity/tests/sessionTelemetry.test.ts" name="session continuity telemetry &gt; builds events from non-PII session identity claims" time="0.013610575">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionTelemetry.test.ts" name="session continuity telemetry &gt; posts buffered events to the protected telemetry endpoint" time="0.005876092">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionTelemetry.test.ts" name="session continuity telemetry &gt; persists and drains deferred failure-class events by user" time="0.00281424">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/useIdleWarning.test.tsx" timestamp="2026-05-25T00:12:03.365Z" hostname="InfectedPC" tests="4" failures="0" errors="0" skipped="0" time="0.12362253">
+        <testcase classname="src/features/session-continuity/tests/useIdleWarning.test.tsx" name="useIdleWarning &gt; opens the idle modal at the inactivity threshold and emits shown telemetry" time="0.065051926">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/useIdleWarning.test.tsx" name="useIdleWarning &gt; renews and closes the modal when the user stays signed in" time="0.019789681">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/useIdleWarning.test.tsx" name="useIdleWarning &gt; forces reauth when the grace period expires" time="0.01594749">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/useIdleWarning.test.tsx" name="useIdleWarning &gt; signs out explicitly from the idle modal path" time="0.014682028">
+        </testcase>
+    </testsuite>
+</testsuites>

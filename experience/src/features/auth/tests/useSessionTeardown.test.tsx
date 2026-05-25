@@ -23,6 +23,7 @@ import type { ReactNode } from 'react';
 import { useSessionTeardown } from '../useSessionTeardown';
 import { useAuthEventHandler } from '../useAuthEventHandler';
 import { emitAuthEvent } from '../authEvents';
+import { SessionContinuityProvider } from '@/features/session-continuity';
 
 // ---------------------------------------------------------------------------
 // Mock: oidc-client-ts UserManager (via oidcUserManager singleton)
@@ -30,6 +31,9 @@ import { emitAuthEvent } from '../authEvents';
 
 vi.mock('../oidcUserManager', () => ({
   oidcUserManager: {
+    getUser: vi.fn().mockResolvedValue({
+      profile: { sub: '11111111-1111-1111-1111-111111111111' },
+    }),
     removeUser: vi.fn().mockResolvedValue(undefined),
     clearStaleState: vi.fn().mockResolvedValue(undefined),
   },
@@ -59,7 +63,11 @@ vi.mock('react-router-dom', async (importOriginal) => {
 // ---------------------------------------------------------------------------
 
 function wrapper({ children }: { children: ReactNode }) {
-  return <MemoryRouter initialEntries={['/dashboard']}>{children}</MemoryRouter>;
+  return (
+    <MemoryRouter initialEntries={['/dashboard']}>
+      <SessionContinuityProvider>{children}</SessionContinuityProvider>
+    </MemoryRouter>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -69,6 +77,9 @@ function wrapper({ children }: { children: ReactNode }) {
 beforeEach(() => {
   vi.clearAllMocks();
   navigateSpy.mockReset();
+  vi.mocked(oidcUserManager.getUser).mockResolvedValue({
+    profile: { sub: '11111111-1111-1111-1111-111111111111' },
+  });
   vi.mocked(oidcUserManager.removeUser).mockResolvedValue(undefined);
   vi.mocked(oidcUserManager.clearStaleState).mockResolvedValue(undefined);
 });

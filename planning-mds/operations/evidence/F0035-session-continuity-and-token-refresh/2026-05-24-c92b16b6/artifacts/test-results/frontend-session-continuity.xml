@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="19" failures="0" errors="0" time="8.031">
+    <testsuite name="src/services/api.test.ts" timestamp="2026-05-24T23:42:33.883Z" hostname="InfectedPC" tests="9" failures="0" errors="0" skipped="0" time="0.351746862">
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; renews once and retries expired GET requests with the new token" time="0.11167828">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; coalesces concurrent expired GET renewals into one signinSilent call" time="0.101181847">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; renews expired mutations but does not replay them automatically" time="0.008611593">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; leaves navigation pending and emits forced reauth for invalid tokens" time="0.025606051">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; records fallback telemetry before forced reauth for unknown 401 responses" time="0.029760578">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; throws ApiError for ordinary 403 authorization denial without renewal" time="0.006526529">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api session continuity handling &gt; preserves broker scope redirect behavior without session teardown" time="0.024470307">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api multipart and binary helpers &gt; does not force a JSON content type for multipart requests" time="0.006027066">
+        </testcase>
+        <testcase classname="src/services/api.test.ts" name="api multipart and binary helpers &gt; returns blobs for download helpers without parsing JSON" time="0.017048264">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/authErrorClassifier.test.ts" timestamp="2026-05-24T23:42:33.909Z" hostname="InfectedPC" tests="4" failures="0" errors="0" skipped="0" time="0.062099785">
+        <testcase classname="src/features/session-continuity/tests/authErrorClassifier.test.ts" name="classifyAuthResponse &gt; uses ProblemDetails as the authoritative token-expired source" time="0.039278988">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/authErrorClassifier.test.ts" name="classifyAuthResponse &gt; marks conflicts when WWW-Authenticate disagrees with ProblemDetails" time="0.003788281">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/authErrorClassifier.test.ts" name="classifyAuthResponse &gt; falls back to status-only unknown for malformed 401 responses" time="0.002996381">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/authErrorClassifier.test.ts" name="classifyAuthResponse &gt; classifies 403 responses as authorization denial when no finer code exists" time="0.002485015">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/sessionRenewal.test.ts" timestamp="2026-05-24T23:42:33.919Z" hostname="InfectedPC" tests="3" failures="0" errors="0" skipped="0" time="0.064095638">
+        <testcase classname="src/features/session-continuity/tests/sessionRenewal.test.ts" name="renewSessionForExpiredToken &gt; coalesces concurrent renewal callers behind one silent sign-in" time="0.043892573">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionRenewal.test.ts" name="renewSessionForExpiredToken &gt; blocks immediate renewal loops after success" time="0.004792009">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionRenewal.test.ts" name="renewSessionForExpiredToken &gt; maps invalid_grant renewal failures to refresh expiration" time="0.004653791">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/sessionTelemetry.test.ts" timestamp="2026-05-24T23:42:33.928Z" hostname="InfectedPC" tests="3" failures="0" errors="0" skipped="0" time="0.085237423">
+        <testcase classname="src/features/session-continuity/tests/sessionTelemetry.test.ts" name="session continuity telemetry &gt; builds events from non-PII session identity claims" time="0.038329267">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionTelemetry.test.ts" name="session continuity telemetry &gt; posts buffered events to the protected telemetry endpoint" time="0.020206466">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/sessionTelemetry.test.ts" name="session continuity telemetry &gt; persists and drains deferred failure-class events by user" time="0.009334786">
+        </testcase>
+    </testsuite>
+</testsuites>

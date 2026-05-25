@@ -19,6 +19,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { oidcUserManager } from '@/features/auth/oidcUserManager';
+import { drainDeferredEvents } from '@/features/session-continuity/deferredTelemetryBuffer';
+import {
+  clearSnapshotsForOtherUsers,
+  readSessionUserId,
+  sanitizeReturnTo,
+} from '@/features/session-continuity/sessionRestore';
 
 const CALLBACK_LOCK_KEY = 'nebula_oidc_callback_inflight';
 const CALLBACK_DONE_KEY = 'nebula_oidc_callback_done';
@@ -27,6 +33,19 @@ const CALLBACK_LANDING_KEY = 'nebula_oidc_callback_landing';
 function resolveLandingRoute(roles: string[]): string {
   if (roles.includes('BrokerUser')) return '/brokers';
   return '/';
+}
+
+function readReturnTo(state: unknown): string | null {
+  if (
+    state &&
+    typeof state === 'object' &&
+    'return_to' in state &&
+    typeof state.return_to === 'string'
+  ) {
+    return state.return_to
+  }
+
+  return new URLSearchParams(window.location.search).get('return_to')
 }
 
 export function AuthCallbackPage() {
@@ -59,7 +78,15 @@ export function AuthCallbackPage() {
             ? [user.profile['nebula_roles'] as string]
             : [];
 
-        const landingRoute = resolveLandingRoute(roles);
+        const userId = readSessionUserId(user);
+        if (userId) {
+          await drainDeferredEvents(userId);
+          clearSnapshotsForOtherUsers(userId);
+        }
+
+        const landingRoute =
+          sanitizeReturnTo(readReturnTo(user.state)) ??
+          resolveLandingRoute(roles);
         window.sessionStorage.setItem(CALLBACK_DONE_KEY, callbackSignature);
         window.sessionStorage.setItem(CALLBACK_LANDING_KEY, landingRoute);
         window.sessionStorage.removeItem(CALLBACK_LOCK_KEY);

@@ -96,7 +96,7 @@ describe('LoginPage', () => {
     const LoginPage = await importLoginPage();
     renderWithRouter(<LoginPage />, '/login?reason=session_expired');
 
-    expect(screen.getByText(/session has expired/i)).not.toBeNull();
+    expect(screen.getByText(/continue where you left off/i)).not.toBeNull();
   });
 
   it('shows callback_failed error when error=callback_failed', async () => {
@@ -129,6 +129,20 @@ describe('LoginPage', () => {
 
     await waitFor(() => {
       expect(mockSigninRedirect).toHaveBeenCalledOnce();
+    });
+  });
+
+  it('passes return_to through OIDC state when present', async () => {
+    mockSigninRedirect.mockResolvedValue(undefined);
+    const LoginPage = await importLoginPage();
+    renderWithRouter(<LoginPage />, '/login?reason=session_expired&return_to=%2Fpolicies%2Fpol-1');
+
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(mockSigninRedirect).toHaveBeenCalledWith({
+        state: { return_to: '/policies/pol-1' },
+      });
     });
   });
 

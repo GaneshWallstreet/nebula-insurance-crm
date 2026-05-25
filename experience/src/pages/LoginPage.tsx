@@ -21,7 +21,8 @@ const OIDC_CLIENT_ID = import.meta.env.VITE_OIDC_CLIENT_ID as string | undefined
 const OIDC_REDIRECT_URI = import.meta.env.VITE_OIDC_REDIRECT_URI as string | undefined;
 
 const REASON_MESSAGES: Record<string, string> = {
-  session_expired: 'Your session has expired. Please sign in again.',
+  session_expired: 'Sign in again to continue where you left off.',
+  signed_out: 'You have been signed out.',
 };
 
 export function LoginPage() {
@@ -29,6 +30,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const reason = searchParams.get('reason') ?? '';
   const error = searchParams.get('error') ?? '';
+  const returnTo = searchParams.get('return_to');
 
   const [signinError, setSigninError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -51,7 +53,9 @@ export function LoginPage() {
     setSigninError(null);
     setIsRedirecting(true);
     try {
-      await oidcUserManager.signinRedirect();
+      await oidcUserManager.signinRedirect(
+        returnTo ? { state: { return_to: returnTo } } : undefined,
+      );
       // Navigation away from this page occurs via the OIDC redirect.
       // setIsRedirecting stays true until the page unloads.
     } catch {

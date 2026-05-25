@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="8" failures="0" errors="0" time="2.774">
+    <testsuite name="src/features/session-continuity/tests/IdleWarningModal.a11y.test.tsx" timestamp="2026-05-25T00:11:46.410Z" hostname="InfectedPC" tests="1" failures="0" errors="0" skipped="0" time="0.187761756">
+        <testcase classname="src/features/session-continuity/tests/IdleWarningModal.a11y.test.tsx" name="IdleWarningModal accessibility &gt; has no axe violations when open" time="0.183370527">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/IdleWarningModal.test.tsx" timestamp="2026-05-25T00:11:46.413Z" hostname="InfectedPC" tests="3" failures="0" errors="0" skipped="0" time="0.170099037">
+        <testcase classname="src/features/session-continuity/tests/IdleWarningModal.test.tsx" name="IdleWarningModal &gt; renders the alert dialog with countdown text" time="0.123705828">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/IdleWarningModal.test.tsx" name="IdleWarningModal &gt; calls the selected action handlers" time="0.027681538">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/IdleWarningModal.test.tsx" name="IdleWarningModal &gt; treats Escape as sign out" time="0.014418249">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/features/session-continuity/tests/useIdleWarning.test.tsx" timestamp="2026-05-25T00:11:46.419Z" hostname="InfectedPC" tests="4" failures="0" errors="0" skipped="0" time="0.0981556">
+        <testcase classname="src/features/session-continuity/tests/useIdleWarning.test.tsx" name="useIdleWarning &gt; opens the idle modal at the inactivity threshold and emits shown telemetry" time="0.061558298">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/useIdleWarning.test.tsx" name="useIdleWarning &gt; renews and closes the modal when the user stays signed in" time="0.013391596">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/useIdleWarning.test.tsx" name="useIdleWarning &gt; forces reauth when the grace period expires" time="0.011314588">
+        </testcase>
+        <testcase classname="src/features/session-continuity/tests/useIdleWarning.test.tsx" name="useIdleWarning &gt; signs out explicitly from the idle modal path" time="0.006650245">
+        </testcase>
+    </testsuite>
+</testsuites>
