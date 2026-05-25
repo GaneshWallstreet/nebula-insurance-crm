@@ -11,7 +11,6 @@
 
 | Feature ID | Name | Status | Phase | Folder |
 |------------|------|--------|-------|--------|
-| F0035 | Session Continuity & Token Refresh | Draft | Release Enablement / Platform Operations | `F0035-session-continuity-and-token-refresh/` |
 
 ## Retired Features
 
@@ -46,6 +45,7 @@ Per §19 of the feature-evidence package contract. Replaces the legacy `Abandone
 
 | Feature ID | Name | Archived Date | Folder |
 |------------|------|---------------|--------|
+| F0035 | Session Continuity & Token Refresh | 2026-05-24 | `archive/F0035-session-continuity-and-token-refresh/` |
 | F0034 | Product Schema Registry and Dynamic LOB Attributes | 2026-05-07 | `archive/F0034-product-schema-registry-and-dynamic-lob-attributes/` |
 | F0020 | Document Management & ACORD Intake | 2026-05-05 | `archive/F0020-document-management-and-acord-intake/` |
 | F0018 | Policy Lifecycle & Policy 360 | 2026-04-22 | `archive/F0018-policy-lifecycle-and-policy-360/` |

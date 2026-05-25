@@ -282,7 +282,7 @@ Chosen #1.
 
 ## References
 
-- F0035 PRD: `planning-mds/features/F0035-session-continuity-and-token-refresh/PRD.md`
+- F0035 PRD: `planning-mds/features/archive/F0035-session-continuity-and-token-refresh/PRD.md`
 - F0035 stories: `F0035-S0001` through `F0035-S0005`
 - F0009 baseline: `planning-mds/features/archive/F0009-authentication-and-role-based-login/`
 - F0005 IdP: `planning-mds/features/archive/F0005-idp-migration/`

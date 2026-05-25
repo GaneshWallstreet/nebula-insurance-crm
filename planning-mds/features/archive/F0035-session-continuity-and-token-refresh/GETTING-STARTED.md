@@ -9,16 +9,17 @@
 - F0009 authentication + role-based login operational (current `/login` and `/auth/callback` flows)
 - F0033 Serilog structured logging baseline active (target sink for `Nebula.Session.Continuity` category)
 
-## Key Files (to be populated during build)
+## Key Files
 
-- Frontend API client / auth-error classifier: `experience/src/<path>` (S0004)
-- Silent renewal coalescing primitive: `experience/src/<path>` (S0001)
-- Idle activity-detection hook: `experience/src/<path>` (S0002)
-- Idle warning modal component: `experience/src/<path>` (S0002)
-- Session restore (form snapshot + return_to): `experience/src/<path>` (S0003)
-- Telemetry emitter: `experience/src/<path>` (S0005)
-- Backend auth-failure middleware extension: `engine/src/<path>` (S0004)
-- Telemetry ingest endpoint: `engine/src/<path>` (S0005)
+- Frontend API client / auth-error classifier: `experience/src/services/api.ts`, `experience/src/features/session-continuity/authErrorClassifier.ts` (S0004)
+- Silent renewal coalescing primitive: `experience/src/features/session-continuity/sessionRenewal.ts` (S0001)
+- Idle activity-detection hook: `experience/src/features/session-continuity/useIdleWarning.ts` (S0002)
+- Idle warning modal component: `experience/src/features/session-continuity/IdleWarningModal.tsx` (S0002)
+- Session restore (form snapshot + return_to): `experience/src/features/session-continuity/sessionRestore.ts`, `experience/src/features/session-continuity/dirtyFormRegistry.tsx` (S0003)
+- Telemetry emitter: `experience/src/features/session-continuity/sessionTelemetry.ts`, `experience/src/features/session-continuity/deferredTelemetryBuffer.ts` (S0005)
+- Backend auth-failure middleware extension: `engine/src/Nebula.Api/Program.cs`, `engine/src/Nebula.Api/Helpers/ProblemDetailsHelper.cs` (S0004)
+- Telemetry ingest endpoint: `engine/src/Nebula.Api/Endpoints/SessionTelemetryEndpoints.cs` (S0005)
+- Telemetry validation service: `engine/src/Nebula.Api/Services/SessionContinuityTelemetryService.cs` (S0005)
 - Event schema: `planning-mds/schemas/session-continuity-event.schema.json` (created at Phase B; governed by ADR-024 §5)
 - ProblemDetails type URIs: `https://nebula.local/problems/auth/{token-expired,invalid-token,session-revoked}`, `https://nebula.local/problems/authz/forbidden` (S0004 — Architect Phase B)
 
@@ -28,14 +29,14 @@ None required. F0035 introduces no new entities or reference data.
 
 ## Verification Steps
 
-To be filled in by implementers as work lands. Expected verification surface:
+Final feature evidence run `2026-05-24-c92b16b6` used:
 
-- Frontend tests (Vitest): coalescing semaphore, idle timer monotonic clock, classifier dispatch matrix
-- Frontend integration tests: 6-concurrent expiry coalescing, full forced-re-auth journey with dirty form
-- Backend integration tests: per-endpoint 401 contract conformance (every protected endpoint emits valid `WWW-Authenticate` + ProblemDetails)
-- E2E smoke (Playwright): expire-and-continue happy path; expire-during-mutation-with-form-state path; idle-warning-shown happy path
-- Accessibility (@axe-core/playwright): idle modal WCAG 2.1 AA
-- Telemetry verification: events visible in Serilog query under `Nebula.Session.Continuity` category
+- Backend focused integration tests: `AuthProblemDetailsContractTests` and `SessionTelemetryEndpointTests` (8 passed)
+- Frontend focused Vitest suite: API classifier/renewal, session continuity helpers, auth callback/login/session teardown, idle modal and accessibility (58 passed)
+- Frontend coverage: `artifacts/coverage/frontend-session-continuity/`
+- Frontend lint: exit 0 with pre-existing warnings outside F0035
+- Frontend production build: exit 0 with existing chunk-size warning
+- Evidence validators: G0, G1, G2, G3, G4.5, and G4.6 exited 0 before PM closeout
 
 ## Configuration
 

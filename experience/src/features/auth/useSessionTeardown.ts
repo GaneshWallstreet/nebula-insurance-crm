@@ -20,8 +20,13 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { oidcUserManager } from './oidcUserManager';
+import { clearDeferredEventsForUser } from '@/features/session-continuity/deferredTelemetryBuffer';
+import {
+  clearSnapshotsForUser,
+  readSessionUserId,
+} from '@/features/session-continuity/sessionRestore';
 
-export type TeardownReason = 'session_expired' | 'logout';
+export type TeardownReason = 'session_expired' | 'logout' | 'signed_out';
 
 const LOGOUT_API_PATH = '/auth/logout';
 
@@ -70,6 +75,14 @@ export function useSessionTeardown() {
 
   const teardown = useCallback(
     async (reason: TeardownReason): Promise<void> => {
+      if (reason === 'logout' || reason === 'signed_out') {
+        const userId = readSessionUserId(await oidcUserManager.getUser().catch(() => null));
+        if (userId) {
+          clearSnapshotsForUser(userId);
+          clearDeferredEventsForUser(userId);
+        }
+      }
+
       if (reason === 'session_expired') {
         // Fire-and-forget: do NOT await; redirect must not block on network.
         void callLogoutEndpoint();
@@ -85,6 +98,8 @@ export function useSessionTeardown() {
       // Redirect — always last, after state is cleared.
       if (reason === 'session_expired') {
         navigate('/login?reason=session_expired', { replace: true });
+      } else if (reason === 'signed_out') {
+        navigate('/login?reason=signed_out', { replace: true });
       } else {
         navigate('/login', { replace: true });
       }

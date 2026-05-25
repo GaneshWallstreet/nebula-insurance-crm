@@ -24,6 +24,7 @@ import { DocumentDetailView, DocumentTemplatesLibrary } from './features/documen
 import { UnauthorizedPage } from './pages/UnauthorizedPage'
 import { LoginPage } from './pages/LoginPage'
 import { AuthCallbackPage } from './pages/AuthCallbackPage'
+import { SessionContinuityProvider } from './features/session-continuity'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -85,7 +86,9 @@ function App() {
     <ThemeContext.Provider value={themeValue}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <AppInner />
+          <SessionContinuityProvider>
+            <AppInner />
+          </SessionContinuityProvider>
         </BrowserRouter>
       </QueryClientProvider>
     </ThemeContext.Provider>

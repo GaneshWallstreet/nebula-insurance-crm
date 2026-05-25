@@ -204,7 +204,7 @@ Status: Phase C implementation is complete for F0001 (Dashboard), F0002 (Broker 
 - F0031: Data Import, Deduplication & Go-Live Migration - Planned
 - F0032: Admin Configuration & Reference Data Console - Planned
 - [F0033: Structured Logging and QE Toolchain Activation](features/archive/F0033-structured-logging-and-qe-toolchain-activation/PRD.md) - Done (Archived)
-- [F0035: Session Continuity & Token Refresh](features/F0035-session-continuity-and-token-refresh/PRD.md) - Draft (Phase A+B planned; ADR-024; awaiting build)
+- [F0035: Session Continuity & Token Refresh](features/archive/F0035-session-continuity-and-token-refresh/PRD.md) - Done (Archived 2026-05-24; 5 stories: silent renewal, idle warning modal, forced re-auth restore, auth error semantics, session telemetry)
 
 ### 3.4 MVP Features and Stories (vertical-slice friendly)
 
@@ -265,6 +265,13 @@ Status: Phase C implementation is complete for F0001 (Dashboard), F0002 (Broker 
 - [F0034-S0005: Render dynamic attribute panel from schema metadata](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0005-render-dynamic-attribute-panel.md) - Done (Archived)
 - [F0034-S0006: Activate Cyber product bundle](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0006-activate-cyber-product-bundle.md) - Done (Archived)
 - [F0034-S0007: Prove lifecycle integration and F0019 handoff](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0007-prove-lifecycle-and-f0019-handoff.md) - Done (Archived)
+
+**Release Enablement / Platform Operations Stories (Feature F0035: Session Continuity & Token Refresh):**
+- [F0035-S0001: Silent Token Renewal with Concurrent Request Coalescing](features/archive/F0035-session-continuity-and-token-refresh/F0035-S0001-silent-token-renewal.md) - Done (Archived)
+- [F0035-S0002: Idle Warning Modal with Grace Period](features/archive/F0035-session-continuity-and-token-refresh/F0035-S0002-idle-warning-modal.md) - Done (Archived)
+- [F0035-S0003: Forced Re-Auth with Route and Form State Preservation](features/archive/F0035-session-continuity-and-token-refresh/F0035-S0003-forced-reauth-context-restore.md) - Done (Archived)
+- [F0035-S0004: Auth Error Semantic Distinction](features/archive/F0035-session-continuity-and-token-refresh/F0035-S0004-auth-error-semantics.md) - Done (Archived)
+- [F0035-S0005: Session Continuity Telemetry Events](features/archive/F0035-session-continuity-and-token-refresh/F0035-S0005-session-telemetry-events.md) - Done (Archived)
 
 **MVP Stories (Feature F0010: Dashboard Opportunities Refactor):**
 - [F0010-S0001: Replace Sankey default with Pipeline Board](features/archive/F0010-dashboard-opportunities-refactor/F0010-S0001-replace-sankey-with-pipeline-board-default.md) - Done (Historical; superseded by F0013)

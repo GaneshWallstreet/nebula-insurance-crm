@@ -786,8 +786,8 @@ features:
       - feature:F0019
       - feature:F0020
   - id: feature:F0035
-    path: planning-mds/features/F0035-session-continuity-and-token-refresh
-    status: draft
+    path: planning-mds/features/archive/F0035-session-continuity-and-token-refresh
+    status: archived-done
     affects:
       - capability:session-continuity
       - capability:silent-token-renewal

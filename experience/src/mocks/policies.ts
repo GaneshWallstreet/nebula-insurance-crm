@@ -293,7 +293,8 @@ export function cancelPolicy(policyId: string, rowVersion: string | null, dto: P
   return policy;
 }
 
-export function reinstatePolicy(policyId: string, rowVersion: string | null, _dto: PolicyReinstateRequestDto): PolicyDto | null | { code: string } {
+export function reinstatePolicy(policyId: string, rowVersion: string | null, dto: PolicyReinstateRequestDto): PolicyDto | null | { code: string } {
+  void dto;
   const policy = getPolicy(policyId);
   if (!policy) return null;
   if (policy.rowVersion !== rowVersion) return { code: 'precondition_failed' };

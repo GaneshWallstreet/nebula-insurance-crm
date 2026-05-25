@@ -6,6 +6,8 @@ const mocks = vi.hoisted(() => ({
   navigate: vi.fn(),
   signinRedirectCallback: vi.fn(),
   clearStaleState: vi.fn(),
+  drainDeferredEvents: vi.fn(),
+  clearSnapshotsForOtherUsers: vi.fn(),
 }))
 
 vi.mock('react-router-dom', () => ({
@@ -19,17 +21,31 @@ vi.mock('@/features/auth/oidcUserManager', () => ({
   },
 }))
 
+vi.mock('@/features/session-continuity/deferredTelemetryBuffer', () => ({
+  drainDeferredEvents: mocks.drainDeferredEvents,
+}))
+
+vi.mock('@/features/session-continuity/sessionRestore', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@/features/session-continuity/sessionRestore')>()
+  return {
+    ...original,
+    clearSnapshotsForOtherUsers: mocks.clearSnapshotsForOtherUsers,
+  }
+})
+
 describe('AuthCallbackPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     sessionStorage.clear()
     window.history.replaceState({}, '', '/auth/callback?code=test&state=abc')
     mocks.clearStaleState.mockResolvedValue(undefined)
+    mocks.drainDeferredEvents.mockResolvedValue(undefined)
   })
 
   it('redirects broker users to the brokers route after a successful callback', async () => {
     mocks.signinRedirectCallback.mockResolvedValue({
       profile: {
+        sub: '11111111-1111-1111-1111-111111111111',
         nebula_roles: ['BrokerUser'],
       },
     })
@@ -46,6 +62,7 @@ describe('AuthCallbackPage', () => {
   it('redirects non-broker users to the dashboard route after a successful callback', async () => {
     mocks.signinRedirectCallback.mockResolvedValue({
       profile: {
+        sub: '11111111-1111-1111-1111-111111111111',
         nebula_roles: ['Admin'],
       },
     })
@@ -111,6 +128,46 @@ describe('AuthCallbackPage', () => {
       expect(mocks.navigate).toHaveBeenCalledWith('/login?error=callback_failed', {
         replace: true,
       })
+    })
+  })
+
+  it('navigates to a safe return_to from OIDC state after draining deferred telemetry', async () => {
+    mocks.signinRedirectCallback.mockResolvedValue({
+      state: { return_to: '/policies/pol-1?tab=activity' },
+      profile: {
+        sub: '11111111-1111-1111-1111-111111111111',
+        nebula_roles: ['Admin'],
+      },
+    })
+
+    render(<AuthCallbackPage />)
+
+    await waitFor(() => {
+      expect(mocks.drainDeferredEvents).toHaveBeenCalledWith(
+        '11111111-1111-1111-1111-111111111111',
+      )
+      expect(mocks.clearSnapshotsForOtherUsers).toHaveBeenCalledWith(
+        '11111111-1111-1111-1111-111111111111',
+      )
+      expect(mocks.navigate).toHaveBeenCalledWith('/policies/pol-1?tab=activity', {
+        replace: true,
+      })
+    })
+  })
+
+  it('rejects unsafe return_to values and falls back to the role landing route', async () => {
+    mocks.signinRedirectCallback.mockResolvedValue({
+      state: { return_to: 'https://evil.example/phish' },
+      profile: {
+        sub: '11111111-1111-1111-1111-111111111111',
+        nebula_roles: ['BrokerUser'],
+      },
+    })
+
+    render(<AuthCallbackPage />)
+
+    await waitFor(() => {
+      expect(mocks.navigate).toHaveBeenCalledWith('/brokers', { replace: true })
     })
   })
 })

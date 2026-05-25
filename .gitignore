@@ -103,5 +103,10 @@ experience/.lighthouseci/
 experience/pacts/
 planning-mds/operations/evidence/f0033/artifacts/
 
+# Test runner output — ephemeral, never commit (repo-wide)
+# Raw coverage output (HTML/lcov); the curated coverage-report.md evidence doc is still tracked.
+**/test-results/
+**/coverage/
+
 # private plans
 _private-plans/**

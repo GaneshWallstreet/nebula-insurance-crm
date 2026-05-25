@@ -1,12 +1,15 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.IdentityModel.Tokens;
 using System.Threading.RateLimiting;
 using FluentValidation;
 using Serilog;
 using Serilog.Events;
+using Nebula.Api.Helpers;
 using Nebula.Infrastructure;
 using Nebula.Infrastructure.Persistence;
 using Nebula.Application.Common;
@@ -82,6 +85,40 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 ValidAudiences = [audience],
             };
         }
+
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                if (context.Response.HasStarted)
+                    return;
+
+                context.HandleResponse();
+                var traceId = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier;
+                var problem = context.AuthenticateFailure switch
+                {
+                    SecurityTokenExpiredException => ProblemDetailsHelper.AuthTokenExpired(traceId),
+                    { Message: var message } when message.Contains("revoked", StringComparison.OrdinalIgnoreCase) =>
+                        ProblemDetailsHelper.AuthSessionRevoked(traceId),
+                    _ => ProblemDetailsHelper.AuthInvalidToken(traceId),
+                };
+
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/problem+json";
+                context.Response.Headers.WWWAuthenticate =
+                    "Bearer error=\"invalid_token\", error_description=\"Authentication token is invalid or expired.\"";
+                await problem.ExecuteAsync(context.HttpContext);
+            },
+            OnForbidden = async context =>
+            {
+                context.Response.Headers.Remove("WWW-Authenticate");
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                context.Response.ContentType = "application/problem+json";
+                await ProblemDetailsHelper.AuthorizationForbidden(
+                    Activity.Current?.Id ?? context.HttpContext.TraceIdentifier)
+                    .ExecuteAsync(context.HttpContext);
+            },
+        };
     });
 builder.Services.AddAuthorization();
 
@@ -144,6 +181,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TimelineService>();
 builder.Services.AddScoped<ReferenceDataService>();
 builder.Services.AddScoped<BrokerScopeResolver>();
+builder.Services.AddScoped<SessionContinuityTelemetryService>();
 
 // Current user
 builder.Services.AddHttpContextAccessor();
@@ -287,6 +325,7 @@ app.MapDashboardEndpoints();
 app.MapTaskEndpoints();
 app.MapUserEndpoints();
 app.MapTimelineEndpoints();
+app.MapSessionTelemetryEndpoints();
 
 app.Run();
 
