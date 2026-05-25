@@ -46,8 +46,6 @@ playwright-report/
 test-results/
 !planning-mds/operations/evidence/**/artifacts/playwright-report/
 !planning-mds/operations/evidence/**/artifacts/playwright-report/**
-!planning-mds/operations/evidence/**/artifacts/test-results/
-!planning-mds/operations/evidence/**/artifacts/test-results/**
 
 # Python
 __pycache__/
