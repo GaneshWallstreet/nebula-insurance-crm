@@ -30,6 +30,38 @@ entities:
     label: BrokerRegion
     source_docs:
       - planning-mds/architecture/data-model.md
+  - id: entity:producer
+    label: Producer
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    rationale:
+      - adr: adr:026
+        section: "Decision"
+        summary: "Producers are distribution nodes in the self-referencing hierarchy and the subject of effective-dated ownership; node_type ordering is advisory so depth is unbounded."
+  - id: entity:territory
+    label: Territory
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+  - id: entity:producer-ownership
+    label: ProducerOwnership
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    rationale:
+      - adr: adr:026
+        section: "Decision"
+        summary: "Effective-dated ownership relationship (effective_from/to): reassignment closes the prior period and opens a new one so point-in-time attribution is preserved."
+  - id: entity:territory-assignment
+    label: TerritoryAssignment
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    rationale:
+      - adr: adr:026
+        section: "Decision"
+        summary: "Effective-dated territory membership with no conflicting active overlap for the same member/period."
   - id: entity:account
     label: Account
     source_docs:
@@ -476,6 +508,25 @@ capabilities:
     label: Broker Contact Management
     source_docs:
       - planning-mds/features/archive/F0002-broker-relationship-management/README.md
+  - id: capability:distribution-hierarchy-management
+    label: Distribution Hierarchy Management
+    source_docs:
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/README.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    rationale:
+      - adr: adr:026
+        section: "Decision"
+        summary: "Arbitrary-depth self-referencing tree with cached ancestry; cycle/orphan-safe reparent and bounded lazy traversal reads."
+  - id: capability:producer-ownership-management
+    label: Producer Ownership Management
+    source_docs:
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/README.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+  - id: capability:territory-management
+    label: Territory Management
+    source_docs:
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/README.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
   - id: capability:authorization-enforcement
     label: Authorization Enforcement
     source_docs:
@@ -3383,6 +3434,9 @@ adrs:
   - id: adr:025
     label: Submission Downstream Workflow — Quote/Approval/Bind, Recorded-Not-Computed Packet, and Archive
     path: planning-mds/architecture/decisions/ADR-025-submission-downstream-workflow-quote-approval-bind-and-archive.md
+  - id: adr:026
+    label: Broker/MGA Hierarchy, Producer Ownership & Territory
+    path: planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
 
 api_contracts:
   - id: api:nebula-rest

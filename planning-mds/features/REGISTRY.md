@@ -1,6 +1,6 @@
 # Feature Registry
 
-**Next Available Feature Number:** F0037
+**Next Available Feature Number:** F0038
 
 **Planning Views:**
 - Roadmap sequencing (`Now / Next / Later`): `planning-mds/features/ROADMAP.md`
@@ -41,6 +41,7 @@ Per §19 of the feature-evidence package contract. Replaces the legacy `Abandone
 | F0030 | Integration Hub & Data Exchange | Planned | Brokerage Platform Expansion | `F0030-integration-hub-and-data-exchange/` |
 | F0031 | Data Import, Deduplication & Go-Live Migration | Planned | Release Enablement | `F0031-data-import-deduplication-and-go-live-migration/` |
 | F0032 | Admin Configuration & Reference Data Console | Planned | Platform Operations | `F0032-admin-configuration-and-reference-data-console/` |
+| F0037 | Hierarchy-Aware Access Scoping & Distribution Rollups | Planned | CRM Release MVP+ | `F0037-hierarchy-aware-access-scoping-and-distribution-rollups/` |
 
 ## Archived Features
 

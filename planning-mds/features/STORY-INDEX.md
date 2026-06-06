@@ -2,7 +2,7 @@
 
 Auto-generated index of all user stories across feature folders.
 
-**Total Stories:** 141
+**Total Stories:** 146
 
 ---
 
@@ -196,6 +196,18 @@ Auto-generated index of all user stories across feature folders.
 
 ---
 
+## F0017 — Broker/MGA Hierarchy, Producer Ownership & Territory Management
+
+| Story ID | Title | Priority | Phase | Persona |
+|----------|-------|----------|-------|---------|
+| [F0017-S0001](./F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0001-model-broker-mga-hierarchy.md) | Model broker/MGA hierarchy (self-referencing, arbitrary depth) | High | MVP | Distribution & Marketing Manager |
+| [F0017-S0002](./F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0002-navigate-hierarchy.md) | Navigate and traverse the distribution hierarchy | High | MVP | Broker Relationship Coordinator |
+| [F0017-S0003](./F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0003-producer-ownership-effective-dated.md) | Assign and maintain producer ownership (effective-dated) | High | MVP | Distribution & Marketing Manager |
+| [F0017-S0004](./F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0004-territory-management-effective-dated.md) | Define and manage territories with effective-dated assignment | High | MVP | Distribution & Marketing Manager |
+| [F0017-S0005](./F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0005-hierarchy-ownership-territory-audit.md) | Audit and timeline for hierarchy, ownership, and territory changes | High | MVP | Distribution & Marketing Manager |
+
+---
+
 ## F0018 — Policy Lifecycle & Policy 360
 
 | Story ID | Title | Priority | Phase | Persona |
@@ -308,7 +320,7 @@ Auto-generated index of all user stories across feature folders.
 | CRM Release MVP | 57 |
 | Future | 1 |
 | Infrastructure | 10 |
-| MVP | 50 |
+| MVP | 55 |
 | MVP Hardening | 1 |
 | Phase 1 | 11 |
 | Platform Foundation | 7 |
@@ -321,7 +333,7 @@ Auto-generated index of all user stories across feature folders.
 | Priority | Count |
 |----------|-------|
 | Critical | 62 |
-| High | 62 |
+| High | 67 |
 | Medium | 13 |
 
 ---
