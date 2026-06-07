@@ -12,6 +12,9 @@
 #
 # Resources and actions:
 #   broker          read, search, create, update, delete
+#   distribution_node  read, update
+#   producer_ownership read, assign
+#   territory      read, create, assign
 #   contact         read, create, update, delete
 #   submission      read, transition
 #   renewal         read, transition
@@ -82,6 +85,48 @@ p, Admin,            broker, reactivate, true
 # broker:reactivate — reverse of deactivate (F0002-S0008). Manager authority required.
 # DistributionUser and RelationshipManager explicitly excluded: structural record change requires manager authority.
 p, DistributionManager, broker, reactivate, true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# §2.1a Distribution Hierarchy, Producer Ownership, and Territory (F0017)
+# Read scope: authenticated internal users only. Hierarchy-aware read scoping,
+# territory scoping, and recursive visibility predicates are deferred to F0037.
+# Mutations are manager/admin-owned structural changes with service-layer
+# cycle/overlap/effective-date validation and ActivityTimelineEvent emission.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Distribution node hierarchy reads.
+p, DistributionUser,    distribution_node, read,   true
+p, DistributionManager, distribution_node, read,   true
+p, Underwriter,         distribution_node, read,   true
+p, RelationshipManager, distribution_node, read,   true
+p, ProgramManager,      distribution_node, read,   true
+p, Admin,               distribution_node, read,   true
+
+# Distribution node parent mutation.
+p, DistributionManager, distribution_node, update, true
+p, Admin,               distribution_node, update, true
+
+# Effective-dated producer ownership reads and assignment.
+p, DistributionUser,    producer_ownership, read,   true
+p, DistributionManager, producer_ownership, read,   true
+p, Underwriter,         producer_ownership, read,   true
+p, RelationshipManager, producer_ownership, read,   true
+p, ProgramManager,      producer_ownership, read,   true
+p, Admin,               producer_ownership, read,   true
+p, DistributionManager, producer_ownership, assign, true
+p, Admin,               producer_ownership, assign, true
+
+# Territory reads, creation, and member assignment.
+p, DistributionUser,    territory, read,   true
+p, DistributionManager, territory, read,   true
+p, Underwriter,         territory, read,   true
+p, RelationshipManager, territory, read,   true
+p, ProgramManager,      territory, read,   true
+p, Admin,               territory, read,   true
+p, DistributionManager, territory, create, true
+p, DistributionManager, territory, assign, true
+p, Admin,               territory, create, true
+p, Admin,               territory, assign, true
 
 # ─────────────────────────────────────────────────────────────────────────────
 # §2.2 Contact

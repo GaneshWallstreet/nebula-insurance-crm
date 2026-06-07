@@ -981,6 +981,128 @@ endpoints:
     related_nodes:
       - entity:broker
       - capability:broker-relationship-management
+  - id: endpoint:distribution-node-parent-update
+    label: PUT /distribution-nodes/{nodeId}/parent
+    method: PUT
+    route: /distribution-nodes/{nodeId}/parent
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0001-model-broker-mga-hierarchy.md
+    related_nodes:
+      - capability:distribution-hierarchy-management
+      - entity:broker
+      - entity:mga
+      - entity:producer
+      - entity:activity-timeline-event
+      - policy_rule:distribution-node-update
+  - id: endpoint:distribution-node-ancestors
+    label: GET /distribution-nodes/{nodeId}/ancestors
+    method: GET
+    route: /distribution-nodes/{nodeId}/ancestors
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0002-navigate-hierarchy.md
+    related_nodes:
+      - capability:distribution-hierarchy-management
+      - entity:broker
+      - entity:mga
+      - entity:producer
+      - policy_rule:distribution-node-read
+  - id: endpoint:distribution-node-descendants
+    label: GET /distribution-nodes/{nodeId}/descendants
+    method: GET
+    route: /distribution-nodes/{nodeId}/descendants
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0002-navigate-hierarchy.md
+    related_nodes:
+      - capability:distribution-hierarchy-management
+      - entity:broker
+      - entity:mga
+      - entity:producer
+      - policy_rule:distribution-node-read
+  - id: endpoint:producer-ownership-read
+    label: GET /producer-ownership
+    method: GET
+    route: /producer-ownership
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0003-producer-ownership-effective-dated.md
+    related_nodes:
+      - capability:producer-ownership-management
+      - entity:producer-ownership
+      - entity:producer
+      - policy_rule:producer-ownership-read
+  - id: endpoint:producer-ownership-assign
+    label: POST /producer-ownership
+    method: POST
+    route: /producer-ownership
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0003-producer-ownership-effective-dated.md
+    related_nodes:
+      - capability:producer-ownership-management
+      - entity:producer-ownership
+      - entity:producer
+      - entity:activity-timeline-event
+      - policy_rule:producer-ownership-assign
+  - id: endpoint:territory-create
+    label: POST /territories
+    method: POST
+    route: /territories
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0004-territory-management-effective-dated.md
+    related_nodes:
+      - capability:territory-management
+      - entity:territory
+      - entity:activity-timeline-event
+      - policy_rule:territory-create
+  - id: endpoint:territory-members-list
+    label: GET /territories/{territoryId}/members
+    method: GET
+    route: /territories/{territoryId}/members
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0004-territory-management-effective-dated.md
+    related_nodes:
+      - capability:territory-management
+      - entity:territory
+      - entity:territory-assignment
+      - policy_rule:territory-read
+  - id: endpoint:territory-member-assign
+    label: POST /territories/{territoryId}/members
+    method: POST
+    route: /territories/{territoryId}/members
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0004-territory-management-effective-dated.md
+    related_nodes:
+      - capability:territory-management
+      - entity:territory
+      - entity:territory-assignment
+      - entity:activity-timeline-event
+      - policy_rule:territory-assign
+  - id: endpoint:territory-assignment-lookup
+    label: GET /territory-assignments
+    method: GET
+    route: /territory-assignments
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+      - planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0004-territory-management-effective-dated.md
+    related_nodes:
+      - capability:territory-management
+      - entity:territory-assignment
+      - policy_rule:territory-read
   - id: endpoint:submission-list
     label: GET /submissions
     method: GET
@@ -2848,6 +2970,130 @@ policy_rules:
       - capability:broker-relationship-management
       - capability:authorization-enforcement
     notes: Reverse of broker:delete (F0002-S0008). Manager authority required; DistributionUser and RelationshipManager excluded because structural record change requires manager authority.
+  - id: policy_rule:distribution-node-read
+    label: distribution_node:read
+    resource: distribution_node
+    action: read
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - capability:distribution-hierarchy-management
+      - capability:authorization-enforcement
+    notes: Authenticated internal read only; hierarchy-aware subtree scoping is deferred to F0037.
+  - id: policy_rule:distribution-node-update
+    label: distribution_node:update
+    resource: distribution_node
+    action: update
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:admin
+    related_nodes:
+      - capability:distribution-hierarchy-management
+      - capability:authorization-enforcement
+      - entity:activity-timeline-event
+    notes: Covers set/clear parent; service enforces self-parent, cycle/orphan, and rowVersion guards.
+  - id: policy_rule:producer-ownership-read
+    label: producer_ownership:read
+    resource: producer_ownership
+    action: read
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - capability:producer-ownership-management
+      - capability:authorization-enforcement
+    notes: Authenticated internal read only; ownership-scoped read enforcement is deferred to F0037.
+  - id: policy_rule:producer-ownership-assign
+    label: producer_ownership:assign
+    resource: producer_ownership
+    action: assign
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:admin
+    related_nodes:
+      - capability:producer-ownership-management
+      - capability:authorization-enforcement
+      - entity:producer-ownership
+      - entity:activity-timeline-event
+    notes: Effective-dated assign/reassign; service enforces overlap, date-order, backdating, and rowVersion guards.
+  - id: policy_rule:territory-read
+    label: territory:read
+    resource: territory
+    action: read
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - capability:territory-management
+      - capability:authorization-enforcement
+    notes: Authenticated internal read only; territory-scoped read enforcement is deferred to F0037.
+  - id: policy_rule:territory-create
+    label: territory:create
+    resource: territory
+    action: create
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:admin
+    related_nodes:
+      - capability:territory-management
+      - capability:authorization-enforcement
+      - entity:territory
+      - entity:activity-timeline-event
+    notes: Service enforces unique active territory name and emits timeline on successful create.
+  - id: policy_rule:territory-assign
+    label: territory:assign
+    resource: territory
+    action: assign
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:admin
+    related_nodes:
+      - capability:territory-management
+      - capability:authorization-enforcement
+      - entity:territory-assignment
+      - entity:activity-timeline-event
+    notes: Effective-dated member assign/reassign; service enforces overlap, date-order, and rowVersion guards.
   - id: policy_rule:contact-create
     label: contact:create
     resource: contact
@@ -3462,6 +3708,45 @@ schemas:
   - id: schema:paginated-broker-list
     path: planning-mds/schemas/paginated-broker-list.schema.json
     related_nodes: [entity:broker]
+  - id: schema:distribution-node
+    path: planning-mds/schemas/distribution-node.schema.json
+    related_nodes: [entity:broker, entity:mga, entity:producer, capability:distribution-hierarchy-management]
+  - id: schema:distribution-node-parent-request
+    path: planning-mds/schemas/distribution-node-parent-request.schema.json
+    related_nodes: [entity:broker, entity:mga, entity:producer, capability:distribution-hierarchy-management]
+  - id: schema:distribution-node-ancestors-response
+    path: planning-mds/schemas/distribution-node-ancestors-response.schema.json
+    related_nodes: [entity:broker, entity:mga, entity:producer, capability:distribution-hierarchy-management]
+  - id: schema:paginated-distribution-node-list
+    path: planning-mds/schemas/paginated-distribution-node-list.schema.json
+    related_nodes: [entity:broker, entity:mga, entity:producer, capability:distribution-hierarchy-management]
+  - id: schema:producer-ownership
+    path: planning-mds/schemas/producer-ownership.schema.json
+    related_nodes: [entity:producer-ownership, entity:producer, capability:producer-ownership-management]
+  - id: schema:producer-ownership-assignment-request
+    path: planning-mds/schemas/producer-ownership-assignment-request.schema.json
+    related_nodes: [entity:producer-ownership, entity:producer, capability:producer-ownership-management]
+  - id: schema:producer-ownership-lookup-response
+    path: planning-mds/schemas/producer-ownership-lookup-response.schema.json
+    related_nodes: [entity:producer-ownership, entity:producer, capability:producer-ownership-management]
+  - id: schema:territory
+    path: planning-mds/schemas/territory.schema.json
+    related_nodes: [entity:territory, capability:territory-management]
+  - id: schema:territory-create-request
+    path: planning-mds/schemas/territory-create-request.schema.json
+    related_nodes: [entity:territory, capability:territory-management]
+  - id: schema:territory-assignment
+    path: planning-mds/schemas/territory-assignment.schema.json
+    related_nodes: [entity:territory, entity:territory-assignment, capability:territory-management]
+  - id: schema:territory-member-assignment-request
+    path: planning-mds/schemas/territory-member-assignment-request.schema.json
+    related_nodes: [entity:territory, entity:territory-assignment, capability:territory-management]
+  - id: schema:paginated-territory-assignment-list
+    path: planning-mds/schemas/paginated-territory-assignment-list.schema.json
+    related_nodes: [entity:territory, entity:territory-assignment, capability:territory-management]
+  - id: schema:territory-assignment-lookup-response
+    path: planning-mds/schemas/territory-assignment-lookup-response.schema.json
+    related_nodes: [entity:territory-assignment, capability:territory-management]
   - id: schema:contact
     path: planning-mds/schemas/contact.schema.json
     related_nodes: [entity:contact, entity:broker, entity:account]

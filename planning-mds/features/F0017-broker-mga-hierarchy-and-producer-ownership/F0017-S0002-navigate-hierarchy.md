@@ -87,7 +87,7 @@ N/A — read-only story. No mutation; no editable state.
 ## Out of Scope
 
 - Editing the hierarchy (F0017-S0001 owns mutation).
-- Hierarchy-aware rollup metrics (deferred to reporting).
+- Hierarchy-aware rollup metrics (deferred to F0037, built on the F0023 reporting substrate).
 
 ## UI/UX Notes (Optional)
 
