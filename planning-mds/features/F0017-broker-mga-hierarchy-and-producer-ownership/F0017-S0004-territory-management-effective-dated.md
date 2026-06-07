@@ -105,7 +105,7 @@ Required checks for mutation stories:
 
 - Hierarchy of territories (nested territories) — future.
 - Territory-based access-control enforcement (deferred).
-- Territory rollup metrics (deferred to reporting).
+- Territory rollup metrics (deferred to F0037, built on the F0023 reporting substrate).
 
 ## UI/UX Notes (Optional)
 

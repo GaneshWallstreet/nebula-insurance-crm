@@ -76,17 +76,22 @@ structural model only.
 
 6. **Authorization posture.** Mutations require an authorized role (HTTP 403
    otherwise); **read scoping by hierarchy/territory/ownership is NOT enforced
-   in F0017** — the full tree is readable by authenticated internal users.
-   Enforcement is **F0037**. No Casbin policy rows change in F0017 beyond
-   standard authenticated-mutation guards.
+   in F0017** — the tree and effective-dated records are readable by
+   authenticated internal users. Enforcement is **F0037**. F0017 defines only
+   standard role-based mutation guards, without recursive ABAC predicates:
+   `distribution_node:update`, `producer_ownership:assign`, `territory:create`,
+   and `territory:assign`. The feature action must enforce these resource/action
+   names consistently in endpoint, service, and policy tests.
 
-7. **API surface (design-level; full OpenAPI authored during the feature
-   action).** RESTful, `/api/{resource}/{id}`, ProblemDetails errors:
-   - `PUT /api/distribution-nodes/{id}/parent` — set/clear parent (cycle/self/orphan validated)
-   - `GET /api/distribution-nodes/{id}/ancestors` · `GET /api/distribution-nodes/{id}/descendants?depth=` — traversal
-   - `POST /api/accounts/{id}/ownership` · `GET /api/accounts/{id}/ownership?asOf=` — effective-dated ownership
-   - `POST /api/territories` · `POST /api/territories/{id}/members` · `GET /api/territories/{id}/members?asOf=` — territory mgmt
-   - Timeline reuses existing `GET …/timeline` surfaces.
+7. **API and schema surface.** RESTful paths follow the local no-`/api` route
+   convention from `api-design-guide.md`. The concrete OpenAPI contract is
+   authored in `planning-mds/api/nebula-api.yaml`, backed by shared JSON Schemas
+   in `planning-mds/schemas/`:
+   - `PUT /distribution-nodes/{nodeId}/parent` — set/clear parent (self-parent 422, cycle 409, stale rowVersion 412, timeline event on success)
+   - `GET /distribution-nodes/{nodeId}/ancestors` and `GET /distribution-nodes/{nodeId}/descendants?depth=` — cached-ancestry traversal and lazy descendant expansion
+   - `POST /producer-ownership` and `GET /producer-ownership?scopeType=&scopeId=&asOf=` — effective-dated ownership for account or broker-relationship scopes
+   - `POST /territories`, `GET /territories/{territoryId}/members?asOf=`, `POST /territories/{territoryId}/members`, and `GET /territory-assignments?memberType=&memberId=&asOf=` — territory definition, assignment, and point-in-time lookup
+   - Timeline reuses the existing `TimelineEvent` schema and timeline surfaces; F0017 mutations emit immutable events atomically rather than exposing direct user-authored audit writes.
 
 ## Options Considered
 
@@ -128,12 +133,13 @@ structural model only.
 ## References
 
 - F0017 PRD + stories F0017-S0001…S0005 (`planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/`)
+- F0017 OpenAPI + JSON Schemas (`planning-mds/api/nebula-api.yaml`, `planning-mds/schemas/distribution-node*.schema.json`, `producer-ownership*.schema.json`, `territory*.schema.json`)
 - F0037 (deferred enforcement + rollups), F0002 (broker/MGA + timeline pattern), F0025 (economics, out of scope)
 - ADR-008 (Casbin), ADR-011 (transition history / append-only), ADR-013 (routing consumes hierarchy/territory), ADR-014-search (reporting substrate)
 - `planning-mds/architecture/SOLUTION-PATTERNS.md`, `planning-mds/architecture/data-model.md` §9
 
 ## Follow-up Actions
 
-- [ ] Author full OpenAPI for the endpoints above during the F0017 feature action (not at plan time).
+- [ ] Feature action G0 must turn the OpenAPI/schema surface above into `feature-assembly-plan.md` endpoint/service/file tables without changing route names or payload semantics unless an ADR amendment is approved.
 - [ ] F0037 to design hierarchy-aware read enforcement + rollup projections over these effective-dated records.
 - [ ] Re-evaluate closure-table vs cached-path if rollup query cost in F0037 warrants it.

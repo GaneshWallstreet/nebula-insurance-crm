@@ -14,7 +14,7 @@ Model broker, MGA, producer, and territory structure so ownership, reporting, an
 |----------|---------|
 | [PRD.md](./PRD.md) | Product scope and business outcomes |
 | [STATUS.md](./STATUS.md) | Planning and implementation tracker |
-| [GETTING-STARTED.md](./GETTING-STARTED.md) | Setup and refinement notes |
+| [GETTING-STARTED.md](./GETTING-STARTED.md) | Setup and implementation handoff notes |
 
 ## Stories
 
@@ -84,4 +84,3 @@ ACCOUNT──▶│PRODUCER_OWNER│ │TERRITORY_ASSIGNMT│◀──TERRITORY
           └──────┬───────┘ └──────┬───────────┘
                  └──── audit ──────┴───▶ ACTIVITY_TIMELINE_EVENT (immutable)
 ```
-

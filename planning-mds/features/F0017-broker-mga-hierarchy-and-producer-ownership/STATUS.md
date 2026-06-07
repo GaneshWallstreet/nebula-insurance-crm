@@ -1,6 +1,6 @@
 # F0017 — Broker/MGA Hierarchy, Producer Ownership & Territory Management — Status
 
-**Overall Status:** Planned — plan complete (Phase A + B approved, G1–G5 PASS, plan run `2026-06-06-5fb353e9`); ready for the feature/build action
+**Overall Status:** Planned — plan complete (Phase A + B approved, G1–G5 PASS, plan run `2026-06-06-5fb353e9`); plan-review repair complete 2026-06-06; rerun plan-review before feature/build action
 **Last Updated:** 2026-06-06
 
 ## Story Checklist
@@ -16,6 +16,11 @@
 ## Required Signoff Roles (Set in Planning)
 
 > Architect finalized in Phase B (ADR-026). Security Reviewer is **not forced** for this slice because hierarchy-aware access-control enforcement is deferred to F0037 (ADR-026 §6); no recursive access or hierarchy-based permissions are introduced here.
+
+## Plan-Review Repair Notes
+
+- 2026-06-06: Addressed plan-review run `2026-06-06-aec58eee` findings by binding F0017 OpenAPI paths, JSON Schemas, and role-based mutation policy rules; clarifying F0023 as a downstream reporting substrate rather than a build prerequisite; and tightening deferred F0037 rollup/read-enforcement language.
+- Next gate: rerun `plan-review` after validators pass so the prior NOT READY evidence is superseded by a fresh readiness report.
 
 | Role | Required | Why Required | Set By | Date |
 |------|----------|--------------|--------|------|

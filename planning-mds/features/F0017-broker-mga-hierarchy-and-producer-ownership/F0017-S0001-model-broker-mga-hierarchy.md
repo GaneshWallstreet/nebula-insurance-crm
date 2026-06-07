@@ -108,7 +108,7 @@ Required checks for mutation stories:
 ## Out of Scope
 
 - Hierarchy-aware access-control enforcement (deferred to a later authorization change).
-- Hierarchy-aware rollup reporting (deferred to F0023 / follow-up slice).
+- Hierarchy-aware rollup reporting (deferred to F0037, built on the F0023 reporting substrate).
 - Commission attribution (F0025).
 
 ## UI/UX Notes (Optional)
