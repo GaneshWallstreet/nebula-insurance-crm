@@ -45,7 +45,7 @@
 |-------|--------|----------|
 | Entities + EF configs + migration (S0001/S0003/S0004) | Done (4 entities, migration `20260608033854_F0017_…` applies in postgres) | `dotnet build` 0 errors; migration applied by integration-test startup |
 | DistributionNode service + 3 endpoints + Casbin + DI (S0001/S0002) | Done, tested | 8 integration tests green (reparent/cycle/ancestry/ancestors/descendants/403/404/428) |
-| ProducerOwnership service + endpoints (S0003) | Pending (entity+config done) | — |
+| ProducerOwnership service + 2 endpoints + Casbin + DI (S0003) | Done, tested | 6 integration tests green (assign/reassign/as-of/backdate-422/404/403) |
 | Territory + TerritoryAssignment service + endpoints (S0004) | Pending (entity+config done) | — |
 | Frontend distribution panels (S0002/S0003/S0004) | Pending (CI-validated) | — |
 

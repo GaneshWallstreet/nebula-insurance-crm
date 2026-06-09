@@ -247,6 +247,19 @@ public static class ProblemDetailsHelper
         statusCode: 422,
         extensions: Ext("invalid_distribution_parent"));
 
+    // ── F0017 effective-dated producer ownership ───────────────────────────
+    public static IResult OwnershipPeriodOverlap() => Results.Problem(
+        title: "Ownership period overlap",
+        detail: "An overlapping active ownership period already exists for this scope.",
+        statusCode: 409,
+        extensions: Ext("ownership_period_overlap"));
+
+    public static IResult OwnershipPeriodInvalid() => Results.Problem(
+        title: "Invalid ownership period",
+        detail: "The effective date is invalid: it must be on or after the current open period and form a valid range.",
+        statusCode: 422,
+        extensions: Ext("ownership_period_invalid"));
+
     public static IResult PreconditionFailed() =>
         PreconditionFailed("submission");
 
