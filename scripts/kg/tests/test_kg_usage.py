@@ -97,6 +97,52 @@ def test_ingest_text_neutral_stdin(tmp_path: Path) -> None:
     assert json.loads(out.read_text(encoding="utf-8").strip())["harness"] == "manual"
 
 
+# ---- codex adapter (peer of claude-code) ----
+
+def test_codex_adapter_maps_token_count(tmp_path: Path) -> None:
+    # last_token_usage is per-turn; input includes cached; no cache-write in OpenAI.
+    records = [
+        {"type": "session_meta", "payload": {"id": "sess-1", "cwd": "/x"}},
+        {"type": "event_msg", "timestamp": "t0", "payload": {"type": "token_count", "info": {
+            "last_token_usage": {"input_tokens": 28093, "cached_input_tokens": 24448,
+                                 "output_tokens": 337, "reasoning_output_tokens": 241},
+            "total_token_usage": {"input_tokens": 28093, "output_tokens": 337}}}},
+        {"type": "event_msg", "timestamp": "t1", "payload": {"type": "token_count", "info": {
+            "last_token_usage": {"input_tokens": 0, "cached_input_tokens": 0,
+                                 "output_tokens": 0}}}},  # empty tick -> skipped
+    ]
+    path = tmp_path / "rollout.jsonl"
+    path.write_text("\n".join(json.dumps(r) for r in records) + "\n", encoding="utf-8")
+    out = tmp_path / "usage.jsonl"
+
+    n = kg_usage.ingest([path], source="codex", out_path=out)
+
+    assert n == 1  # empty tick dropped
+    e = json.loads(out.read_text(encoding="utf-8").strip())
+    assert e["harness"] == "codex"
+    assert e["session_id"] == "sess-1"
+    assert e["msg_id"] == "sess-1:0"
+    p = e["payload"]
+    assert p["cache_read_tokens"] == 24448
+    assert p["input_tokens"] == 28093 - 24448   # uncached input only
+    assert p["output_tokens"] == 337            # already includes reasoning
+    assert p["cache_write_tokens"] == 0         # OpenAI caching has no write cost
+
+
+def test_codex_ingest_is_idempotent(tmp_path: Path) -> None:
+    records = [
+        {"type": "session_meta", "payload": {"id": "sess-2"}},
+        {"type": "event_msg", "timestamp": "t0", "payload": {"type": "token_count", "info": {
+            "last_token_usage": {"input_tokens": 100, "cached_input_tokens": 40, "output_tokens": 9}}}},
+    ]
+    path = tmp_path / "rollout.jsonl"
+    path.write_text("\n".join(json.dumps(r) for r in records) + "\n", encoding="utf-8")
+    out = tmp_path / "usage.jsonl"
+
+    assert kg_usage.ingest([path], source="codex", out_path=out) == 1
+    assert kg_usage.ingest([path], source="codex", out_path=out) == 0  # stable id -> dedup
+
+
 # ---- metrics (harness-neutral) ----
 
 def test_cache_hit_ratio_math() -> None:

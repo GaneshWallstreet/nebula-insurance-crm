@@ -172,9 +172,65 @@ def parse_normalized_jsonl_text(text: str) -> list[Turn]:
     return turns
 
 
+def parse_codex_rollout_text(text: str) -> list[Turn]:
+    """Adapter: Codex session rollout (.jsonl) -> Turns.
+
+    Per-turn usage is in `event_msg`/`token_count` records: `info.last_token_usage`
+    is the per-turn delta (`info.total_token_usage` is the running sum — we use last).
+    Codex `input_tokens` is the *total* input incl. the cached portion, so we split it:
+    `cache_read = cached_input_tokens`, `input = input_tokens - cached`. OpenAI caching
+    has no write premium, so `cache_write = 0`. `output_tokens` already includes
+    reasoning tokens. Turn id = `<session id>:<token_count ordinal>` (stable on re-ingest).
+    """
+    session_id = ""
+    model = None
+    turns: list[Turn] = []
+    tc_index = -1
+    for line in text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        rtype = rec.get("type")
+        if rtype == "session_meta":
+            meta = rec.get("payload") or rec
+            session_id = meta.get("id") or session_id
+            model = meta.get("model") or model
+            continue
+        if rtype != "event_msg":
+            continue
+        payload = rec.get("payload") or {}
+        if payload.get("type") != "token_count":
+            continue
+        tc_index += 1
+        last = (payload.get("info") or {}).get("last_token_usage") or {}
+        total_in = int(last.get("input_tokens", 0) or 0)
+        out = int(last.get("output_tokens", 0) or 0)
+        cached = int(last.get("cached_input_tokens", 0) or 0)
+        if total_in == 0 and out == 0:        # no usage recorded for this tick
+            continue
+        turns.append(Turn(
+            session_id=session_id,
+            msg_id=f"{session_id or 'codex'}:{tc_index}",
+            ts=rec.get("timestamp"),
+            model=model,
+            input_tokens=max(0, total_in - cached),   # uncached input only
+            output_tokens=out,                         # includes reasoning tokens
+            cache_read_tokens=cached,
+            cache_write_tokens=0,                      # OpenAI caching has no write cost
+            is_sidechain=False,
+            harness="codex",
+        ))
+    return turns
+
+
 # name -> adapter. `jsonl` is the lowest-common-denominator path for any harness.
 SOURCE_ADAPTERS: dict[str, Callable[[str], list[Turn]]] = {
     "claude-code": parse_claude_transcript_text,
+    "codex": parse_codex_rollout_text,
     "jsonl": parse_normalized_jsonl_text,
 }
 
@@ -192,9 +248,16 @@ def default_claude_transcript_dir() -> Path | None:
     return d if d.is_dir() else None
 
 
+def default_codex_sessions_dir() -> Path | None:
+    """Best-effort feed location for the codex adapter (rollouts nest under YYYY/MM/DD)."""
+    d = Path.home() / ".codex" / "sessions"
+    return d if d.is_dir() else None
+
+
 # name -> resolver for "where this harness keeps its feed" (optional convenience).
 SOURCE_DEFAULT_DIRS: dict[str, Callable[[], Path | None]] = {
     "claude-code": default_claude_transcript_dir,
+    "codex": default_codex_sessions_dir,
 }
 
 
@@ -317,7 +380,7 @@ def main() -> int:
                      help="Source adapter for the raw feed. 'jsonl' = pre-normalized turn "
                           "events any tool can emit (the tool-agnostic path).")
     ing.add_argument("--input", action="append", default=[], help="Feed file (repeatable).")
-    ing.add_argument("--input-dir", default=None, help="Directory of *.jsonl feed files.")
+    ing.add_argument("--input-dir", default=None, help="Directory of *.jsonl feed files (searched recursively).")
     ing.add_argument("--stdin", action="store_true", help="Read the feed from stdin.")
 
     rep = sub.add_parser("report", help="Print cache metrics from .kg-state/usage.jsonl")
@@ -338,7 +401,7 @@ def main() -> int:
                 resolver = SOURCE_DEFAULT_DIRS.get(args.source)
                 d = resolver() if resolver else None
             if d is not None and d.is_dir():
-                inputs = sorted(d.glob("*.jsonl"))
+                inputs = sorted(d.rglob("*.jsonl"))
         if not inputs:
             print("no feed found — pass --input/--input-dir or --stdin "
                   f"(source={args.source} has no usable default location here).", flush=True)
