@@ -15,6 +15,7 @@ import yaml
 import hint
 import lookup
 from kg_common import REF_FIELDS, REPO_ROOT, build_bundle, edge_ref_ids, feature_or_story_by_id
+from kg_usage import cache_metrics
 
 STATUS_PATH_RE = "planning-mds/features/"
 MAPPINGS_PATH = "planning-mds/knowledge-graph/feature-mappings.yaml"
@@ -285,6 +286,23 @@ def render_human(report: dict[str, Any]) -> str:
         f"mean={token_costs['mean'] if token_costs['mean'] is not None else 'n/a'}, "
         f"p95={token_costs['p95'] if token_costs['p95'] is not None else 'n/a'}"
     )
+    cache = report.get("cache") or {}
+    if cache.get("turns"):  # only render when harness usage was ingested (else byte-identical to before)
+        cpt = cache.get("cost_per_turn", {})
+        lines.append(
+            f"Cache hit ratio:   {cache['cache_hit_ratio'] if cache['cache_hit_ratio'] is not None else 'n/a'} "
+            f"(turns={cache['turns']})"
+        )
+        lines.append(
+            "Cost/turn:         "
+            f"mean={cpt.get('mean', 'n/a')}, p95={cpt.get('p95', 'n/a')} "
+            f"({cache.get('cost_unit', 'input-token-equivalents')})"
+        )
+        for s in cache.get("cache_write_spikes", []):
+            lines.append(
+                f"  ! cache-write spike {s['x_median']}x median "
+                f"(write_share={s['write_share']}, sidechain={s['is_sidechain']})"
+            )
     if telemetry["tier_vs_outcome"]:
         lines.append("")
         lines.append("Tier vs outcome:")
@@ -356,6 +374,7 @@ def main() -> int:
         "node_precision": mean(precisions) if precisions else 0.0,
         "node_recall": mean(recalls) if recalls else 0.0,
         "telemetry": telemetry_metrics(telemetry_events, feature_ids_seen),
+        "cache": cache_metrics(telemetry_events),
     }
 
     if args.json:
