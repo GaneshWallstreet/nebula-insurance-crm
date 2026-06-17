@@ -1,8 +1,22 @@
 #!/usr/bin/env python3
-"""Harness usage ingestion + cache-cost metrics for KG telemetry.
+"""Tool-agnostic harness usage ingestion + cache-cost metrics for KG telemetry.
+
+The durable interface is the **normalized turn event** (below) and the
+`ingest`/`report` CLI — not any one harness. Reading a given harness's raw usage
+is the only harness-specific step, so it is isolated behind a small *source
+adapter* registry (`SOURCE_ADAPTERS`); nothing else in this module is
+harness-aware. Any tool that can emit the normalized event uses the `jsonl`
+adapter and needs no native parser at all. (This realizes the KG-MCP-PLAN Phase 3
+adapter principle for the usage feed: neutral contract + per-harness adapter +
+a sequential/manual fallback.)
+
+Normalized turn event (the contract every adapter targets):
+  {"tool": "turn", "source": "harness", "harness": "<tool>", "session_id", "msg_id",
+   "ts", "model", "is_sidechain",
+   "payload": {"input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens"}}
 
 Standalone (no git walk, unlike eval.py):
-  ingest  — parse a harness usage feed (Claude Code transcript) -> .kg-state/usage.jsonl
+  ingest  — normalize a harness usage feed -> .kg-state/usage.jsonl
   report  — cache-hit ratio, cost-per-turn, cache-write spikes from those events
 
 eval.py imports cache_metrics() to fold the same numbers into its unified report.
@@ -18,7 +32,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import median
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 from kg_common import REPO_ROOT, now_iso
 
@@ -41,6 +55,7 @@ class Turn:
     cache_read_tokens: int
     cache_write_tokens: int
     is_sidechain: bool
+    harness: str = "unknown"  # which tool produced this turn (claude-code, openai, ...)
 
     @property
     def cost(self) -> float:
@@ -58,23 +73,48 @@ class Turn:
         return (self.cache_write_tokens / self.prefix_input) if self.prefix_input else 0.0
 
 
-# ---------- ingestion: Claude Code transcript -> normalized usage events ----------
+# ---------- normalized event <-> Turn (the tool-agnostic contract) ----------
 
-def default_transcript_dir() -> Path:
-    """Best-effort Claude Code transcript dir for the current cwd.
+def turn_to_event(turn: Turn) -> dict[str, Any]:
+    """Serialize a Turn to the normalized event written to usage.jsonl."""
+    return {
+        "ts": turn.ts or now_iso(), "source": "harness", "harness": turn.harness,
+        "session_id": turn.session_id, "msg_id": turn.msg_id, "model": turn.model,
+        "is_sidechain": turn.is_sidechain, "tool": "turn",
+        "payload": {
+            "input_tokens": turn.input_tokens, "output_tokens": turn.output_tokens,
+            "cache_read_tokens": turn.cache_read_tokens,
+            "cache_write_tokens": turn.cache_write_tokens,
+        },
+    }
 
-    Claude Code stores transcripts at ~/.claude/projects/<slug>, where <slug> is the
-    *launch cwd* with '/' -> '-' and a leading '-'. NOTE: the launch cwd is often the
-    outer repo, not {PRODUCT_ROOT}; when it differs, pass --transcript-dir explicitly.
-    """
-    slug = "-" + str(Path.cwd()).lstrip("/").replace("/", "-")
-    return Path.home() / ".claude" / "projects" / slug
+
+def _turn_from_event(event: dict[str, Any]) -> Turn | None:
+    if event.get("tool") != "turn":
+        return None
+    p = event.get("payload") or {}
+    return Turn(
+        session_id=event.get("session_id", ""), msg_id=event.get("msg_id", ""),
+        ts=event.get("ts"), model=event.get("model"),
+        input_tokens=int(p.get("input_tokens", 0) or 0),
+        output_tokens=int(p.get("output_tokens", 0) or 0),
+        cache_read_tokens=int(p.get("cache_read_tokens", 0) or 0),
+        cache_write_tokens=int(p.get("cache_write_tokens", 0) or 0),
+        is_sidechain=bool(event.get("is_sidechain", False)),
+        harness=event.get("harness", "unknown"),
+    )
 
 
-def parse_claude_transcript(path: Path) -> list[Turn]:
+# ---------- source adapters: a harness's raw usage feed -> normalized Turns ----------
+# Add support for a new harness by registering ONE function here. Everything else
+# (dedup, metrics, eval.py wiring) is harness-neutral. A harness that can already
+# emit the normalized event uses the "jsonl" adapter and needs no parser at all.
+
+def parse_claude_transcript_text(text: str) -> list[Turn]:
+    """Adapter: Claude Code session transcript (.jsonl) -> Turns."""
     turns: list[Turn] = []
     seen: set[str] = set()
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line in text.splitlines():
         line = line.strip()
         if not line:
             continue
@@ -93,7 +133,7 @@ def parse_claude_transcript(path: Path) -> list[Turn]:
             continue
         seen.add(msg_id)
         turns.append(Turn(
-            session_id=rec.get("sessionId") or path.stem,
+            session_id=rec.get("sessionId") or "",
             msg_id=msg_id,
             ts=rec.get("timestamp"),
             model=message.get("model"),
@@ -102,25 +142,71 @@ def parse_claude_transcript(path: Path) -> list[Turn]:
             cache_read_tokens=int(usage.get("cache_read_input_tokens", 0) or 0),
             cache_write_tokens=int(usage.get("cache_creation_input_tokens", 0) or 0),
             is_sidechain=bool(rec.get("isSidechain", False)),
+            harness="claude-code",
         ))
     return turns
 
 
-def turn_to_event(turn: Turn) -> dict[str, Any]:
-    return {
-        "ts": turn.ts or now_iso(), "source": "harness", "harness": "claude-code",
-        "session_id": turn.session_id, "msg_id": turn.msg_id, "model": turn.model,
-        "is_sidechain": turn.is_sidechain, "tool": "turn",
-        "payload": {
-            "input_tokens": turn.input_tokens, "output_tokens": turn.output_tokens,
-            "cache_read_tokens": turn.cache_read_tokens,
-            "cache_write_tokens": turn.cache_write_tokens,
-        },
-    }
+def parse_normalized_jsonl_text(text: str) -> list[Turn]:
+    """Adapter: pre-normalized turn events — the tool-agnostic feed any harness can emit."""
+    turns: list[Turn] = []
+    seen: set[str] = set()
+    for line in text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        turn = _turn_from_event(rec)
+        if turn is None or turn.msg_id in seen:
+            continue
+        seen.add(turn.msg_id)
+        turns.append(turn)
+    return turns
 
 
-def ingest(transcripts: Iterable[Path], out_path: Path = USAGE_PATH) -> int:
-    """Append new turn events to out_path. Idempotent: dedupes by msg_id across runs."""
+# name -> adapter. `jsonl` is the lowest-common-denominator path for any harness.
+SOURCE_ADAPTERS: dict[str, Callable[[str], list[Turn]]] = {
+    "claude-code": parse_claude_transcript_text,
+    "jsonl": parse_normalized_jsonl_text,
+}
+
+
+def parse_claude_transcript(path: Path) -> list[Turn]:
+    """Back-compat helper: parse a Claude transcript FILE (fills session_id from the filename)."""
+    turns = parse_claude_transcript_text(_read_text(Path(path)))
+    stem = Path(path).stem
+    for turn in turns:
+        if not turn.session_id:
+            turn.session_id = stem
+    return turns
+
+
+def default_transcript_dir() -> Path:
+    """Best-effort Claude Code transcript dir for the current cwd.
+
+    Claude Code stores transcripts at ~/.claude/projects/<slug>, where <slug> is the
+    *launch cwd* with '/' -> '-' and a leading '-'. NOTE: the launch cwd is often the
+    outer repo, not {PRODUCT_ROOT}; when it differs, pass --input-dir explicitly.
+    (Only relevant to the claude-code adapter; other harnesses feed their own paths.)
+    """
+    slug = "-" + str(Path.cwd()).lstrip("/").replace("/", "-")
+    return Path.home() / ".claude" / "projects" / slug
+
+
+# ---------- ingestion (harness-neutral) ----------
+
+def _read_text(path: Path) -> str:
+    try:
+        return Path(path).read_text(encoding="utf-8")
+    except OSError:
+        return ""
+
+
+def _append_turns(turns: Iterable[Turn], out_path: Path = USAGE_PATH) -> int:
+    """Append normalized events for new turns. Idempotent: cross-run dedup by msg_id."""
     existing: set[str] = set()
     if out_path.exists():
         for line in out_path.read_text(encoding="utf-8").splitlines():
@@ -131,51 +217,58 @@ def ingest(transcripts: Iterable[Path], out_path: Path = USAGE_PATH) -> int:
     written = 0
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with out_path.open("a", encoding="utf-8") as fh:
-        for path in transcripts:
-            for turn in parse_claude_transcript(path):
-                if turn.msg_id in existing:
-                    continue
-                existing.add(turn.msg_id)
-                fh.write(json.dumps(turn_to_event(turn), ensure_ascii=False) + "\n")
-                written += 1
+        for turn in turns:
+            if turn.msg_id in existing:
+                continue
+            existing.add(turn.msg_id)
+            fh.write(json.dumps(turn_to_event(turn), ensure_ascii=False) + "\n")
+            written += 1
     return written
 
 
-def ingest_from_hook_stdin(stdin_text: str, out_path: Path = USAGE_PATH) -> int:
-    """Claude Code Stop-hook adapter: ingest the current session's transcript.
+def ingest(inputs: Iterable[Path], *, source: str = "claude-code", out_path: Path = USAGE_PATH) -> int:
+    """Ingest one or more feed files using the named source adapter."""
+    parser = SOURCE_ADAPTERS[source]
+    turns: list[Turn] = []
+    for path in inputs:
+        turns.extend(parser(_read_text(Path(path))))
+    return _append_turns(turns, out_path)
 
-    The Stop-hook JSON envelope carries `transcript_path`, so ingestion never depends
-    on the cwd->slug guess in default_transcript_dir(). Best-effort by design: any
-    failure returns 0 so a telemetry hiccup never blocks the session from stopping.
-    (This is the one harness-coupled piece; it sits behind the Phase 3 adapter boundary.)
+
+def ingest_text(text: str, *, source: str, out_path: Path = USAGE_PATH) -> int:
+    """Ingest a feed passed as text (e.g. piped on stdin) using the named source adapter."""
+    return _append_turns(SOURCE_ADAPTERS[source](text), out_path)
+
+
+def ingest_stdin(stdin_text: str, *, source: str = "claude-code", out_path: Path = USAGE_PATH) -> int:
+    """Best-effort stdin ingest for a per-harness trigger. Always returns 0 so a
+    telemetry hiccup never blocks a session/run from completing.
+
+    - source="claude-code": stdin is the Stop-hook JSON envelope; its transcript_path
+      is resolved and ingested (avoids the cwd->slug guess).
+    - other sources (e.g. "jsonl"): stdin *is* the feed content.
     """
     try:
-        data = json.loads(stdin_text) if stdin_text.strip() else {}
-        tp = data.get("transcript_path")
-        if tp and Path(tp).is_file():
-            n = ingest([Path(tp)], out_path=out_path)
+        if source == "claude-code":
+            data = json.loads(stdin_text) if stdin_text.strip() else {}
+            tp = data.get("transcript_path")
+            if tp and Path(tp).is_file():
+                n = ingest([Path(tp)], source="claude-code", out_path=out_path)
+                print(f"kg_usage: ingested {n} new turn event(s)", flush=True)
+        else:
+            n = ingest_text(stdin_text, source=source, out_path=out_path)
             print(f"kg_usage: ingested {n} new turn event(s)", flush=True)
-    except Exception as exc:  # never block session stop on a telemetry error
-        print(f"kg_usage: stop-hook ingest skipped ({exc})", flush=True)
+    except Exception as exc:  # never block the caller on a telemetry error
+        print(f"kg_usage: stdin ingest skipped ({exc})", flush=True)
     return 0
 
 
-# ---------- metrics (importable by eval.py) ----------
+def ingest_from_hook_stdin(stdin_text: str, out_path: Path = USAGE_PATH) -> int:
+    """Back-compat alias for the Claude Code Stop-hook trigger."""
+    return ingest_stdin(stdin_text, source="claude-code", out_path=out_path)
 
-def _turn_from_event(event: dict[str, Any]) -> Turn | None:
-    if event.get("tool") != "turn":
-        return None
-    p = event.get("payload") or {}
-    return Turn(
-        session_id=event.get("session_id", ""), msg_id=event.get("msg_id", ""),
-        ts=event.get("ts"), model=event.get("model"),
-        input_tokens=int(p.get("input_tokens", 0) or 0),
-        output_tokens=int(p.get("output_tokens", 0) or 0),
-        cache_read_tokens=int(p.get("cache_read_tokens", 0) or 0),
-        cache_write_tokens=int(p.get("cache_write_tokens", 0) or 0),
-        is_sidechain=bool(event.get("is_sidechain", False)),
-    )
 
+# ---------- metrics (importable by eval.py; fully harness-neutral) ----------
 
 def percentile(values: list[float], pct: float) -> float | None:
     if not values:
@@ -201,6 +294,7 @@ def cache_metrics(events: list[dict[str, Any]], spike_factor: float = SPIKE_FACT
     med = median(costs)
     spikes = sorted(
         ({"session_id": t.session_id, "msg_id": t.msg_id, "ts": t.ts,
+          "harness": t.harness,
           "cost": round(t.cost, 1), "x_median": round(t.cost / med, 1) if med else None,
           "write_share": round(t.write_share, 3),
           "cache_write_tokens": t.cache_write_tokens, "is_sidechain": t.is_sidechain}
@@ -231,32 +325,44 @@ def _load_usage_events(path: Path = USAGE_PATH) -> list[dict[str, Any]]:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="KG harness-usage ingestion + cache metrics.")
+    ap = argparse.ArgumentParser(description="Tool-agnostic harness-usage ingestion + cache metrics.")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    ing = sub.add_parser("ingest", help="Parse harness transcripts into .kg-state/usage.jsonl")
-    ing.add_argument("--transcript", action="append", default=[], help="Transcript .jsonl (repeatable).")
-    ing.add_argument("--transcript-dir", default=None, help="Dir of *.jsonl (default: Claude Code project dir for cwd).")
-    ing.add_argument("--stdin-hook", action="store_true",
-                     help="Claude Code Stop-hook mode: read the hook JSON from stdin and "
-                          "ingest its transcript_path. Best-effort; always exits 0.")
+
+    ing = sub.add_parser("ingest", help="Normalize a harness usage feed into .kg-state/usage.jsonl")
+    ing.add_argument("--source", choices=sorted(SOURCE_ADAPTERS), default="claude-code",
+                     help="Source adapter for the raw feed. 'jsonl' = pre-normalized turn "
+                          "events any tool can emit (the tool-agnostic path).")
+    ing.add_argument("--input", action="append", default=[], help="Feed file (repeatable).")
+    ing.add_argument("--input-dir", default=None, help="Directory of *.jsonl feed files.")
+    ing.add_argument("--stdin", action="store_true",
+                     help="Read the feed from stdin (best-effort; always exits 0). For "
+                          "source=claude-code this reads the Stop-hook envelope.")
+    # Deprecated Claude-specific aliases (kept so already-registered hooks keep working):
+    ing.add_argument("--transcript", action="append", default=[], help=argparse.SUPPRESS)
+    ing.add_argument("--transcript-dir", default=None, help=argparse.SUPPRESS)
+    ing.add_argument("--stdin-hook", action="store_true", help=argparse.SUPPRESS)
+
     rep = sub.add_parser("report", help="Print cache metrics from .kg-state/usage.jsonl")
     rep.add_argument("--json", action="store_true")
     rep.add_argument("--spike-factor", type=float, default=SPIKE_FACTOR)
     args = ap.parse_args()
 
     if args.cmd == "ingest":
-        if args.stdin_hook:
-            return ingest_from_hook_stdin(sys.stdin.read())
-        paths = [Path(p) for p in args.transcript]
-        if not paths:
-            d = Path(args.transcript_dir) if args.transcript_dir else default_transcript_dir()
-            paths = sorted(d.glob("*.jsonl")) if d.is_dir() else []
-        if not paths:
-            print("no transcripts found — pass --transcript/--transcript-dir "
-                  "(the Claude Code project dir is derived from launch cwd, which may "
-                  "differ from PRODUCT_ROOT)", flush=True)
+        if args.stdin or args.stdin_hook:
+            return ingest_stdin(sys.stdin.read(), source=args.source)
+        inputs = [Path(p) for p in (args.input + args.transcript)]
+        if not inputs:
+            d = (Path(args.input_dir) if args.input_dir
+                 else Path(args.transcript_dir) if args.transcript_dir
+                 else default_transcript_dir() if args.source == "claude-code" else None)
+            if d is not None and d.is_dir():
+                inputs = sorted(d.glob("*.jsonl"))
+        if not inputs:
+            print("no feed found — pass --input/--input-dir (or --stdin). For "
+                  "source=claude-code the default dir is derived from launch cwd, which "
+                  "may differ from PRODUCT_ROOT.", flush=True)
             return 1
-        print(f"ingested {ingest(paths)} new turn event(s) -> {USAGE_PATH}")
+        print(f"ingested {ingest(inputs, source=args.source)} new turn event(s) -> {USAGE_PATH}")
         return 0
 
     m = cache_metrics(_load_usage_events(), spike_factor=args.spike_factor)
@@ -268,7 +374,7 @@ def main() -> int:
           f"cost/turn mean={m['cost_per_turn']['mean']} p95={m['cost_per_turn']['p95']} "
           f"({m.get('cost_unit', 'input-token-equivalents')})")
     for s in m["cache_write_spikes"]:
-        print(f"  SPIKE {s['x_median']}x median  cost={s['cost']}  "
+        print(f"  SPIKE {s['x_median']}x median  cost={s['cost']}  harness={s.get('harness')}  "
               f"write_share={s['write_share']}  sidechain={s['is_sidechain']}  {s['ts']}")
     return 0
 

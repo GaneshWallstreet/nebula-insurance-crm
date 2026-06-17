@@ -150,3 +150,52 @@ def test_ingest_is_idempotent(tmp_path: Path) -> None:
     assert first == 1
     assert second == 0  # dedup by msg_id across runs
     assert len(out.read_text(encoding="utf-8").strip().splitlines()) == 1
+
+
+def test_claude_adapter_tags_harness(tmp_path: Path) -> None:
+    record = {"type": "assistant", "sessionId": "s1", "timestamp": "t", "isSidechain": False,
+              "message": {"id": "msg_A", "model": "claude-opus-4-8",
+                          "usage": {"input_tokens": 100, "output_tokens": 20,
+                                    "cache_read_input_tokens": 800,
+                                    "cache_creation_input_tokens": 50}}}
+    path = tmp_path / "t.jsonl"
+    path.write_text(json.dumps(record) + "\n", encoding="utf-8")
+
+    turns = kg_usage.parse_claude_transcript(path)
+
+    assert turns[0].harness == "claude-code"
+    assert kg_usage.turn_to_event(turns[0])["harness"] == "claude-code"
+
+
+def test_jsonl_adapter_ingests_any_harness(tmp_path: Path) -> None:
+    # A non-Claude harness emits the normalized contract directly — no native parser.
+    events = [
+        {"tool": "turn", "source": "harness", "harness": "openai", "session_id": "r1",
+         "msg_id": "m1", "ts": "t", "model": "gpt-x", "is_sidechain": False,
+         "payload": {"input_tokens": 100, "output_tokens": 20,
+                     "cache_read_tokens": 800, "cache_write_tokens": 50}},
+        {"tool": "turn", "harness": "openai", "msg_id": "m1", "payload": {}},  # dup id dropped
+        {"tool": "lookup", "msg_id": "x"},  # non-turn ignored
+    ]
+    feed = tmp_path / "feed.jsonl"
+    feed.write_text("\n".join(json.dumps(e) for e in events) + "\n", encoding="utf-8")
+    out = tmp_path / "usage.jsonl"
+
+    n = kg_usage.ingest([feed], source="jsonl", out_path=out)
+
+    assert n == 1
+    written = json.loads(out.read_text(encoding="utf-8").strip())
+    assert written["harness"] == "openai"  # source preserved, not hardcoded to claude
+    assert kg_usage.cache_metrics([written])["turns"] == 1  # scores via the same path
+
+
+def test_ingest_stdin_neutral_jsonl(tmp_path: Path) -> None:
+    out = tmp_path / "usage.jsonl"
+    event = {"tool": "turn", "harness": "manual", "msg_id": "m9",
+             "payload": {"input_tokens": 10, "output_tokens": 2,
+                         "cache_read_tokens": 30, "cache_write_tokens": 5}}
+
+    rc = kg_usage.ingest_stdin(json.dumps(event) + "\n", source="jsonl", out_path=out)
+
+    assert rc == 0
+    assert json.loads(out.read_text(encoding="utf-8").strip())["harness"] == "manual"
