@@ -118,6 +118,70 @@ def test_result_is_minified(bundle):
     assert json.loads(minified) == json.loads(cli_bytes)
 
 
+# ---------- kg_validate: read-only self-check ----------
+
+@pytest.mark.parametrize("mode", ["check-orphans", "check-symbols", "check-coverage-gaps", "check-drift"])
+def test_kg_validate_shape(bundle, mode):
+    r = mcp_server.build_validate({"mode": mode}, bundle)
+    assert r["mode"] == mode
+    assert isinstance(r["ok"], bool)
+    assert isinstance(r["errors"], list) and isinstance(r["warnings"], list)
+
+
+def test_kg_validate_rejects_mutating_mode(bundle):
+    for mode in ("regenerate-symbols", "write-coverage-report", "bogus"):
+        with pytest.raises(mcp_server.McpToolError):
+            mcp_server.build_validate({"mode": mode}, bundle)
+
+
+def test_kg_validate_never_mutates(bundle):
+    kg = REPO_ROOT / "planning-mds" / "knowledge-graph"
+    snapshot = {p.name: p.stat().st_mtime for p in kg.glob("*.yaml")}
+    for mode in ("check-symbols", "check-orphans", "check-coverage-gaps"):
+        mcp_server.build_validate({"mode": mode}, bundle)
+    assert {p.name: p.stat().st_mtime for p in kg.glob("*.yaml")} == snapshot
+
+
+# ---------- kg_workstate: the writer + its safe-path boundary ----------
+
+@pytest.mark.parametrize("bad", ["../evil", "a/b", "..", "foo/../bar", "/abs", "", "sess id", "x\\y", ".."])
+def test_kg_workstate_rejects_unsafe_session(bad):
+    with pytest.raises(mcp_server.McpToolError):
+        mcp_server._safe_state_file(bad)
+
+
+def test_kg_workstate_safe_path_under_workstate_dir():
+    p = mcp_server._safe_state_file("good-session_1")
+    assert p.parent == mcp_server._WORKSTATE_DIR
+    assert p.name == "good-session_1.yaml"
+
+
+def test_kg_workstate_init_decision_dump_roundtrip(bundle):
+    import uuid
+    sid = f"mcp-test-{uuid.uuid4().hex[:8]}"
+    sf = mcp_server._safe_state_file(sid)
+    try:
+        init = mcp_server.build_workstate(
+            {"action": "init", "session_id": sid, "role": "architect", "scope": FEATURE}, bundle)
+        assert init["ok"] is True
+        dec = mcp_server.build_workstate(
+            {"action": "decision", "session_id": sid, "summary": "use temporal", "topic": "orchestration"}, bundle)
+        assert dec["ok"] is True
+        dump = mcp_server.build_workstate({"action": "dump", "session_id": sid}, bundle)
+        assert dump["ok"] is True
+        assert dump["state"]["session"]["role"] == "architect"
+    finally:
+        if sf.exists():
+            sf.unlink()
+
+
+def test_kg_workstate_bad_action_and_missing_args(bundle):
+    with pytest.raises(mcp_server.McpToolError):
+        mcp_server.build_workstate({"action": "wipe", "session_id": "s"}, bundle)
+    with pytest.raises(mcp_server.McpToolError):
+        mcp_server.build_workstate({"action": "init", "session_id": "s"}, bundle)  # missing role
+
+
 # ---------- over-stdio integration: initialize -> tools/list -> tools/call ----------
 
 def _drive_server(requests: list[dict]) -> list[dict]:
@@ -144,7 +208,8 @@ def test_stdio_protocol_roundtrip():
 
     assert by_id[1]["result"]["serverInfo"]["name"] == "kg"
     assert by_id[1]["result"]["protocolVersion"]
-    assert {t["name"] for t in by_id[2]["result"]["tools"]} == {"kg_context", "kg_hint", "kg_blast"}
+    assert {t["name"] for t in by_id[2]["result"]["tools"]} == {
+        "kg_context", "kg_hint", "kg_blast", "kg_validate", "kg_workstate"}
 
     call = by_id[3]["result"]
     assert not call.get("isError")

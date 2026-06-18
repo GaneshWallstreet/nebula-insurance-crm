@@ -307,7 +307,7 @@ retrieval_contract:
     - Open raw feature, ADR, API, or schema files only when linked, changed, or needed for detail or verification.
   minimum_prompt_block:
     - target
-    - affected_nodes
+    - affects
     - restricted_to_role
     - enforced_by_policy
     - governed_by

@@ -20,8 +20,12 @@ indent=2; this layer minifies). Every call emits telemetry with source="mcp".
 """
 from __future__ import annotations
 
+import argparse
+import contextlib
+import io
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -31,6 +35,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blast  # noqa: E402
 import hint  # noqa: E402
 import lookup  # noqa: E402
+import validate  # noqa: E402
+import workstate  # noqa: E402
 import kg_common  # noqa: E402
 
 PROTOCOL_VERSION = "2025-06-18"
@@ -192,6 +198,123 @@ def build_blast(args: dict[str, Any], bundle: dict[str, Any]) -> dict[str, Any]:
     return report["summary"] if compact else report
 
 
+def build_validate(args: dict[str, Any], bundle: dict[str, Any]) -> dict[str, Any]:
+    """kg_validate — read-only self-check (wraps validate.py's read-only checks).
+
+    Calls the same check functions main() uses, scoped to the requested mode. NEVER
+    mutates: no coverage-report write, no symbol/decision regeneration.
+    """
+    mode = args.get("mode")
+    report = validate.ValidationReport()
+    summary: Any = None
+    if mode == "check-drift":
+        validate.validate_casbin_drift(report, bundle)
+        memory_dir = args.get("memory_dir")
+        if memory_dir:
+            validate.validate_external_memory_drift(report, Path(str(memory_dir)))
+    elif mode == "check-symbols":
+        summary = validate.validate_symbol_index(report, bundle, required=True)
+    elif mode == "check-orphans":
+        summary = validate.validate_orphans(
+            report, bundle, exempt_kinds=validate.DEFAULT_ORPHAN_EXEMPT_KINDS, as_errors=False)
+    elif mode == "check-coverage-gaps":
+        summary = validate.validate_coverage_gaps(
+            report, excludes=validate.DEFAULT_COVERAGE_GAP_EXCLUDES, as_errors=False)
+    else:
+        raise McpToolError("`mode` must be one of: check-drift, check-symbols, check-orphans, check-coverage-gaps")
+    payload = {"mode": mode, "ok": not report.errors,
+               "errors": report.errors, "warnings": report.warnings}
+    if summary is not None:
+        payload["summary"] = summary
+    return payload
+
+
+# kg_workstate write boundary: only ever under {PRODUCT_ROOT}/.kg-state/workstate/.
+_WORKSTATE_DIR = (kg_common.REPO_ROOT / ".kg-state" / "workstate").resolve()
+_KG_GRAPH_DIR = (kg_common.REPO_ROOT / "planning-mds" / "knowledge-graph").resolve()
+_SESSION_ID_RE = re.compile(r"^[A-Za-z0-9._-]+$")
+
+
+def _safe_state_file(session_id: Any) -> Path:
+    """Derive a canonical state-file path from a session id, rejecting any escape.
+
+    The MCP boundary is narrower than the CLI's --state-file: arbitrary paths are not
+    accepted. Traversal, separators, and any path under the KG dir are rejected.
+    """
+    if not isinstance(session_id, str) or not session_id:
+        raise McpToolError("`session_id` is required")
+    if ".." in session_id or not _SESSION_ID_RE.fullmatch(session_id):
+        raise McpToolError("`session_id` must match [A-Za-z0-9._-]+ (no path separators or '..')")
+    path = (_WORKSTATE_DIR / f"{session_id}.yaml").resolve()
+    if path.parent != _WORKSTATE_DIR:
+        raise McpToolError("resolved state path escapes the workstate directory")
+    if path == _KG_GRAPH_DIR or _KG_GRAPH_DIR in path.parents:
+        raise McpToolError("refusing to write under the knowledge-graph directory")
+    _WORKSTATE_DIR.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _run_workstate(fn, ns: argparse.Namespace) -> tuple[str, int]:
+    """Run a workstate cmd_* with stdout captured — its prints must never reach the
+    JSON-RPC stdout channel."""
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc = fn(ns)
+    return buf.getvalue(), rc
+
+
+def build_workstate(args: dict[str, Any], bundle: dict[str, Any]) -> dict[str, Any]:
+    """kg_workstate — session resilience; the ONE tool that writes (to a safe per-session
+    state file under .kg-state/workstate/, never the KG). Wraps workstate.py cmd_*."""
+    action = args.get("action")
+    if action not in ("init", "decision", "escalate", "dump"):
+        raise McpToolError("`action` must be one of: init, decision, escalate, dump")
+    state_file = _safe_state_file(args.get("session_id"))
+    ns = argparse.Namespace(state_file=str(state_file), telemetry_file=None)
+    result: dict[str, Any] = {"action": action, "session_id": args["session_id"],
+                              "state_file": str(state_file)}
+
+    if action == "dump":
+        ns.compact = bool(args.get("compact", False))
+        ns.current_view = bool(args.get("current_view", False))
+        ns.json = True
+        out, rc = _run_workstate(workstate.cmd_dump, ns)
+        result["ok"] = rc == 0
+        result["state"] = json.loads(out) if out.strip() else {}
+        return result
+
+    if action == "init":
+        if not args.get("role"):
+            raise McpToolError("`role` is required for action=init")
+        ns.role = str(args["role"])
+        ns.scope = args.get("scope")
+        ns.run_id = args.get("run_id")
+        ns.mode = args.get("mode")
+        ns.force = bool(args.get("force", False))
+        _out, rc = _run_workstate(workstate.cmd_init, ns)
+    elif action == "decision":
+        if not args.get("summary"):
+            raise McpToolError("`summary` is required for action=decision")
+        ns.summary = str(args["summary"])
+        ns.files = args.get("files")
+        ns.rationale = args.get("rationale")
+        ns.topic = args.get("topic")
+        ns.supersedes = args.get("supersedes")
+        _out, rc = _run_workstate(workstate.cmd_decision, ns)
+    else:  # escalate
+        if not args.get("reason"):
+            raise McpToolError("`reason` is required for action=escalate")
+        ns.reason = str(args["reason"])
+        ns.nodes = args.get("nodes")
+        ns.opened_raw = args.get("opened_raw")
+        _out, rc = _run_workstate(workstate.cmd_escalate, ns)
+
+    result["ok"] = rc == 0
+    if state_file.exists():  # echo the resulting state so the caller sees the update
+        result["state"] = workstate.ensure_state_shape(workstate.load_state(state_file))
+    return result
+
+
 # ---------- tool registry ----------
 
 TOOLS: dict[str, dict[str, Any]] = {
@@ -239,6 +362,52 @@ TOOLS: dict[str, dict[str, Any]] = {
                 "node": {"type": "string", "description": "Scope a --symbol blast to one canonical node id"},
                 "compact": {"type": "boolean", "description": "Summary only, omit resolved file lists"},
             },
+        },
+    },
+    "kg_validate": {
+        "builder": build_validate,
+        "description": "Read-only KG self-check mid-task (no Bash). Returns {ok, errors, warnings, "
+                       "summary?}. Never mutates — no coverage-report/symbol/decision regeneration.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "mode": {"type": "string",
+                         "enum": ["check-drift", "check-symbols", "check-orphans", "check-coverage-gaps"],
+                         "description": "Which read-only check to run"},
+                "memory_dir": {"type": "string",
+                               "description": "External-memory dir for check-drift (optional)"},
+            },
+            "required": ["mode"],
+        },
+    },
+    "kg_workstate": {
+        "builder": build_workstate,
+        "description": "Session resilience — the one writing tool. Writes ONLY to a safe per-session "
+                       "state file under .kg-state/workstate/ (never the KG). init/decision/escalate/dump.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "action": {"type": "string", "enum": ["init", "decision", "escalate", "dump"]},
+                "session_id": {"type": "string", "description": "Safe session id ([A-Za-z0-9._-]+)"},
+                "role": {"type": "string", "description": "init: agent role"},
+                "scope": {"type": "string", "description": "init: feature/story id"},
+                "run_id": {"type": "string", "description": "init: correlation id"},
+                "mode": {"type": "string", "description": "init: execution mode"},
+                "force": {"type": "boolean", "description": "init: overwrite existing state"},
+                "summary": {"type": "string", "description": "decision: one-line summary"},
+                "files": {"type": "array", "items": {"type": "string"}, "description": "decision: affected files"},
+                "rationale": {"type": "string", "description": "decision: brief rationale"},
+                "topic": {"type": "string", "description": "decision: supersession topic slug"},
+                "supersedes": {"type": "array", "items": {"type": "integer"},
+                               "description": "decision: prior decision_ids replaced"},
+                "reason": {"type": "string", "description": "escalate: reason"},
+                "nodes": {"type": "array", "items": {"type": "string"}, "description": "escalate: triggering node ids"},
+                "opened_raw": {"type": "array", "items": {"type": "string"},
+                               "description": "escalate: raw artifact paths opened"},
+                "compact": {"type": "boolean", "description": "dump: compact form"},
+                "current_view": {"type": "boolean", "description": "dump: superseded-filtered projection"},
+            },
+            "required": ["action", "session_id"],
         },
     },
 }
