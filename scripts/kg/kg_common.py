@@ -69,6 +69,7 @@ TELEMETRY_ENV_VARS = {
     "mode": "NEBULA_MODE",
     "gate": "NEBULA_GATE",
     "topic": "NEBULA_TOPIC",
+    "source": "NEBULA_SOURCE",  # e.g. "mcp" — set by the MCP server so eval.py can split MCP vs CLI
 }
 
 
