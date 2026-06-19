@@ -391,7 +391,7 @@ This section defines the build-ready technical baseline for the reference implem
 - [ADR-023](architecture/decisions/ADR-023-rules-governance-jsonlogic.md) — JsonLogic rules governance (F0034)
 - [ADR-014](architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md) — Search index, saved views, and operational reporting projections (F0023)
 
-**F0023 addendum status:** Drafted 2026-06-19, pending Phase B approval (G5).
+**F0023 addendum status:** Approved 2026-06-19 in plan run `2026-06-19-2f180001`.
 
 **Data Model Supplement:** See `planning-mds/architecture/data-model.md` for Task entity, dashboard indexes, query patterns, F0017 hierarchy/territory, F0034 product schema registry, and F0023 search/reporting read models. F0020 documents are filesystem-first (no relational entity in MVP); see `planning-mds/features/archive/F0020-document-management-and-acord-intake/README.md` for the on-disk layout and the `IDocumentRepository` boundary.
 

@@ -10,7 +10,7 @@ applies_to: product-manager
 **Feature Name:** Global Search, Saved Views & Operational Reporting
 **Priority:** High
 **Phase:** CRM Release MVP
-**Status:** Draft - Phase A refinement complete, pending approval
+**Status:** Planned — Phase A + B approved (plan run `2026-06-19-2f180001`); ready for feature action
 
 ## Feature Statement
 
@@ -207,11 +207,12 @@ Persona details are captured in the feature folder:
 - Saved views store reusable criteria and presentation metadata. They do not grant access to records a user could not otherwise see.
 - Operational reports are navigable work-management surfaces, not a general-purpose analytics platform.
 
-## Architecture Notes To Validate In Phase B
+## Architecture Notes
 
-- Existing architecture context points to [ADR-014 Search Index and Saved View Architecture](../../architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md).
-- Search indexing, saved-view persistence, reporting projections, API contracts, schemas, and ontology bindings are architect-owned Phase B outputs.
-- PM requirements treat raw feature/story artifacts as source of product truth; KG mappings remain retrieval context until Phase B finalizes them.
+- Phase B is approved in plan run `2026-06-19-2f180001`.
+- [ADR-014 Search Index and Saved View Architecture](../../architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md) governs the search/reporting read model, saved-view persistence, projection freshness, API contracts, and authorization model.
+- Search indexing, saved-view persistence, reporting projections, API contracts, schemas, and ontology bindings are architect-owned Phase B outputs now available for feature implementation.
+- PM requirements treat raw feature/story artifacts as source of product truth; KG mappings remain retrieval context and were finalized by the Phase B plan run.
 
 ## Architecture Traceability
 

@@ -1,6 +1,6 @@
 # F0023 - Global Search, Saved Views & Operational Reporting - Status
 
-**Overall Status:** Draft - Phase B architecture drafted, pending approval
+**Overall Status:** Planned — plan complete (Phase A + B approved, plan run `2026-06-19-2f180001`); ready for feature action
 **Last Updated:** 2026-06-19
 
 ## Story Checklist

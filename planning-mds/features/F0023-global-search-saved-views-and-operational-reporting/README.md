@@ -1,6 +1,6 @@
 # F0023 - Global Search, Saved Views & Operational Reporting
 
-**Status:** Draft - Phase B architecture drafted, pending approval
+**Status:** Planned — Phase A + B approved (plan run `2026-06-19-2f180001`); ready for feature action
 **Priority:** High
 **Phase:** CRM Release MVP
 
@@ -38,7 +38,7 @@ Adds one internal CRM search surface, reusable saved views, and practical operat
 
 ## Architecture Review
 
-**Phase B status:** Drafted, pending G5 approval
+**Phase B status:** Approved (plan run `2026-06-19-2f180001`)
 **Execution Plan:** [`feature-assembly-plan.md`](./feature-assembly-plan.md)
 
 ### Key Findings
@@ -59,7 +59,7 @@ Adds one internal CRM search surface, reusable saved views, and practical operat
 | JSON schemas | Drafted in `planning-mds/schemas/*search*.json`, `saved-view*.json`, and `*report*.json` |
 | C4 diagrams | Included below |
 | ADRs | ADR-014 accepted for F0023 |
-| Assembly plan | Drafted |
+| Assembly plan | Approved |
 
 ### Feature ERD
 
