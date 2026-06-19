@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/global-search-result.schema.json",
+  "title": "GlobalSearchResult",
+  "description": "Permission-filtered cross-object search result row for F0023.",
+  "type": "object",
+  "required": [
+    "objectType",
+    "objectId",
+    "title",
+    "targetUrl",
+    "score",
+    "lastUpdatedAt"
+  ],
+  "properties": {
+    "objectType": {
+      "type": "string",
+      "enum": ["Broker", "MGA", "Program", "Account", "Policy", "Submission", "Renewal", "Task"]
+    },
+    "objectId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "subtitle": {
+      "type": ["string", "null"],
+      "maxLength": 300
+    },
+    "status": {
+      "type": ["string", "null"],
+      "maxLength": 80
+    },
+    "ownerUserId": {
+      "type": ["string", "null"],
+      "format": "uuid"
+    },
+    "ownerDisplayName": {
+      "type": ["string", "null"],
+      "maxLength": 160
+    },
+    "lineOfBusiness": {
+      "type": ["string", "null"],
+      "maxLength": 80
+    },
+    "region": {
+      "type": ["string", "null"],
+      "maxLength": 80
+    },
+    "matchedFields": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 80
+      },
+      "uniqueItems": true
+    },
+    "snippet": {
+      "type": ["string", "null"],
+      "maxLength": 500
+    },
+    "targetUrl": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0
+    },
+    "lastUpdatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "indexedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

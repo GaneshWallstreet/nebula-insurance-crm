@@ -227,6 +227,48 @@ entities:
       - adr: adr:014-workflow-sla
         section: "Decision"
         summary: "Extended with LOB dimension so SLA targets vary by line of business rather than being entity-wide defaults."
+  - id: entity:search-document
+    label: SearchDocument
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    rationale:
+      - adr: adr:014-search
+        section: "Search Index Design"
+        summary: "One permission-filterable search row per source record enables cross-object search without querying every transactional aggregate for each request."
+    notes: SearchDocument is a read-side projection only; source modules remain authoritative for detail and access semantics.
+  - id: entity:saved-view
+    label: SavedView
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+      - planning-mds/schemas/saved-view.schema.json
+    rationale:
+      - adr: adr:014-search
+        section: "Saved View Design"
+        summary: "Saved views persist reusable criteria for personal or team scopes; applying a view always reruns current authorization and never grants access."
+  - id: entity:saved-view-audit-event
+    label: SavedViewAuditEvent
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    rationale:
+      - adr: adr:014-search
+        section: "Decision"
+        summary: "Saved-view administrative mutations append immutable audit rows separate from source-record timelines."
+  - id: entity:operational-report-projection
+    label: OperationalReportProjection
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    rationale:
+      - adr: adr:014-search
+        section: "Operational Report Projection Design"
+        summary: "Queryable report fact rows store source dimensions so workload and aging reports aggregate only after authorization filtering."
   - id: entity:document-template
     label: DocumentTemplate
     source_docs:
@@ -496,6 +538,52 @@ capabilities:
       - planning-mds/features/archive/F0013-dashboard-framed-storytelling-canvas/README.md
       - planning-mds/schemas/opportunity-flow.schema.json
       - planning-mds/schemas/opportunity-breakdown.schema.json
+  - id: capability:global-search
+    label: Global Search
+    source_docs:
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/README.md
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+      - planning-mds/schemas/global-search-response.schema.json
+    related_nodes:
+      - entity:search-document
+      - capability:authorization-enforcement
+    rationale:
+      - adr: adr:014-search
+        section: "Search Index Design"
+        summary: "Global search reads a PostgreSQL-backed SearchDocument projection and applies source-record authorization before rows, snippets, facets, or counts are returned."
+  - id: capability:saved-views
+    label: Saved Views
+    source_docs:
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/README.md
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+      - planning-mds/schemas/saved-view.schema.json
+    related_nodes:
+      - entity:saved-view
+      - entity:saved-view-audit-event
+      - capability:authorization-enforcement
+    rationale:
+      - adr: adr:014-search
+        section: "Saved View Design"
+        summary: "Saved views persist structured criteria for personal/team scopes, require If-Match for mutations, and append SavedViewAuditEvent rows."
+  - id: capability:operational-reporting
+    label: Operational Reporting
+    source_docs:
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/README.md
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+      - planning-mds/schemas/operational-workload-report.schema.json
+      - planning-mds/schemas/workflow-aging-report.schema.json
+    related_nodes:
+      - entity:operational-report-projection
+      - workflow:submission
+      - workflow:renewal
+      - capability:authorization-enforcement
+    rationale:
+      - adr: adr:014-search
+        section: "Operational Report Projection Design"
+        summary: "Operational workload and aging reports aggregate report fact rows only after query-layer authorization filters are applied."
   - id: capability:broker-relationship-management
     label: Broker Relationship Management
     source_docs:
@@ -949,6 +1037,111 @@ endpoints:
     related_nodes:
       - capability:dashboard-nudge-cards
       - entity:task-item
+  - id: endpoint:global-search-results
+    label: GET /search-results
+    method: GET
+    route: /search-results
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+    related_nodes:
+      - capability:global-search
+      - entity:search-document
+      - policy_rule:global-search-read
+  - id: endpoint:saved-view-list
+    label: GET /saved-views
+    method: GET
+    route: /saved-views
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    related_nodes:
+      - capability:saved-views
+      - entity:saved-view
+      - policy_rule:saved-view-read
+  - id: endpoint:saved-view-create
+    label: POST /saved-views
+    method: POST
+    route: /saved-views
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    related_nodes:
+      - capability:saved-views
+      - entity:saved-view
+      - entity:saved-view-audit-event
+      - policy_rule:saved-view-manage
+  - id: endpoint:saved-view-detail
+    label: GET /saved-views/{savedViewId}
+    method: GET
+    route: /saved-views/{savedViewId}
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    related_nodes:
+      - capability:saved-views
+      - entity:saved-view
+      - policy_rule:saved-view-read
+  - id: endpoint:saved-view-update
+    label: PATCH /saved-views/{savedViewId}
+    method: PATCH
+    route: /saved-views/{savedViewId}
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    related_nodes:
+      - capability:saved-views
+      - entity:saved-view
+      - entity:saved-view-audit-event
+      - policy_rule:saved-view-manage
+  - id: endpoint:saved-view-archive
+    label: DELETE /saved-views/{savedViewId}
+    method: DELETE
+    route: /saved-views/{savedViewId}
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    related_nodes:
+      - capability:saved-views
+      - entity:saved-view
+      - entity:saved-view-audit-event
+      - policy_rule:saved-view-manage
+  - id: endpoint:saved-view-default
+    label: PUT /saved-views/{savedViewId}/default
+    method: PUT
+    route: /saved-views/{savedViewId}/default
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    related_nodes:
+      - capability:saved-views
+      - entity:saved-view
+      - entity:saved-view-audit-event
+      - policy_rule:saved-view-default
+  - id: endpoint:operational-workload-report
+    label: GET /operational-reports/workload
+    method: GET
+    route: /operational-reports/workload
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    related_nodes:
+      - capability:operational-reporting
+      - entity:operational-report-projection
+      - policy_rule:operational-report-read
+  - id: endpoint:workflow-aging-report
+    label: GET /operational-reports/workflow-aging
+    method: GET
+    route: /operational-reports/workflow-aging
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+    related_nodes:
+      - capability:operational-reporting
+      - entity:operational-report-projection
+      - workflow:submission
+      - workflow:renewal
+      - policy_rule:operational-report-read
   - id: endpoint:broker-list
     label: GET /brokers
     method: GET
@@ -2907,6 +3100,108 @@ policy_rules:
       - capability:dashboard-pipeline-visualization
       - capability:authorization-enforcement
     notes: Non-terminal status filter and per-role scope are enforced at the query layer; Casbin grants the broad read permission only.
+  - id: policy_rule:global-search-read
+    label: global_search:read
+    resource: global_search
+    action: read
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - capability:global-search
+      - entity:search-document
+      - capability:authorization-enforcement
+    notes: Rows, snippets, facets, suggestions, and counts are filtered at the query layer before response materialization; external roles have no policy lines.
+  - id: policy_rule:saved-view-read
+    label: saved_view:read
+    resource: saved_view
+    action: read
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - capability:saved-views
+      - entity:saved-view
+      - capability:authorization-enforcement
+    notes: Personal/team eligibility is filtered at the query layer; saved-view metadata must not reveal unauthorized team scopes.
+  - id: policy_rule:saved-view-manage
+    label: saved_view:manage
+    resource: saved_view
+    action: manage
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - capability:saved-views
+      - entity:saved-view
+      - entity:saved-view-audit-event
+      - capability:authorization-enforcement
+    notes: Non-manager roles require owner match at the policy layer; manager/admin team mutations still validate administered team scope in the service.
+  - id: policy_rule:saved-view-default
+    label: saved_view:default
+    resource: saved_view
+    action: default
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - capability:saved-views
+      - entity:saved-view
+      - entity:saved-view-audit-event
+      - capability:authorization-enforcement
+    notes: Setting a default clears the prior default for the same personal/team scope and view type in one transaction.
+  - id: policy_rule:operational-report-read
+    label: operational_report:read
+    resource: operational_report
+    action: read
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - capability:operational-reporting
+      - entity:operational-report-projection
+      - capability:authorization-enforcement
+    notes: Report rows, counts, and drilldowns are computed after source-record authorization filtering; hidden records are not surfaced as hidden-source counts.
   - id: policy_rule:broker-create
     label: broker:create
     resource: broker
@@ -3762,6 +4057,24 @@ schemas:
   - id: schema:dashboard-pipeline
     path: planning-mds/schemas/dashboard-pipeline.schema.json
     related_nodes: [workflow:submission]
+  - id: schema:global-search-result
+    path: planning-mds/schemas/global-search-result.schema.json
+    related_nodes: [entity:search-document, capability:global-search]
+  - id: schema:global-search-response
+    path: planning-mds/schemas/global-search-response.schema.json
+    related_nodes: [entity:search-document, capability:global-search]
+  - id: schema:saved-view
+    path: planning-mds/schemas/saved-view.schema.json
+    related_nodes: [entity:saved-view, capability:saved-views]
+  - id: schema:saved-view-upsert-request
+    path: planning-mds/schemas/saved-view-upsert-request.schema.json
+    related_nodes: [entity:saved-view, capability:saved-views]
+  - id: schema:operational-workload-report
+    path: planning-mds/schemas/operational-workload-report.schema.json
+    related_nodes: [entity:operational-report-projection, capability:operational-reporting]
+  - id: schema:workflow-aging-report
+    path: planning-mds/schemas/workflow-aging-report.schema.json
+    related_nodes: [entity:operational-report-projection, workflow:submission, workflow:renewal, capability:operational-reporting]
   - id: schema:line-of-business
     path: planning-mds/schemas/line-of-business.schema.json
     related_nodes: [entity:submission, entity:renewal, entity:policy]

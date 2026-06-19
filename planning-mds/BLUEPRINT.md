@@ -186,7 +186,7 @@ Status: Phase C implementation is complete for F0001 (Dashboard), F0002 (Broker 
 - [F0020: Document Management & ACORD Intake](features/archive/F0020-document-management-and-acord-intake/PRD.md) - Done (Archived 2026-05-05; 12 stories: single upload, bulk upload, quarantine promote, classification-filtered list, detail/provenance, downloads, immutable replace, metadata update, classification ABAC, completeness signal, retention cleanup, templates library)
 - F0021: Communication Hub & Activity Capture - Planned
 - F0022: Work Queues, Assignment Rules & Coverage Management - Planned
-- F0023: Global Search, Saved Views & Operational Reporting - Planned
+- [F0023: Global Search, Saved Views & Operational Reporting](features/F0023-global-search-saved-views-and-operational-reporting/PRD.md) - Planned (Phase A refined 2026-06-19; 7 stories: global search, filter/open results, personal saved views, team saved views, daily workload report, workflow aging/backlog report, permission-safe behavior)
 
 **CRM Release MVP+ (Planned):**
 - F0008: Broker Insights - Planned
@@ -274,6 +274,15 @@ Status: Phase C implementation is complete for F0001 (Dashboard), F0002 (Broker 
 - [F0035-S0004: Auth Error Semantic Distinction](features/archive/F0035-session-continuity-and-token-refresh/F0035-S0004-auth-error-semantics.md) - Done (Archived)
 - [F0035-S0005: Session Continuity Telemetry Events](features/archive/F0035-session-continuity-and-token-refresh/F0035-S0005-session-telemetry-events.md) - Done (Archived)
 
+**CRM Release MVP Stories (Feature F0023: Global Search, Saved Views & Operational Reporting):**
+- [F0023-S0001: Global search returns grouped CRM results](features/F0023-global-search-saved-views-and-operational-reporting/F0023-S0001-global-search-results.md) - Planned
+- [F0023-S0002: Filter, sort, and open search results](features/F0023-global-search-saved-views-and-operational-reporting/F0023-S0002-filter-and-open-search-results.md) - Planned
+- [F0023-S0003: Personal saved views](features/F0023-global-search-saved-views-and-operational-reporting/F0023-S0003-personal-saved-views.md) - Planned
+- [F0023-S0004: Team saved views and defaults](features/F0023-global-search-saved-views-and-operational-reporting/F0023-S0004-team-saved-views.md) - Planned
+- [F0023-S0005: Daily operational workload report](features/F0023-global-search-saved-views-and-operational-reporting/F0023-S0005-daily-operational-workload-report.md) - Planned
+- [F0023-S0006: Workflow aging and backlog drilldowns](features/F0023-global-search-saved-views-and-operational-reporting/F0023-S0006-workflow-aging-and-backlog-report.md) - Planned
+- [F0023-S0007: Permission-safe search and reporting behavior](features/F0023-global-search-saved-views-and-operational-reporting/F0023-S0007-permission-safe-search-and-reporting.md) - Planned
+
 **MVP Stories (Feature F0010: Dashboard Opportunities Refactor):**
 - [F0010-S0001: Replace Sankey default with Pipeline Board](features/archive/F0010-dashboard-opportunities-refactor/F0010-S0001-replace-sankey-with-pipeline-board-default.md) - Done (Historical; superseded by F0013)
 - [F0010-S0002: Add Opportunities Aging Heatmap view](features/archive/F0010-dashboard-opportunities-refactor/F0010-S0002-add-opportunity-aging-heatmap-view.md) - Done (Historical; superseded by F0013)
@@ -339,6 +348,10 @@ Reference examples also live under `planning-mds/examples/stories/`.
 - Renewal Pipeline List (F0007)
 - Renewal Detail (F0007)
 - Dynamic Attribute Panel (F0034)
+- Global Search Overlay (F0023)
+- Search Results Workspace (F0023)
+- Saved Views Drawer (F0023)
+- Operational Reports Workspace (F0023)
 - Admin minimal (roles/policies optional MVP)
 
 Screen baseline details:
@@ -348,6 +361,10 @@ Screen baseline details:
 - Broker 360: profile header, contacts, hierarchy/program links, immutable timeline panel.
 - Task Center: assigned tasks, due dates, simple status states, reminder hooks.
 - Dynamic Attribute Panel: schema-pinned product attributes, normalized validation errors, legacy read-only state, and Cyber pilot fields embedded in submission, policy, endorsement, and renewal surfaces.
+- Global Search Overlay: authenticated shell entry for permission-scoped cross-object search across broker, MGA/program, account, policy, submission, renewal, and task records.
+- Search Results Workspace: deep-linkable search criteria, filters, grouped result lists, pagination, and source-record navigation.
+- Saved Views Drawer: personal and team view list, apply/save/update/delete controls, and manager/admin team defaults.
+- Operational Reports Workspace: due-work, workload by owner/status, and workflow aging/backlog reports with source-record drilldowns.
 - Admin minimal: role assignment visibility and policy diagnostics (read-focused in MVP).
 
 ---
@@ -372,8 +389,11 @@ This section defines the build-ready technical baseline for the reference implem
 - [ADR-021](architecture/decisions/ADR-021-form-engine-rhf-ajv-shadcn-registry.md) — Dynamic form engine with RHF, AJV, and shadcn widget registry (F0034)
 - [ADR-022](architecture/decisions/ADR-022-validator-equivalence-restricted-profile.md) — Validator equivalence and restricted JSON Schema profile (F0034)
 - [ADR-023](architecture/decisions/ADR-023-rules-governance-jsonlogic.md) — JsonLogic rules governance (F0034)
+- [ADR-014](architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md) — Search index, saved views, and operational reporting projections (F0023)
 
-**Data Model Supplement:** See `planning-mds/architecture/data-model.md` for Task entity, dashboard indexes, and query patterns. F0020 documents are filesystem-first (no relational entity in MVP); see `planning-mds/features/archive/F0020-document-management-and-acord-intake/README.md` for the on-disk layout and the `IDocumentRepository` boundary.
+**F0023 addendum status:** Drafted 2026-06-19, pending Phase B approval (G5).
+
+**Data Model Supplement:** See `planning-mds/architecture/data-model.md` for Task entity, dashboard indexes, query patterns, F0017 hierarchy/territory, F0034 product schema registry, and F0023 search/reporting read models. F0020 documents are filesystem-first (no relational entity in MVP); see `planning-mds/features/archive/F0020-document-management-and-acord-intake/README.md` for the on-disk layout and the `IDocumentRepository` boundary.
 
 ### 4.1 Service boundaries
 
@@ -408,6 +428,12 @@ This section defines the build-ready technical baseline for the reference implem
   - Serves active and direct schema-bundle reads for dynamic product attributes.
   - Enforces bundle signatures, deterministic product-version ids, restricted schema profile, OpenAPI projection compatibility, and activation audit.
   - Does not own lifecycle rows; Submission, Renewal, PolicyVersion, and PolicyEndorsement pin product versions and carry attributes.
+- SearchReporting module (F0023):
+  - Owns SearchDocument, SavedView, SavedViewAuditEvent, and OperationalReportProjection read-side records.
+  - Reads across BrokerRelationship, Account, Policy, Submission, Renewal, TaskManagement, TimelineAudit, and F0017 distribution structure where available.
+  - Provides global search, saved-view CRUD/defaults, and operational-report endpoints.
+  - Enforces high-level Casbin feature actions and mandatory query-layer source-record authorization before returning rows, snippets, facets, counts, or drilldowns.
+  - Uses PostgreSQL full-text search and read-side projections for MVP; no external search engine is introduced.
 - IdentityAuthorization module:
   - Validates authentik JWT tokens (JWKS from `Authentication__Authority/.well-known/openid-configuration`).
   - Normalizes `(iss, sub)` claims to internal `NebulaPrincipal { UserId, Roles, Regions }` via `IClaimsPrincipalNormalizer`.
@@ -473,6 +499,21 @@ Core entities (minimum baseline):
   - Id (uuid), ProductVersionId, Stage, SchemaHash, DataSchemaJson, UiSchemaJson, RulesJson, ProjectionsJson
 - LobBundleActivationEvent (append-only, F0034)
   - Id (uuid), ProductVersionId, FromStatus, ToStatus, Reason, ActorUserId, OccurredAt
+- SearchDocument (F0023)
+  - Id (uuid), ObjectType, ObjectId, TargetUrl, Title, Subtitle (nullable), Status (nullable), OwnerUserId (nullable), OwnerDisplayName (nullable)
+  - AccountId/BrokerId/PolicyId/SubmissionId/RenewalId/TaskId (nullable), LineOfBusiness (nullable), Region (nullable), ProgramId/TerritoryId (nullable)
+  - SearchText, SearchVector, MatchedFieldHintsJson, SourceUpdatedAt, IndexedAt, LastProjectionError (nullable)
+  - Unique `(ObjectType, ObjectId)`, GIN `SearchVector`, and source/filter indexes
+- SavedView (F0023)
+  - Id (uuid), Name, NormalizedName, Description (nullable), ViewType, Visibility, OwnerUserId
+  - TeamScopeType/TeamScopeKey (required for team views), CriteriaJson, SortJson, IsDefault, ArchivedAt (nullable), LastEditedByUserId (nullable), RowVersion
+  - Unique active personal/team names and one active default per personal/team scope and ViewType
+- SavedViewAuditEvent (append-only, F0023)
+  - Id (uuid), SavedViewId, EventType, ActorUserId, OccurredAt, BeforeJson (nullable), AfterJson (nullable)
+- OperationalReportProjection (F0023)
+  - Id (uuid), SourceObjectType, SourceObjectId, TargetUrl, WorkflowType (nullable), CurrentStatus (nullable), StatusEnteredAt (nullable), DaysInStatus (nullable)
+  - OwnerUserId/OwnerDisplayName, DueDate, IsDueToday, IsOverdue, AgeBand, AccountId/BrokerId/PolicyId, LineOfBusiness, Region, ProgramId/TerritoryId
+  - LastSourceUpdatedAt, ProjectedAt; unique `(SourceObjectType, SourceObjectId)` and report/filter indexes
 
 F0034 attribute-carrier additions:
 - Submission, Renewal, PolicyVersion, and PolicyEndorsement carry `LobProductVersionId` plus `AttributesJson`.
@@ -538,6 +579,12 @@ Policy baseline:
 - InternalOnly resources are denied to non-internal subjects.
 - Enforcement is server-side only via Casbin middleware and application guards.
 - Product schema bundles are InternalOnly. Internal roles may read and resolve bundles needed for records they can access; Admin alone may activate, deprecate, or retire bundles in MVP.
+- F0023 high-level resources:
+  - `global_search:read` for internal roles only.
+  - `saved_view:read` for internal roles; personal/team eligibility is filtered at query layer.
+  - `saved_view:manage` and `saved_view:default` for personal owners and manager/admin team-scope administrators.
+  - `operational_report:read` for internal roles only.
+- F0023 query-layer authorization is mandatory for source rows, snippets, suggestions, facets, counts, report summaries, and drilldowns. BrokerUser and ExternalUser have no F0023 policy lines.
 
 ### 4.5 API Contracts
 
@@ -581,6 +628,17 @@ Product schema registry endpoints (F0034):
 - GET `/lob-schemas/{productVersionId}/{stage}` — direct bundle resolve for active and historical pinned rows
 - POST `/lob-schemas/{productVersionId}/activate` — Admin-only activation/deprecation/retirement command surface
 
+F0023 search/reporting endpoints:
+- GET `/search-results` — permission-filtered global search rows, facets, and counts
+- GET `/saved-views` — visible personal/team saved views
+- POST `/saved-views` — create personal or team saved view
+- GET `/saved-views/{savedViewId}` — saved-view detail
+- PATCH `/saved-views/{savedViewId}` — update saved-view metadata/criteria/archive state (requires `If-Match`)
+- DELETE `/saved-views/{savedViewId}` — soft archive saved view (requires `If-Match`)
+- PUT `/saved-views/{savedViewId}/default` — set personal/team default (requires `If-Match`)
+- GET `/operational-reports/workload` — due-today, overdue, owner/status workload report
+- GET `/operational-reports/workflow-aging` — workflow aging and backlog report
+
 Error contract:
 - All non-success responses return RFC 7807 `ProblemDetails` with `type`, `title`, `status`, plus extension fields `code`, `traceId`, and optional `detail`/`errors`.
 - Dynamic LOB validation returns `LobValidationProblemDetails` with `lobErrors[]`; it does not reuse the global `ProblemDetails.errors` map.
@@ -593,19 +651,23 @@ Observability baseline:
 - Structured logging with correlation id and subject id where available.
 - Distributed traces for API request path and DB calls.
 - Metrics: request latency, error rate, transition counts, authorization denials.
+- F0023 metrics: search latency, result counts, saved-view mutation outcomes, projection refresh lag, projection refresh failures, and authorization-denied counts by F0023 resource.
 
 Performance:
 - API read endpoints: p95 < 300ms under nominal load.
 - API write/transition endpoints: p95 < 500ms under nominal load.
 - List endpoints support pagination and bounded query size.
+- F0023 search/report endpoints: p95 < 500ms for bounded queries and p95 projection lag under 60 seconds after source-record commit.
 
 Security:
 - OIDC JWT validation against authentik issuer/audience (see ADR-006).
 - Casbin ABAC for all protected actions.
 - Any secondary access channel (for example MCP/agent tools) must enforce the same ABAC policies and tenant filters as API endpoints; no raw SQL access paths.
 - F0009 Phase 1: RLS is not required; compensating controls are mandatory (tenant-scoped queries, ABAC checks, server-side field filtering, audit logging).
+- F0023 counts, facets, snippets, saved-view previews, reports, and drilldowns are computed after authorization filtering; unauthorized matches are not surfaced as hidden-record counts.
 - Secrets via environment variables; no hardcoded credentials in code or config.
 - Immutable audit trail for every mutation and transition.
+- Saved-view mutations append immutable `SavedViewAuditEvent` rows.
 
 Availability:
 - Target service availability 99.9% for production environments.

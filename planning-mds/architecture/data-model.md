@@ -875,9 +875,134 @@ correlation id for bulk reparent). Rejected mutations emit nothing.
 3. Add indexes: `ParentId`, `AncestryPath`, `(ScopeRef, EffectiveTo)`, `(MemberRef, EffectiveTo)`, unique active `Territory.Name`.
 4. Install cycle/overlap validators in the service layer; wire timeline emission.
 
+## 10. Search, Saved Views, and Operational Reporting (F0023)
+
+Adds a read-side search/reporting model governed by
+[ADR-014](decisions/ADR-014-search-index-and-saved-view-architecture.md).
+The records below are derived from source modules and never supersede source
+aggregate authorization or detail endpoints.
+
+### 10.1 SearchDocument
+
+One row per searchable source record. Search results, facets, snippets, and
+counts are filtered before they leave the server.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `Id` | uuid | search document identity |
+| `ObjectType` | enum/string | Broker, MGA, Program, Account, Policy, Submission, Renewal, Task |
+| `ObjectId` | uuid | source record id |
+| `TargetUrl` | varchar(300) | canonical SPA/API navigation target |
+| `Title` | varchar(200) | display title |
+| `Subtitle` | varchar(300)? | contextual display line |
+| `Status` | varchar(80)? | source status when applicable |
+| `OwnerUserId` | uuid? | assigned/managed owner where available |
+| `OwnerDisplayName` | varchar(160)? | denormalized display name |
+| `AccountId` / `BrokerId` / `PolicyId` | uuid? | source visibility dimensions |
+| `SubmissionId` / `RenewalId` / `TaskId` | uuid? | source/drilldown dimensions |
+| `LineOfBusiness` | varchar(80)? | normalized LOB facet |
+| `Region` | varchar(80)? | region facet |
+| `ProgramId` / `TerritoryId` | uuid? | optional F0017/F0037-ready facets |
+| `SearchText` | text | normalized searchable text |
+| `SearchVector` | tsvector | generated from SearchText |
+| `MatchedFieldHintsJson` | jsonb | field names eligible for safe snippets |
+| `SourceUpdatedAt` | timestamptz | latest source update time used for projection |
+| `IndexedAt` | timestamptz | projection refresh time |
+| `LastProjectionError` | text? | latest refresh failure summary |
+| audit | - | `CreatedBy/At`, `UpdatedBy/At` per SOLUTION-PATTERNS |
+
+**Indexes:** unique `(ObjectType, ObjectId)`, GIN `SearchVector`, b-tree
+`(ObjectType, Status)`, `OwnerUserId`, `Region`, `LineOfBusiness`, and partial
+active/current indexes where source records can be archived.
+
+### 10.2 SavedView
+
+Stores reusable criteria. It never stores elevated access or materialized result
+ids as authority.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `Id` | uuid | saved view identity |
+| `Name` | varchar(80) | user-visible name |
+| `NormalizedName` | varchar(80) | trimmed/case-folded uniqueness key |
+| `Description` | varchar(300)? | optional |
+| `ViewType` | enum/string | Search, WorkloadReport, WorkflowAgingReport |
+| `Visibility` | enum/string | Personal or Team |
+| `OwnerUserId` | uuid | creator/current owner |
+| `TeamScopeType` | enum/string? | Role, Region, Program, Territory |
+| `TeamScopeKey` | varchar(120)? | scope value; required when Visibility = Team |
+| `CriteriaJson` | jsonb | structured filters and query values |
+| `SortJson` | jsonb | structured sort state |
+| `IsDefault` | boolean | unique per owner/team scope and ViewType |
+| `ArchivedAt` | timestamptz? | soft archive timestamp |
+| `LastEditedByUserId` | uuid? | most recent editor |
+| audit / concurrency | - | base audit fields plus `RowVersion` |
+
+**Constraints and indexes:**
+
+- Personal: unique active `(OwnerUserId, ViewType, NormalizedName)`.
+- Team: unique active `(TeamScopeType, TeamScopeKey, ViewType, NormalizedName)`.
+- Default: partial unique active default per personal/team scope and ViewType.
+- `CriteriaJson` must validate against F0023's saved-view criteria validator before insert/update.
+
+### 10.3 SavedViewAuditEvent
+
+Immutable audit record for saved-view administrative mutations.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `Id` | uuid | audit event id |
+| `SavedViewId` | uuid | affected saved view |
+| `EventType` | enum/string | Created, Updated, DefaultChanged, Archived |
+| `ActorUserId` | uuid | authenticated internal user |
+| `OccurredAt` | timestamptz | UTC event timestamp |
+| `BeforeJson` | jsonb? | redacted pre-change metadata |
+| `AfterJson` | jsonb? | redacted post-change metadata |
+
+### 10.4 OperationalReportProjection
+
+Queryable fact table for workload and workflow-aging reports. It stores source
+dimensions so every report can aggregate after authorization filters are applied.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `Id` | uuid | projection row identity |
+| `SourceObjectType` | enum/string | Submission, Renewal, Policy, Task |
+| `SourceObjectId` | uuid | source record id |
+| `TargetUrl` | varchar(300) | drilldown target |
+| `WorkflowType` | enum/string? | Submission or Renewal |
+| `CurrentStatus` | varchar(80)? | source status |
+| `StatusEnteredAt` | timestamptz? | workflow status start |
+| `DaysInStatus` | integer? | derived at projection time |
+| `OwnerUserId` | uuid? | assigned/managed owner |
+| `OwnerDisplayName` | varchar(160)? | denormalized display name |
+| `DueDate` | date? | due/target work date |
+| `IsDueToday` | boolean | as-of projection flag |
+| `IsOverdue` | boolean | due/SLA flag |
+| `AgeBand` | enum/string? | OnTrack, ApproachingSla, Overdue |
+| `AccountId` / `BrokerId` / `PolicyId` | uuid? | source visibility dimensions |
+| `LineOfBusiness` | varchar(80)? | LOB filter |
+| `Region` | varchar(80)? | region filter |
+| `ProgramId` / `TerritoryId` | uuid? | optional F0017/F0037-ready filters |
+| `LastSourceUpdatedAt` | timestamptz | source update time |
+| `ProjectedAt` | timestamptz | projection refresh time |
+
+**Indexes:** unique `(SourceObjectType, SourceObjectId)`, `(WorkflowType,
+CurrentStatus, AgeBand)`, `(OwnerUserId, IsOverdue, DueDate)`, and `(Region,
+LineOfBusiness)`.
+
+### 10.5 Migration order (F0023)
+
+1. Create `SearchDocuments`, `SavedViews`, `SavedViewAuditEvents`, and `OperationalReportProjections`.
+2. Add GIN `SearchVector` and b-tree/partial indexes listed above.
+3. Backfill search and report projection rows from Broker/MGA/Program, Account, Policy, Submission, Renewal, and Task sources.
+4. Wire source-write projection refresh hooks and retryable backfill command.
+5. Add Casbin resources (`global_search`, `saved_view`, `operational_report`) and validate matrix/policy drift.
+
 ## Related Documents
 
 - [ADR-026: Broker/MGA Hierarchy, Producer Ownership & Territory](decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md) — F0017 structural model
+- [ADR-014: Search Index, Saved Views, and Operational Reporting Projections](decisions/ADR-014-search-index-and-saved-view-architecture.md) — F0023 read-side model
 - [BLUEPRINT.md Section 4.2](../BLUEPRINT.md) — Core entity definitions
 - [ADR-003: Task Entity and Nudge Engine](decisions/ADR-003-task-entity-nudge-engine.md) — Design rationale
 - [ADR-002: Dashboard Data Aggregation](decisions/ADR-002-dashboard-data-aggregation.md) — Endpoint structure
@@ -888,6 +1013,8 @@ correlation id for bulk reparent). Rejected mutations emit nothing.
 - [ADR-023: JsonLogic Rules Governance](decisions/ADR-023-rules-governance-jsonlogic.md) — Rule envelope and op governance
 
 ---
+
+**Version:** 6.0 — 2026-06-19: Added §10 F0023 SearchDocument, SavedView, SavedViewAuditEvent, and OperationalReportProjection read-side model (ADR-014).
 
 **Version:** 5.0 — 2026-06-06: Added §9 F0017 broker/MGA hierarchy (self-referencing + cached ancestry), effective-dated ProducerOwnership, Territory/TerritoryAssignment, and change audit (ADR-026). Enforcement + rollups deferred to F0037.
 

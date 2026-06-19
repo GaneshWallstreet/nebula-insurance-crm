@@ -1,0 +1,80 @@
+2026-06-19T00:00:00-04:00 PRE-START KG validate.py exit=1
+Result: failed before planning start because coverage-report.yaml is stale.
+Repair: run python3 /home/gajap/uSandbox/repos/nebula/nebula-insurance-crm/scripts/kg/validate.py --write-coverage-report, then rerun validate.py.
+
+2026-06-19T00:00:00-04:00 PRE-START KG validate.py --write-coverage-report exit=0
+Result: coverage report refreshed; knowledge-graph integrity checks passed with warnings.
+
+2026-06-19T00:00:00-04:00 PRE-START KG validate.py retry exit=0
+Result: plan start condition satisfied; knowledge-graph integrity checks passed with warnings.
+
+2026-06-19T00:00:00-04:00 G2 validate-stories.py F0023 exit=0
+Result: 7 F0023 story files passed with no warnings after one cleanup cycle.
+
+2026-06-19T00:00:00-04:00 G2 generate-story-index.py exit=0
+Result: STORY-INDEX.md regenerated; 153 story files found.
+
+2026-06-19T00:00:00-04:00 G2 validate-trackers.py default exit=1
+Result: tracker summary reported PASS, but command exited 1 because it invoked feature-evidence validation and scanned unrelated historical archive evidence. Not used as plan G2 verdict because plan contract forbids feature-evidence validation before feature.md creates the package.
+
+2026-06-19T00:00:00-04:00 G2 validate-trackers.py --feature F0023 --skip-feature-evidence exit=0
+Result: scoped tracker validation passed with zero errors and zero warnings.
+
+2026-06-19T00:00:00-04:00 G2 KG validate.py after Phase A stub exit=1
+Result: failed only because coverage-report.yaml was stale after feature-mappings.yaml changed.
+
+2026-06-19T00:00:00-04:00 G2 KG validate.py --write-coverage-report exit=0
+Result: coverage-report.yaml refreshed; knowledge-graph integrity checks passed with warnings.
+
+2026-06-19T00:00:00-04:00 G2 KG validate.py retry exit=0
+Result: Phase A mapping stub passes KG validation with warnings only.
+
+2026-06-19T10:49:45-04:00 G3 Phase A approval
+Result: user explicitly approved Phase A with `approve`; proceed to Architect Phase B.
+
+2026-06-19T11:18:07-04:00 G4 JSON schema syntax checks exit=0
+Result: F0023 schema files parsed successfully with `python3 -m json.tool`.
+
+2026-06-19T11:18:07-04:00 G4 YAML syntax checks exit=0
+Result: OpenAPI and KG YAML files parsed successfully.
+
+2026-06-19T11:18:07-04:00 G4 validate-architecture.py BLUEPRINT.md exit=0
+Result: architecture validation passed.
+
+2026-06-19T11:18:07-04:00 G4 validate-api-contract.py nebula-api.yaml exit=0
+Result: API contract validation passed with 57 baseline warnings and no blocking errors.
+
+2026-06-19T11:18:07-04:00 G4 KG validate.py after Phase B ontology edits exit=1
+Result: failed only because coverage-report.yaml was stale after Phase B KG mapping edits.
+
+2026-06-19T11:18:07-04:00 G4 KG validate.py --write-coverage-report exit=0
+Result: coverage-report.yaml refreshed; knowledge-graph integrity checks passed with warnings.
+
+2026-06-19T11:18:07-04:00 G4 KG validate.py retry exit=0
+Result: Phase B KG validation passed with warnings only.
+
+2026-06-19T11:18:07-04:00 G4 KG validate.py --check-drift exit=0
+Result: ontology drift check passed.
+
+2026-06-19T11:18:07-04:00 G4 validate-trackers.py --feature F0023 --skip-feature-evidence exit=0
+Result: scoped tracker validation passed in plan-safe mode without feature evidence package validation.
+2026-06-19T17:13:01-04:00 CLOSEOUT validate-stories exit=0
+Result: ✅ Story validation PASSED - No issues found!
+
+2026-06-19T17:13:01-04:00 CLOSEOUT generate-story-index exit=0
+Result: ✅ Story index generated: /home/gajap/uSandbox/repos/nebula/nebula-insurance-crm/planning-mds/features/STORY-INDEX.md
+
+2026-06-19T17:13:01-04:00 CLOSEOUT validate-trackers exit=0
+Result:   result: PASS
+
+2026-06-19T17:13:01-04:00 CLOSEOUT kg-write-coverage exit=0
+Result: [PASS] knowledge-graph integrity checks passed.
+
+2026-06-19T17:13:01-04:00 CLOSEOUT kg-validate exit=0
+Result: [PASS] knowledge-graph integrity checks passed.
+
+2026-06-19T17:13:01-04:00 CLOSEOUT kg-check-drift exit=0
+Result: [PASS] knowledge-graph integrity checks passed.
+
+2026-06-19T17:13:01-04:00 CLOSEOUT validate-templates exit=0
+Result: [PASS] prompt templates align with action contracts.

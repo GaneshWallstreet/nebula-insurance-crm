@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/global-search-response.schema.json",
+  "title": "GlobalSearchResponse",
+  "description": "Paginated global search response with permission-filtered facets.",
+  "type": "object",
+  "required": [
+    "data",
+    "facets",
+    "page",
+    "pageSize",
+    "totalCount",
+    "totalPages",
+    "generatedAt"
+  ],
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "$ref": "https://nebula.local/schemas/global-search-result.schema.json"
+      }
+    },
+    "facets": {
+      "type": "object",
+      "required": ["objectTypes", "statuses", "owners"],
+      "properties": {
+        "objectTypes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/facetBucket" }
+        },
+        "statuses": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/facetBucket" }
+        },
+        "owners": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/facetBucket" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "page": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "pageSize": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "totalCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "totalPages": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "queryEcho": {
+      "type": ["string", "null"],
+      "maxLength": 200
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "definitions": {
+    "facetBucket": {
+      "type": "object",
+      "required": ["value", "count"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "label": {
+          "type": ["string", "null"],
+          "maxLength": 160
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

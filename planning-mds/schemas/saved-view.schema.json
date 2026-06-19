@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/saved-view.schema.json",
+  "title": "SavedView",
+  "description": "Reusable search or report criteria saved by a user or team scope.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "viewType",
+    "visibility",
+    "criteria",
+    "ownerUserId",
+    "isDefault",
+    "createdAt",
+    "updatedAt",
+    "rowVersion"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "description": {
+      "type": ["string", "null"],
+      "maxLength": 300
+    },
+    "viewType": {
+      "type": "string",
+      "enum": ["Search", "WorkloadReport", "WorkflowAgingReport"]
+    },
+    "visibility": {
+      "type": "string",
+      "enum": ["Personal", "Team"]
+    },
+    "teamScopeType": {
+      "type": ["string", "null"],
+      "enum": ["Role", "Region", "Program", "Territory", null]
+    },
+    "teamScopeKey": {
+      "type": ["string", "null"],
+      "maxLength": 120
+    },
+    "criteria": {
+      "type": "object",
+      "description": "Structured search/report criteria. It stores filters, sort, and view type only; it never grants record access.",
+      "additionalProperties": true
+    },
+    "ownerUserId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "ownerDisplayName": {
+      "type": ["string", "null"],
+      "maxLength": 160
+    },
+    "lastEditedByUserId": {
+      "type": ["string", "null"],
+      "format": "uuid"
+    },
+    "lastEditedByDisplayName": {
+      "type": ["string", "null"],
+      "maxLength": 160
+    },
+    "isDefault": {
+      "type": "boolean"
+    },
+    "archivedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rowVersion": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

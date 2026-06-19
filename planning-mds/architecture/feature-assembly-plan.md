@@ -2086,3 +2086,27 @@ eval():   r.obj.assignee ("abc-123") == r.sub.id ("abc-123") → true
 - Hierarchy uses a nullable self-referencing `ParentId` + materialized `AncestryPath`; reparent recomputes node + descendants transactionally with cycle/orphan guards (O(depth)).
 - Producer ownership and territory assignment are effective-dated periods (close-prior/open-new in one transaction); "as of D" reads return the covering period.
 - Authorization is role-based mutation guards only (`distribution_node:update`, `producer_ownership:assign`, `territory:create`, `territory:assign`); hierarchy-aware read enforcement + rollups deferred to F0037; Security Reviewer not forced.
+
+---
+
+## F0023 - Global Search, Saved Views & Operational Reporting
+
+**Added:** 2026-06-19 - Plan action Phase B (run `2026-06-19-2f180001`) created the feature-local implementation execution plan after ADR-014 was promoted to accepted.
+
+> **Implementation Execution Plan:** [`feature-assembly-plan.md`](../features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md) - backend-led slice order (S0001-S0007): 4 new read-side entities (`SearchDocument`, `SavedView`, `SavedViewAuditEvent`, `OperationalReportProjection`), PostgreSQL full-text search + projection refresh/backfill, 9 OpenAPI endpoints, saved-view `If-Match` mutation traceability, query-layer authorization for rows/facets/counts/drilldowns, and security/QE/DevOps closeout requirements.
+
+### Dependencies
+
+| Dependency | Source | What F0023 Needs | Status |
+|------------|--------|------------------|--------|
+| Task/source workflow data | F0003, F0006, F0007 | Search/report rows for task, submission, and renewal workloads | Done dependency |
+| Account/policy/downstream workflow context | F0016, F0018, F0019 | Search/report dimensions and source navigation | Done dependency |
+| Hierarchy/territory attributes | F0017 | Optional facets and future rollup dimensions | Planned/active dependency |
+| Hierarchy-aware enforcement | F0037 | Explicitly deferred; F0023 does not redefine access-control semantics | Future consumer |
+
+### Architecture Notes
+
+- Backend-bearing (`engine/**`) + UI-bearing (`experience/**`); DevOps evidence required because projection backfill/refresh and lag/failure observability are runtime concerns.
+- F0023 uses PostgreSQL full-text search and read-side projection tables for MVP; no OpenSearch/Elasticsearch or new runtime service.
+- Saved views store reusable criteria only. Applying a view reruns current authorization and never grants access.
+- External broker/MGA users have no F0023 policy lines; search/reporting remains internal-only.

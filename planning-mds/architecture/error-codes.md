@@ -68,6 +68,11 @@
 | `territory_duplicate_name` | 409 | Active territory name already exists. | F0017-S0004 |
 | `territory_assignment_overlap` | 409 | Territory member assignment overlaps a conflicting active period for the same member. | F0017-S0004 |
 | `territory_assignment_period_invalid` | 422 | Territory assignment effective dates are out of order or require an explicit correction path. | F0017-S0004 |
+| `saved_view_duplicate_name` | 409 | A personal or team saved view with the same normalized name already exists in the target scope. | F0023-S0003, F0023-S0004 |
+| `saved_view_scope_required` | 400 | A team saved view request omitted `teamScopeType` or `teamScopeKey`. | F0023-S0004 |
+| `saved_view_scope_denied` | 403 | Caller lacks authority for the requested team saved-view scope. | F0023-S0004, F0023-S0007 |
+| `saved_view_criteria_invalid` | 422 | Saved criteria failed structural validation or references unsupported/obsolete filters. | F0023-S0003, F0023-S0004 |
+| `search_query_too_short` | 400 | Global search query is shorter than the 2-character minimum after trimming. | F0023-S0001 |
 
 ## Notes
 

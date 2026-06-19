@@ -2707,3 +2707,241 @@ node_bindings:
         infrastructure:
           - engine/src/Nebula.Infrastructure/Persistence/Configurations/SubmissionConfiguration.cs
           - engine/src/Nebula.Infrastructure/Persistence/Configurations/RenewalConfiguration.cs
+
+  - id: entity:search-document
+    paths:
+      planning:
+        architecture:
+          - planning-mds/architecture/data-model.md
+          - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+        schemas:
+          - planning-mds/schemas/global-search-result.schema.json
+          - planning-mds/schemas/global-search-response.schema.json
+        api:
+          - planning-mds/api/nebula-api.yaml
+
+  - id: entity:saved-view
+    paths:
+      planning:
+        architecture:
+          - planning-mds/architecture/data-model.md
+          - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+        schemas:
+          - planning-mds/schemas/saved-view.schema.json
+          - planning-mds/schemas/saved-view-upsert-request.schema.json
+        api:
+          - planning-mds/api/nebula-api.yaml
+        security:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
+  - id: entity:saved-view-audit-event
+    paths:
+      planning:
+        architecture:
+          - planning-mds/architecture/data-model.md
+          - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: entity:operational-report-projection
+    paths:
+      planning:
+        architecture:
+          - planning-mds/architecture/data-model.md
+          - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+        schemas:
+          - planning-mds/schemas/operational-workload-report.schema.json
+          - planning-mds/schemas/workflow-aging-report.schema.json
+        api:
+          - planning-mds/api/nebula-api.yaml
+
+  - id: capability:global-search
+    paths:
+      planning:
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/README.md
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+        api:
+          - planning-mds/api/nebula-api.yaml
+        schemas:
+          - planning-mds/schemas/global-search-response.schema.json
+
+  - id: capability:saved-views
+    paths:
+      planning:
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/README.md
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+        api:
+          - planning-mds/api/nebula-api.yaml
+        schemas:
+          - planning-mds/schemas/saved-view.schema.json
+          - planning-mds/schemas/saved-view-upsert-request.schema.json
+        security:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
+  - id: capability:operational-reporting
+    paths:
+      planning:
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/README.md
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+        api:
+          - planning-mds/api/nebula-api.yaml
+        schemas:
+          - planning-mds/schemas/operational-workload-report.schema.json
+          - planning-mds/schemas/workflow-aging-report.schema.json
+        security:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
+  - id: endpoint:global-search-results
+    paths:
+      planning:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: endpoint:saved-view-list
+    paths:
+      planning:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: endpoint:saved-view-create
+    paths:
+      planning:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: endpoint:saved-view-detail
+    paths:
+      planning:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: endpoint:saved-view-update
+    paths:
+      planning:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: endpoint:saved-view-archive
+    paths:
+      planning:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: endpoint:saved-view-default
+    paths:
+      planning:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: endpoint:operational-workload-report
+    paths:
+      planning:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: endpoint:workflow-aging-report
+    paths:
+      planning:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        feature:
+          - planning-mds/features/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+
+  - id: policy_rule:global-search-read
+    paths:
+      planning:
+        security:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
+  - id: policy_rule:saved-view-read
+    paths:
+      planning:
+        security:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
+  - id: policy_rule:saved-view-manage
+    paths:
+      planning:
+        security:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
+  - id: policy_rule:saved-view-default
+    paths:
+      planning:
+        security:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
+  - id: policy_rule:operational-report-read
+    paths:
+      planning:
+        security:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
+  - id: schema:global-search-result
+    paths:
+      planning:
+        schemas:
+          - planning-mds/schemas/global-search-result.schema.json
+
+  - id: schema:global-search-response
+    paths:
+      planning:
+        schemas:
+          - planning-mds/schemas/global-search-response.schema.json
+
+  - id: schema:saved-view
+    paths:
+      planning:
+        schemas:
+          - planning-mds/schemas/saved-view.schema.json
+
+  - id: schema:saved-view-upsert-request
+    paths:
+      planning:
+        schemas:
+          - planning-mds/schemas/saved-view-upsert-request.schema.json
+
+  - id: schema:operational-workload-report
+    paths:
+      planning:
+        schemas:
+          - planning-mds/schemas/operational-workload-report.schema.json
+
+  - id: schema:workflow-aging-report
+    paths:
+      planning:
+        schemas:
+          - planning-mds/schemas/workflow-aging-report.schema.json

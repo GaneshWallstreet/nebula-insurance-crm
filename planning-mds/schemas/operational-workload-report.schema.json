@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/operational-workload-report.schema.json",
+  "title": "OperationalWorkloadReport",
+  "description": "F0023 daily operational workload report response.",
+  "type": "object",
+  "required": [
+    "asOfDate",
+    "summary",
+    "ownerRows",
+    "statusRows",
+    "drilldown",
+    "generatedAt"
+  ],
+  "properties": {
+    "asOfDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "summary": {
+      "type": "object",
+      "required": ["dueToday", "overdue", "openSubmissions", "openRenewals", "openTasks"],
+      "properties": {
+        "dueToday": { "type": "integer", "minimum": 0 },
+        "overdue": { "type": "integer", "minimum": 0 },
+        "openSubmissions": { "type": "integer", "minimum": 0 },
+        "openRenewals": { "type": "integer", "minimum": 0 },
+        "openTasks": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "ownerRows": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/ownerWorkloadRow" }
+    },
+    "statusRows": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/statusWorkloadRow" }
+    },
+    "drilldown": {
+      "type": "array",
+      "items": { "$ref": "https://nebula.local/schemas/global-search-result.schema.json" }
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "definitions": {
+    "ownerWorkloadRow": {
+      "type": "object",
+      "required": ["ownerUserId", "ownerDisplayName", "dueToday", "overdue", "openCount"],
+      "properties": {
+        "ownerUserId": { "type": ["string", "null"], "format": "uuid" },
+        "ownerDisplayName": { "type": "string" },
+        "dueToday": { "type": "integer", "minimum": 0 },
+        "overdue": { "type": "integer", "minimum": 0 },
+        "openCount": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "statusWorkloadRow": {
+      "type": "object",
+      "required": ["objectType", "status", "count"],
+      "properties": {
+        "objectType": { "type": "string" },
+        "status": { "type": "string" },
+        "count": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

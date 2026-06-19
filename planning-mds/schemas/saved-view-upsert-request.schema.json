@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/saved-view-upsert-request.schema.json",
+  "title": "SavedViewUpsertRequest",
+  "description": "Create or update request for personal and team saved views.",
+  "type": "object",
+  "required": [
+    "name",
+    "viewType",
+    "visibility",
+    "criteria"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "description": {
+      "type": ["string", "null"],
+      "maxLength": 300
+    },
+    "viewType": {
+      "type": "string",
+      "enum": ["Search", "WorkloadReport", "WorkflowAgingReport"]
+    },
+    "visibility": {
+      "type": "string",
+      "enum": ["Personal", "Team"]
+    },
+    "teamScopeType": {
+      "type": ["string", "null"],
+      "enum": ["Role", "Region", "Program", "Territory", null]
+    },
+    "teamScopeKey": {
+      "type": ["string", "null"],
+      "maxLength": 120
+    },
+    "criteria": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "isDefault": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": false
+}

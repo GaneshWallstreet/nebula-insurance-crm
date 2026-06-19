@@ -2,7 +2,7 @@
 
 Auto-generated index of all user stories across feature folders.
 
-**Total Stories:** 146
+**Total Stories:** 153
 
 ---
 
@@ -260,6 +260,20 @@ Auto-generated index of all user stories across feature folders.
 
 ---
 
+## F0023 - Global Search, Saved Views & Operational Reporting
+
+| Story ID | Title | Priority | Phase | Persona |
+|----------|-------|----------|-------|---------|
+| [F0023-S0001](./F0023-global-search-saved-views-and-operational-reporting/F0023-S0001-global-search-results.md) | Global search returns grouped CRM results | Critical | MVP | Relationship Manager |
+| [F0023-S0002](./F0023-global-search-saved-views-and-operational-reporting/F0023-S0002-filter-and-open-search-results.md) | Filter, sort, and open search results | High | MVP | Relationship Manager |
+| [F0023-S0003](./F0023-global-search-saved-views-and-operational-reporting/F0023-S0003-personal-saved-views.md) | Personal saved views | High | MVP | Relationship Manager |
+| [F0023-S0004](./F0023-global-search-saved-views-and-operational-reporting/F0023-S0004-team-saved-views.md) | Team saved views and defaults | High | MVP | Distribution Operations Manager |
+| [F0023-S0005](./F0023-global-search-saved-views-and-operational-reporting/F0023-S0005-daily-operational-workload-report.md) | Daily operational workload report | High | MVP | Distribution Operations Manager |
+| [F0023-S0006](./F0023-global-search-saved-views-and-operational-reporting/F0023-S0006-workflow-aging-and-backlog-report.md) | Workflow aging and backlog drilldowns | High | MVP | Distribution Operations Manager |
+| [F0023-S0007](./F0023-global-search-saved-views-and-operational-reporting/F0023-S0007-permission-safe-search-and-reporting.md) | Permission-safe search and reporting behavior | Critical | MVP | CRM user |
+
+---
+
 ## F0033 — Structured Logging and QE Toolchain Activation
 
 | Story ID | Title | Priority | Phase | Persona |
@@ -320,7 +334,7 @@ Auto-generated index of all user stories across feature folders.
 | CRM Release MVP | 57 |
 | Future | 1 |
 | Infrastructure | 10 |
-| MVP | 55 |
+| MVP | 62 |
 | MVP Hardening | 1 |
 | Phase 1 | 11 |
 | Platform Foundation | 7 |
@@ -332,8 +346,8 @@ Auto-generated index of all user stories across feature folders.
 
 | Priority | Count |
 |----------|-------|
-| Critical | 62 |
-| High | 67 |
+| Critical | 64 |
+| High | 72 |
 | Medium | 13 |
 
 ---

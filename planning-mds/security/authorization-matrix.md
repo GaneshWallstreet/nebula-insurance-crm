@@ -437,6 +437,49 @@ This section applies only when F0009 is enabled. It does not alter MVP InternalO
 
 ---
 
+### 2.10b Global Search, Saved Views, and Operational Reports (F0023)
+
+F0023 is internal-only. Search/report rows and counts are filtered at the query
+layer after Casbin grants the high-level feature action. Saved views store
+criteria only and never grant source-record access.
+
+| Role | Resource | Action | Decision | Business Scope / Constraints | Story / AC Reference |
+|------|----------|--------|----------|------------------------------|----------------------|
+| DistributionUser | global_search | read | **ALLOW** | Results/facets/counts scoped to source records the user may read. | F0023-S0001, S0002, S0007 |
+| DistributionManager | global_search | read | **ALLOW** | Region/team scope filters apply at query layer. | F0023-S0001, S0002, S0007 |
+| Underwriter | global_search | read | **ALLOW** | Underwriting source-record scope applies at query layer. | F0023-S0001, S0002, S0007 |
+| RelationshipManager | global_search | read | **ALLOW** | Managed broker/account scope applies at query layer. | F0023-S0001, S0002, S0007 |
+| ProgramManager | global_search | read | **ALLOW** | Program scope applies at query layer. | F0023-S0001, S0002, S0007 |
+| Admin | global_search | read | **ALLOW** | Unscoped internal read subject to source-record availability. | F0023-S0001, S0002, S0007 |
+| BrokerUser / ExternalUser | global_search | all | **DENY** | External global search is out of scope. | F0023-S0007 |
+| DistributionUser | saved_view | read | **ALLOW** | Own personal views plus eligible team views only. | F0023-S0003, S0004 |
+| DistributionUser | saved_view | manage/default | **ALLOW** | Own personal saved views only. Team mutation denied. | F0023-S0003 |
+| DistributionManager | saved_view | read/manage/default | **ALLOW** | Own personal views plus team views/defaults for administered region/team scopes. | F0023-S0003, S0004 |
+| Underwriter | saved_view | read | **ALLOW** | Own personal views plus eligible team views only. | F0023-S0003, S0004 |
+| Underwriter | saved_view | manage/default | **ALLOW** | Own personal saved views only. Team mutation denied. | F0023-S0003 |
+| RelationshipManager | saved_view | read | **ALLOW** | Own personal views plus eligible team views only. | F0023-S0003, S0004 |
+| RelationshipManager | saved_view | manage/default | **ALLOW** | Own personal saved views only. Team mutation denied. | F0023-S0003 |
+| ProgramManager | saved_view | read/manage/default | **ALLOW** | Own personal views plus team views/defaults for administered program/team scopes. | F0023-S0003, S0004 |
+| Admin | saved_view | read/manage/default | **ALLOW** | Unscoped internal saved-view administration. | F0023-S0003, S0004 |
+| BrokerUser / ExternalUser | saved_view | all | **DENY** | External saved views are out of scope. | F0023-S0007 |
+| DistributionUser | operational_report | read | **ALLOW** | Report rows, counts, and drilldowns scoped to source records the user may read. | F0023-S0005, S0006, S0007 |
+| DistributionManager | operational_report | read | **ALLOW** | Region/team report scope applies at query layer. | F0023-S0005, S0006, S0007 |
+| Underwriter | operational_report | read | **ALLOW** | Underwriting source-record scope applies at query layer. | F0023-S0005, S0006, S0007 |
+| RelationshipManager | operational_report | read | **ALLOW** | Managed broker/account scope applies at query layer. | F0023-S0005, S0006, S0007 |
+| ProgramManager | operational_report | read | **ALLOW** | Program scope applies at query layer. | F0023-S0005, S0006, S0007 |
+| Admin | operational_report | read | **ALLOW** | Unscoped internal report read subject to source-record availability. | F0023-S0005, S0006, S0007 |
+| BrokerUser / ExternalUser | operational_report | all | **DENY** | External operational reporting is out of scope. | F0023-S0007 |
+
+**Constraints applying to all F0023 ALLOW decisions:**
+- Query-layer source-object filters are mandatory for rows, snippets, suggestions, facets, counts, report summaries, and drilldowns.
+- Unauthorized matches are omitted and must not be exposed as hidden-record counts.
+- Saved views store only criteria JSON; applying a view reruns authorization for the current user.
+- Team saved views require `teamScopeType` and `teamScopeKey`; unauthorized scopes return `saved_view_scope_denied` without revealing hidden team metadata.
+- Team view mutations are limited to DistributionManager, ProgramManager, and Admin for administered scopes.
+- Saved-view create/update/delete/default mutations require immutable `SavedViewAuditEvent` evidence; updates/default/archive require `If-Match`.
+
+---
+
 ### 2.11 Account (F0016)
 
 Resource: `account`. Actions: `read`, `create`, `update`, `deactivate`, `reactivate`, `delete`, `merge`, `contact:manage`, `relationship:change`. See [ADR-017](../architecture/decisions/ADR-017-account-merge-tombstone-and-fallback-contract.md) for merge and tombstone contract.

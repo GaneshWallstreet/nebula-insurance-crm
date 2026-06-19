@@ -24,6 +24,9 @@
 #   dashboard_nudge read
 #   task            read
 #   timeline_event  read
+#   global_search   read
+#   saved_view      read, manage, default
+#   operational_report read
 #
 #   Note on broker "read" vs "search":
 #     read   — fetch a single broker by ID (e.g. GET /brokers/{id})
@@ -516,6 +519,52 @@ p, BrokerUser, contact,           read,   true
 p, BrokerUser, dashboard_nudge,   read,   true
 p, BrokerUser, timeline_event,    read,   true
 p, BrokerUser, task,              read,   true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# §2.10b Global Search, Saved Views, and Operational Reports (F0023)
+# Internal-only. Query-layer filters apply source-record visibility before rows,
+# snippets, facets, counts, reports, or drilldowns are returned.
+# Saved views store criteria only; they never grant source-record access.
+# Source: authorization-matrix.md §2.10b, F0023-S0001..S0007.
+# ─────────────────────────────────────────────────────────────────────────────
+
+p, DistributionUser,    global_search, read, true
+p, DistributionManager, global_search, read, true
+p, Underwriter,         global_search, read, true
+p, RelationshipManager, global_search, read, true
+p, ProgramManager,      global_search, read, true
+p, Admin,               global_search, read, true
+
+p, DistributionUser,    saved_view, read, true
+p, DistributionManager, saved_view, read, true
+p, Underwriter,         saved_view, read, true
+p, RelationshipManager, saved_view, read, true
+p, ProgramManager,      saved_view, read, true
+p, Admin,               saved_view, read, true
+
+# Personal manage/default for non-manager internal roles requires owner match.
+# Manager/admin rows are broad grants; the service still validates administered
+# teamScopeType/teamScopeKey before mutating team views.
+p, DistributionUser,    saved_view, manage,  r.obj.creator == r.sub.id
+p, Underwriter,         saved_view, manage,  r.obj.creator == r.sub.id
+p, RelationshipManager, saved_view, manage,  r.obj.creator == r.sub.id
+p, DistributionManager, saved_view, manage,  true
+p, ProgramManager,      saved_view, manage,  true
+p, Admin,               saved_view, manage,  true
+
+p, DistributionUser,    saved_view, default, r.obj.creator == r.sub.id
+p, Underwriter,         saved_view, default, r.obj.creator == r.sub.id
+p, RelationshipManager, saved_view, default, r.obj.creator == r.sub.id
+p, DistributionManager, saved_view, default, true
+p, ProgramManager,      saved_view, default, true
+p, Admin,               saved_view, default, true
+
+p, DistributionUser,    operational_report, read, true
+p, DistributionManager, operational_report, read, true
+p, Underwriter,         operational_report, read, true
+p, RelationshipManager, operational_report, read, true
+p, ProgramManager,      operational_report, read, true
+p, Admin,               operational_report, read, true
 
 # ─────────────────────────────────────────────────────────────────────────────
 # §3 Documents (F0020 — ADR-012 + ADR-019)

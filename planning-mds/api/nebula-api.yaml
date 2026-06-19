@@ -1,9 +1,12 @@
 openapi: 3.0.3
 info:
   title: Nebula API
-  version: 0.5.0
+  version: 0.6.0
   description: |
     Public baseline API contract for the Nebula insurance CRM reference implementation.
+    Version 0.6.0 adds F0023 Global Search, Saved Views, and Operational Reporting:
+    permission-filtered cross-object search, personal/team saved-view management,
+    and workload / workflow-aging operational report endpoints.
     Version 0.5.0 adds F0007 Renewal Pipeline: renewal list with due-window filtering,
     create from policy, detail with policy context, assignment/handoff, transition with
     conditional fields (Lost reason, Completed policy link), and renewal timeline.
@@ -47,6 +50,12 @@ tags:
     description: Task CRUD for My Tasks widget and Task Center
   - name: Users
     description: User search for assignee picker (F0004)
+  - name: Search
+    description: Permission-filtered global CRM search (F0023)
+  - name: SavedViews
+    description: Personal and team saved criteria for search and operational reports (F0023)
+  - name: OperationalReports
+    description: ABAC-scoped workload and workflow aging report endpoints (F0023)
   - name: Timeline
     description: Activity timeline event queries
   - name: Documents
@@ -2714,6 +2723,389 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
 
   # ──────────────────────────────────────────────────────────────
+  # F0023 Global search, saved views, and operational reporting
+  # ──────────────────────────────────────────────────────────────
+  /search-results:
+    get:
+      operationId: searchGlobalRecords
+      summary: Search permission-filtered CRM records
+      description: |
+        Returns cross-object results from the F0023 `SearchDocument` read model.
+        Results, facets, snippets, and counts are filtered server-side before
+        data leaves the API. External broker/MGA users are out of scope and
+        receive forbidden responses.
+      tags: [Search]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search text. The service trims whitespace and requires at least 2 characters.
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 200
+        - name: objectTypes
+          in: query
+          required: false
+          description: Optional comma-separated result type filter.
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [Broker, MGA, Program, Account, Policy, Submission, Renewal, Task]
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+        - name: ownerUserId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: region
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+        - name: lineOfBusiness
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+        - name: sort
+          in: query
+          required: false
+          description: Sort order for result list.
+          schema:
+            type: string
+            enum: [relevance:desc, updatedAt:desc, title:asc]
+            default: relevance:desc
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated, permission-filtered global search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalSearchResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /saved-views:
+    get:
+      operationId: listSavedViews
+      summary: List personal and team saved views visible to the current user
+      description: |
+        Returns saved criteria visible to the authenticated internal user.
+        Personal views are owner-only. Team views are filtered by the user's
+        role/region/program/territory eligibility and never grant record access.
+      tags: [SavedViews]
+      parameters:
+        - name: viewType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Search, WorkloadReport, WorkflowAgingReport]
+        - name: visibility
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Personal, Team]
+        - name: includeArchived
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Saved views visible to the caller
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedSavedViewList"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      operationId: createSavedView
+      summary: Create a personal or team saved view
+      description: |
+        Creates reusable criteria for search or operational reports. Team views
+        require manager/admin authority for the requested team scope. Successful
+        mutations append a `SavedViewAuditEvent`.
+      tags: [SavedViews]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavedViewUpsertRequest"
+      responses:
+        "201":
+          description: Saved view created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /saved-views/{savedViewId}:
+    parameters:
+      - $ref: "#/components/parameters/SavedViewId"
+    get:
+      operationId: getSavedView
+      summary: Get a saved view
+      tags: [SavedViews]
+      responses:
+        "200":
+          description: Saved view detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      operationId: updateSavedView
+      summary: Update saved view metadata, criteria, or archived state
+      description: |
+        Requires `If-Match` with the saved view `rowVersion`. Personal updates
+        are owner-only. Team updates require manager/admin authority for the
+        target team scope. Successful updates append a `SavedViewAuditEvent`.
+      tags: [SavedViews]
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavedViewUpsertRequest"
+      responses:
+        "200":
+          description: Saved view updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "412":
+          $ref: "#/components/responses/PreconditionFailed"
+    delete:
+      operationId: archiveSavedView
+      summary: Archive a saved view
+      description: |
+        Soft-archives the saved view. Requires `If-Match`. Successful archive
+        appends a `SavedViewAuditEvent`; criteria remain available for audit.
+      tags: [SavedViews]
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204":
+          description: Saved view archived
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "412":
+          $ref: "#/components/responses/PreconditionFailed"
+
+  /saved-views/{savedViewId}/default:
+    parameters:
+      - $ref: "#/components/parameters/SavedViewId"
+    put:
+      operationId: setSavedViewDefault
+      summary: Mark a saved view as default for its personal or team scope
+      description: |
+        Requires `If-Match`. Setting a default clears the prior default for the
+        same `(visibility, teamScopeType, teamScopeKey, ownerUserId, viewType)`
+        scope in one transaction.
+      tags: [SavedViews]
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: Default saved view updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "412":
+          $ref: "#/components/responses/PreconditionFailed"
+
+  /operational-reports/workload:
+    get:
+      operationId: getOperationalWorkloadReport
+      summary: Get daily workload report
+      description: |
+        Returns ABAC-scoped due-today, overdue, owner, and status workload rows
+        from the F0023 `OperationalReportProjection` read model. Drilldown rows
+        use the same shape and authorization behavior as global search results.
+      tags: [OperationalReports]
+      parameters:
+        - name: asOf
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: objectTypes
+          in: query
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [Submission, Renewal, Policy, Task]
+        - name: ownerUserId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: region
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+        - name: lineOfBusiness
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+      responses:
+        "200":
+          description: Daily operational workload report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalWorkloadReport"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /operational-reports/workflow-aging:
+    get:
+      operationId: getWorkflowAgingReport
+      summary: Get workflow aging and backlog report
+      description: |
+        Returns ABAC-scoped submission and renewal aging buckets, backlog by
+        owner, and drilldown rows. Counts are computed after authorization
+        filtering so hidden records are indistinguishable from non-matches.
+      tags: [OperationalReports]
+      parameters:
+        - name: asOf
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: workflowTypes
+          in: query
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [Submission, Renewal]
+        - name: ownerUserId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: region
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+        - name: lineOfBusiness
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+      responses:
+        "200":
+          description: Workflow aging and backlog report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkflowAgingReport"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  # ──────────────────────────────────────────────────────────────
   # Dashboard endpoints (NEW — F0001)
   # ──────────────────────────────────────────────────────────────
   /dashboard/kpis:
@@ -4090,6 +4482,13 @@ components:
         format: uuid
     TaskId:
       name: taskId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    SavedViewId:
+      name: savedViewId
       in: path
       required: true
       schema:
@@ -7695,6 +8094,233 @@ components:
           maxItems: 500
           items:
             $ref: "#/components/schemas/PolicyCreateRequest"
+
+    # ──────────────────────────────────────────────────────────────
+    # F0023 Search, saved views, and operational reporting schemas
+    # Source-of-truth schemas live in planning-mds/schemas/*search*.json,
+    # planning-mds/schemas/saved-view*.json, and
+    # planning-mds/schemas/*report*.json.
+    # ──────────────────────────────────────────────────────────────
+    GlobalSearchResult:
+      type: object
+      required: [objectType, objectId, title, targetUrl, score, lastUpdatedAt]
+      properties:
+        objectType:
+          type: string
+          enum: [Broker, MGA, Program, Account, Policy, Submission, Renewal, Task]
+        objectId: { type: string, format: uuid }
+        title: { type: string, minLength: 1, maxLength: 200 }
+        subtitle: { type: string, nullable: true, maxLength: 300 }
+        status: { type: string, nullable: true, maxLength: 80 }
+        ownerUserId: { type: string, format: uuid, nullable: true }
+        ownerDisplayName: { type: string, nullable: true, maxLength: 160 }
+        lineOfBusiness: { type: string, nullable: true, maxLength: 80 }
+        region: { type: string, nullable: true, maxLength: 80 }
+        matchedFields:
+          type: array
+          items: { type: string, maxLength: 80 }
+          uniqueItems: true
+        snippet: { type: string, nullable: true, maxLength: 500 }
+        targetUrl: { type: string, minLength: 1, maxLength: 300 }
+        score: { type: number, minimum: 0 }
+        lastUpdatedAt: { type: string, format: date-time }
+        indexedAt: { type: string, format: date-time }
+
+    SearchFacetBucket:
+      type: object
+      required: [value, count]
+      properties:
+        value: { type: string, minLength: 1, maxLength: 120 }
+        label: { type: string, nullable: true, maxLength: 160 }
+        count: { type: integer, minimum: 0 }
+
+    GlobalSearchFacets:
+      type: object
+      required: [objectTypes, statuses, owners]
+      properties:
+        objectTypes:
+          type: array
+          items: { $ref: "#/components/schemas/SearchFacetBucket" }
+        statuses:
+          type: array
+          items: { $ref: "#/components/schemas/SearchFacetBucket" }
+        owners:
+          type: array
+          items: { $ref: "#/components/schemas/SearchFacetBucket" }
+
+    GlobalSearchResponse:
+      type: object
+      required: [data, facets, page, pageSize, totalCount, totalPages, generatedAt]
+      properties:
+        data:
+          type: array
+          items: { $ref: "#/components/schemas/GlobalSearchResult" }
+        facets: { $ref: "#/components/schemas/GlobalSearchFacets" }
+        page: { type: integer, minimum: 1 }
+        pageSize: { type: integer, minimum: 1, maximum: 100 }
+        totalCount: { type: integer, minimum: 0 }
+        totalPages: { type: integer, minimum: 0 }
+        queryEcho: { type: string, nullable: true, maxLength: 200 }
+        generatedAt: { type: string, format: date-time }
+
+    SavedView:
+      type: object
+      required: [id, name, viewType, visibility, criteria, ownerUserId, isDefault, createdAt, updatedAt, rowVersion]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string, minLength: 1, maxLength: 80 }
+        description: { type: string, nullable: true, maxLength: 300 }
+        viewType:
+          type: string
+          enum: [Search, WorkloadReport, WorkflowAgingReport]
+        visibility:
+          type: string
+          enum: [Personal, Team]
+        teamScopeType:
+          type: string
+          nullable: true
+          enum: [Role, Region, Program, Territory]
+        teamScopeKey:
+          type: string
+          nullable: true
+          maxLength: 120
+        criteria:
+          type: object
+          description: Structured criteria; never grants record access.
+          additionalProperties: true
+        ownerUserId: { type: string, format: uuid }
+        ownerDisplayName: { type: string, nullable: true, maxLength: 160 }
+        lastEditedByUserId: { type: string, format: uuid, nullable: true }
+        lastEditedByDisplayName: { type: string, nullable: true, maxLength: 160 }
+        isDefault: { type: boolean }
+        archivedAt: { type: string, format: date-time, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        rowVersion: { type: string, minLength: 1 }
+
+    SavedViewUpsertRequest:
+      type: object
+      required: [name, viewType, visibility, criteria]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        description: { type: string, nullable: true, maxLength: 300 }
+        viewType:
+          type: string
+          enum: [Search, WorkloadReport, WorkflowAgingReport]
+        visibility:
+          type: string
+          enum: [Personal, Team]
+        teamScopeType:
+          type: string
+          nullable: true
+          enum: [Role, Region, Program, Territory]
+        teamScopeKey:
+          type: string
+          nullable: true
+          maxLength: 120
+        criteria:
+          type: object
+          additionalProperties: true
+        isDefault:
+          type: boolean
+          default: false
+
+    PaginatedSavedViewList:
+      type: object
+      required: [data, page, pageSize, totalCount, totalPages]
+      properties:
+        data:
+          type: array
+          items: { $ref: "#/components/schemas/SavedView" }
+        page: { type: integer, minimum: 1 }
+        pageSize: { type: integer, minimum: 1, maximum: 100 }
+        totalCount: { type: integer, minimum: 0 }
+        totalPages: { type: integer, minimum: 0 }
+
+    OperationalWorkloadReport:
+      type: object
+      required: [asOfDate, summary, ownerRows, statusRows, drilldown, generatedAt]
+      properties:
+        asOfDate: { type: string, format: date }
+        summary:
+          type: object
+          required: [dueToday, overdue, openSubmissions, openRenewals, openTasks]
+          properties:
+            dueToday: { type: integer, minimum: 0 }
+            overdue: { type: integer, minimum: 0 }
+            openSubmissions: { type: integer, minimum: 0 }
+            openRenewals: { type: integer, minimum: 0 }
+            openTasks: { type: integer, minimum: 0 }
+        ownerRows:
+          type: array
+          items: { $ref: "#/components/schemas/OperationalOwnerWorkloadRow" }
+        statusRows:
+          type: array
+          items: { $ref: "#/components/schemas/OperationalStatusWorkloadRow" }
+        drilldown:
+          type: array
+          items: { $ref: "#/components/schemas/GlobalSearchResult" }
+        generatedAt: { type: string, format: date-time }
+
+    OperationalOwnerWorkloadRow:
+      type: object
+      required: [ownerUserId, ownerDisplayName, dueToday, overdue, openCount]
+      properties:
+        ownerUserId: { type: string, format: uuid, nullable: true }
+        ownerDisplayName: { type: string }
+        dueToday: { type: integer, minimum: 0 }
+        overdue: { type: integer, minimum: 0 }
+        openCount: { type: integer, minimum: 0 }
+
+    OperationalStatusWorkloadRow:
+      type: object
+      required: [objectType, status, count]
+      properties:
+        objectType: { type: string }
+        status: { type: string }
+        count: { type: integer, minimum: 0 }
+
+    WorkflowAgingReport:
+      type: object
+      required: [asOfDate, agingRows, backlogRows, drilldown, generatedAt]
+      properties:
+        asOfDate: { type: string, format: date }
+        agingRows:
+          type: array
+          items: { $ref: "#/components/schemas/WorkflowAgingRow" }
+        backlogRows:
+          type: array
+          items: { $ref: "#/components/schemas/WorkflowBacklogRow" }
+        drilldown:
+          type: array
+          items: { $ref: "#/components/schemas/GlobalSearchResult" }
+        generatedAt: { type: string, format: date-time }
+
+    WorkflowAgingRow:
+      type: object
+      required: [workflowType, status, ageBand, count]
+      properties:
+        workflowType:
+          type: string
+          enum: [Submission, Renewal]
+        status: { type: string }
+        ageBand:
+          type: string
+          enum: [OnTrack, ApproachingSla, Overdue]
+        count: { type: integer, minimum: 0 }
+        oldestDaysInStatus: { type: integer, nullable: true, minimum: 0 }
+
+    WorkflowBacklogRow:
+      type: object
+      required: [workflowType, ownerDisplayName, openCount, overdueCount]
+      properties:
+        workflowType:
+          type: string
+          enum: [Submission, Renewal]
+        ownerUserId: { type: string, format: uuid, nullable: true }
+        ownerDisplayName: { type: string }
+        openCount: { type: integer, minimum: 0 }
+        overdueCount: { type: integer, minimum: 0 }
 
     # ──────────────────────────────────────────────────────────────
     # Document component schemas (F0020)

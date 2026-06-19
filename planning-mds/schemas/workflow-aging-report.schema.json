@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/workflow-aging-report.schema.json",
+  "title": "WorkflowAgingReport",
+  "description": "F0023 workflow aging and backlog report response.",
+  "type": "object",
+  "required": [
+    "asOfDate",
+    "agingRows",
+    "backlogRows",
+    "drilldown",
+    "generatedAt"
+  ],
+  "properties": {
+    "asOfDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "agingRows": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/agingRow" }
+    },
+    "backlogRows": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/backlogRow" }
+    },
+    "drilldown": {
+      "type": "array",
+      "items": { "$ref": "https://nebula.local/schemas/global-search-result.schema.json" }
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "definitions": {
+    "agingRow": {
+      "type": "object",
+      "required": ["workflowType", "status", "ageBand", "count"],
+      "properties": {
+        "workflowType": { "type": "string", "enum": ["Submission", "Renewal"] },
+        "status": { "type": "string" },
+        "ageBand": { "type": "string", "enum": ["OnTrack", "ApproachingSla", "Overdue"] },
+        "count": { "type": "integer", "minimum": 0 },
+        "oldestDaysInStatus": { "type": ["integer", "null"], "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "backlogRow": {
+      "type": "object",
+      "required": ["workflowType", "ownerDisplayName", "openCount", "overdueCount"],
+      "properties": {
+        "workflowType": { "type": "string", "enum": ["Submission", "Renewal"] },
+        "ownerUserId": { "type": ["string", "null"], "format": "uuid" },
+        "ownerDisplayName": { "type": "string" },
+        "openCount": { "type": "integer", "minimum": 0 },
+        "overdueCount": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
